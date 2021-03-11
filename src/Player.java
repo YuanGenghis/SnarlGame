@@ -29,6 +29,10 @@ public class Player {
     this.status = 1;
   }
 
+  public Player(String name) {
+    this.name = name;
+  }
+
   // get the position of the Player
   public Pair<Integer, Integer> getPosition() {
     return this.position;
