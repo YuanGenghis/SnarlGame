@@ -15,15 +15,14 @@ public class TestState {
   public static void stateBuilder(JSONObject jo) {
     JSONObject l = jo.getJSONObject("level");
     Level level = TestLevel.levelBuilder(l);
-    List<Level> levels = new ArrayList<>();
-    levels.add(level);
+
 
     JSONArray jsonPlayers = jo.getJSONArray("players");
     JSONArray jsonAds = jo.getJSONArray("adversaries");
 
     List<Adversary> ads = new ArrayList<>();
-    for (int ii = 0; ii < jsonPlayers.length(); ++ii) {
-      JSONObject jAd = jsonPlayers.getJSONObject(ii);
+    for (int ii = 0; ii < jsonAds.length(); ++ii) {
+      JSONObject jAd = jsonAds.getJSONObject(ii);
       String name = jAd.getString("name");
       String type = jAd.getString("type");
       int x = ((JSONArray) jAd.get("position")).getInt(0);
@@ -31,6 +30,9 @@ public class TestState {
       Adversary ad = new Adversary(type, name, new Pair<>(x,y));
       ads.add(ad);
     }
+    level.addAds(ads);
+    List<Level> levels = new ArrayList<>();
+    levels.add(level);
 
     List<Player> players = new ArrayList<>();
     for (int ii = 0; ii < jsonPlayers.length(); ++ii) {

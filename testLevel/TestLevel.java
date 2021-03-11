@@ -9,9 +9,13 @@ import javafx.util.Pair;
 public class TestLevel {
   public static int[] point = new int[2];
 
+  //transfer json file to level
   public static Level levelBuilder(JSONObject jo) {
+    //create a empty list of rooms and hallways
     List<Room> rooms = new ArrayList<>();
     List<Hallway> hallways = new ArrayList<>();
+
+    //transfer json file to real rooms and add into list
     JSONArray jRooms = jo.getJSONArray("rooms");
     for (int ii = 0; ii < jRooms.length(); ++ii) {
       JSONObject j = (JSONObject) jRooms.get(ii);
@@ -38,6 +42,8 @@ public class TestLevel {
       room.setPosition(x,y);
       rooms.add(room);
     }
+
+    //transfer json file to read hallways and add into list
     JSONArray hws = jo.getJSONArray("hallways");
     for (int ii = 0; ii < hws.length(); ++ii) {
       JSONObject h = (JSONObject) hws.get(ii);
@@ -60,6 +66,7 @@ public class TestLevel {
       Pair<Integer, Integer> startPoint = new Pair<>(fromX, fromY);
       int rowDif, colDif;
       int val = 1;
+      //check for waypoints and use waypoints to save to path and add to hallway layout
       for (int zz = 0; zz < waypoints.size(); ++zz) {
         rowDif = waypoints.get(zz).getKey() - startPoint.getKey();
         colDif = waypoints.get(zz).getValue() - startPoint.getValue();
@@ -111,6 +118,8 @@ public class TestLevel {
       hw.setLayout(layout);
       hallways.add(hw);
     }
+
+    //find key and exit position and add to level
     JSONArray objects = jo.getJSONArray("objects");
     int[] keyPosition = new int[2];
     int[] exitPosition = new int[2];
@@ -126,6 +135,7 @@ public class TestLevel {
       }
     }
 
+    //build level depend on previous transfer
     Level level = new Level(rooms, hallways);
     level.keyPosition = keyPosition;
     level.exitPosition = exitPosition;
@@ -153,14 +163,13 @@ public class TestLevel {
     point[0] = (int) ((JSONArray) (((JSONArray) obj).get(1))).get(0);
     point[1] = (int) ((JSONArray) (((JSONArray) obj).get(1))).get(1);
 
+    //get level info
     JSONObject jo = (JSONObject) (((JSONArray) obj).get(0));
 
+    //build a level use the read info
     Level level = levelBuilder(jo);
-//    for (Room room: level.rooms) {
-//      for (char[] chars: room.layout) {
-//        System.out.println(chars);
-//      }
-//    }
+
+    //render the level
     level.renderLevel(level);
     JSONObject output = level.checkForPoint(point);
   }
