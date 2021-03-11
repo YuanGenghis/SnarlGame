@@ -395,6 +395,24 @@ public class Level extends JPanel{
     return 0;
   }
 
+  public boolean checkIfOnAd(int[] point) {
+    for (Adversary ad: this.ads) {
+      if (ad.getPosition().getKey() == point[0] && ad.getPosition().getValue() == point[1]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean checkIfOnPlayer(List<Player> players, int[] point) {
+    for (Player p : players) {
+      if (p.getPosition().getKey() == point[0] && p.getPosition().getValue() == point[1]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 
   public int checkIfInHallways(int[] point) {
     for (int ii = 0; ii < hallways.size(); ++ii) {

@@ -14,9 +14,10 @@ public class TestState {
 
   public static GameState stateBuilder(JSONObject jo) {
     JSONObject l = jo.getJSONObject("level");
+    //build a level using json input
     Level level = TestLevel.levelBuilder(l);
 
-
+    //transfer players and adversaries
     JSONArray jsonPlayers = jo.getJSONArray("players");
     JSONArray jsonAds = jo.getJSONArray("adversaries");
 
@@ -44,8 +45,7 @@ public class TestState {
       players.add(player);
     }
 
-    GameState gameState = new GameState(players, levels);
-    return gameState;
+    return new GameState(players, levels);
 
   }
 
@@ -71,8 +71,10 @@ public class TestState {
 
     JSONObject jo = (JSONObject) (((JSONArray) obj).get(0));
 
+    //build a state by using json input
     GameState state = stateBuilder(jo);
-    JSONArray output = state.checkForPoint(name, point);
+    //check if the move valid
+    JSONArray output = state.checkForPoint(name, point, jo);
     System.out.println(output);
   }
 }
