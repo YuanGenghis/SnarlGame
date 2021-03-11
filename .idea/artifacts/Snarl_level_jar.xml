@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Snarl level:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Snarl_level_jar</output-path>
+    <root id="archive" name="Snarl level.jar">
+      <element id="module-output" name="Snarl level" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/json-20201115 (1).jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
