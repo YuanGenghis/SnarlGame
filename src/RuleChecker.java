@@ -48,7 +48,7 @@ public class RuleChecker {
         int[] position = new int[2];
         position[0] = p.getPosition().getKey();
         position[1] = p.getPosition().getValue();
-        Room room = isInRoom(position, level);
+        Room room = inWhichRoom(position, level);
         List<int[]> rev = searchTraversablePoints(position, room);
         return rev;
     }
@@ -63,7 +63,8 @@ public class RuleChecker {
         return  gameStatus;
     }
 
-    public Room isInRoom(int[] position, Level level) {
+    // find which room the given position in
+    public Room inWhichRoom(int[] position, Level level) {
         for (Room room: level.rooms) {
             int rows = room.layout.length;
             int cols = room.layout[0].length;
@@ -79,6 +80,7 @@ public class RuleChecker {
         return null;
     }
 
+    // search traversable points from a position in a Room
     public static List<int[]> searchTraversablePoints(int[] point, Room room) {
         int[] origin = new int[2];
         origin[0] = room.position.getKey();
@@ -113,7 +115,6 @@ public class RuleChecker {
             p[1] = col;
             output.add(p);
         }
-
         return output;
     }
 }
