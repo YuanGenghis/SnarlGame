@@ -66,11 +66,124 @@ public class GameState {
     level.renderLevel(level);
   }
 
-  public JSONArray checkForPoint(String pName, int[] point) {
+  public JSONArray checkForPoint(String pName, int[] point, JSONObject jo) {
+    boolean exitLocked = (boolean) jo.get("exit-locked");
+    JSONObject updateState = new JSONObject();
     JSONArray output = new JSONArray();
+    Level level = this.levels.get(levelStatus);
+    //if the player is part of the players
     if (playerInGame(pName)) {
-      output.put("yes");
-    } else {
+      //if this the destination position is invalid(a wall or outside the room or hallway)
+      if ((level.checkTailType(point) == -1 || level.checkTailType(point) == 0)
+          && (level.checkIfInHallways(point) == -1)) { {
+          output.put("Failure");
+          output.put("The destination position ");
+          output.put(point);
+          output.put(" is invalid.");
+        }
+      }
+      //the destination position is valid
+      else {
+        //if the destination is a exit
+        if (level.checkIfKeyOrExit(point) == 2) {
+          //if the exit is locked, can just get on it, but can not exit
+          if (exitLocked) {
+            updateState.put("type", "state");
+            updateState.put("level", jo.getJSONObject("level"));
+            JSONArray jsonPlayers = jo.getJSONArray("players");
+            JSONArray newPlayers = new JSONArray();
+            for (int ii = 0; ii < jsonPlayers.length(); ++ii) {
+              if (jsonPlayers.getJSONObject(ii).getString("name") != pName) {
+                newPlayers.put(jsonPlayers.getJSONObject(ii));
+              }
+            }
+            updateState.put("players", newPlayers);
+            updateState.put("adversaries", jo.getJSONArray("adversaries"));
+            updateState.put("exit-locked", exitLocked);
+
+            output.put("Success");
+            output.put(updateState);
+          }
+          //player successfully exit
+          else {
+            updateState.put("type", "state");
+            updateState.put("level", jo.getJSONObject("level"));
+            JSONArray jsonPlayers = jo.getJSONArray("players");
+            JSONArray newPlayers = new JSONArray();
+            for (int ii = 0; ii < jsonPlayers.length(); ++ii) {
+              if (jsonPlayers.getJSONObject(ii).getString("name") != pName) {
+                newPlayers.put(jsonPlayers.getJSONObject(ii));
+              }
+            }
+            updateState.put("players", newPlayers);
+            updateState.put("adversaries", jo.getJSONArray("adversaries"));
+            updateState.put("exit-locked", exitLocked);
+
+            output.put("Success");
+            output.put("Player ");
+            output.put(pName);
+            output.put(" exited");
+            output.put(updateState);
+          }
+        }
+        //if player move onto a adversary, remove the player, success
+        else if (level.checkIfOnAd(point)) {
+          updateState.put("type", "state");
+          updateState.put("level", jo.getJSONObject("level"));
+          JSONArray jsonPlayers = jo.getJSONArray("players");
+          JSONArray newPlayers = new JSONArray();
+          for (int ii = 0; ii < jsonPlayers.length(); ++ii) {
+            if (jsonPlayers.getJSONObject(ii).getString("name") != pName) {
+              newPlayers.put(jsonPlayers.getJSONObject(ii));
+            }
+          }
+          updateState.put("players", newPlayers);
+          updateState.put("adversaries", jo.getJSONArray("adversaries"));
+          updateState.put("exit-locked", exitLocked);
+
+          output.put("Success");
+          output.put("Player ");
+          output.put(pName);
+          output.put(" was ejected.");
+          output.put(updateState);
+        }
+        //move to a valid place and no exit and adversary
+        else {
+          //if move onto a player, invalid move
+          if (level.checkIfOnPlayer(this.players, point)) {
+            output.put("Failure");
+            output.put("The destination position ");
+            output.put(point);
+            output.put(" is invalid.");
+          }
+          //it is a valid move, success! change player position
+          else {
+            updateState.put("type", "state");
+            updateState.put("level", jo.getJSONObject("level"));
+            JSONArray jsonPlayers = jo.getJSONArray("players");
+            JSONArray newPlayers = new JSONArray();
+            for (int ii = 0; ii < jsonPlayers.length(); ++ii) {
+              if (jsonPlayers.getJSONObject(ii).getString("name") == pName) {
+                JSONObject newPlayer = new JSONObject();
+                newPlayer.put("type", "player");
+                newPlayer.put("name", pName);
+                newPlayer.put("position", point);
+                newPlayers.put(newPlayer);
+              } else {
+                newPlayers.put(jsonPlayers.getJSONObject(ii));
+              }
+            }
+            updateState.put("players", newPlayers);
+            updateState.put("adversaries", jo.getJSONArray("adversaries"));
+            updateState.put("exit-locked", exitLocked);
+            output.put("Success");
+            output.put(updateState);
+          }
+        }
+      }
+    }
+    //the player isn’t part of the input state
+    else {
       output.put("Failure");
       output.put("Player ");
       output.put(pName);
@@ -96,6 +209,6 @@ public class GameState {
     Level level = new Level();
     GameState game = new GameState(2, level, 2);
 //    level.movePlayer(game.players.get(0), new Pair<>(3,3));
-    level.renderLevel(level);
+//    level.renderLevel(level);
   }
 }
