@@ -107,6 +107,7 @@ public class Level extends JPanel{
   public Level(List<Room> rooms, List<Hallway> hallways) {
     this.rooms = rooms;
     this.hallways = hallways;
+    this.ads = new ArrayList<>();
   }
 
   public void init() {
@@ -150,6 +151,12 @@ public class Level extends JPanel{
   }
 
   public int rectWidth = 25;
+
+  public void addAds(List<Adversary> ads) {
+    for (int ii = 0; ii < ads.size(); ++ii) {
+      this.ads.add(ads.get(ii));
+    }
+  }
 
   @Override
   public void paintComponent(Graphics g) {
