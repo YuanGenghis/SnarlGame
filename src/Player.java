@@ -11,6 +11,11 @@ public class Player {
     this.status = status;
   }
 
+  public Player(String name, Pair<Integer, Integer> position) {
+    this.name = name;
+    this.position = position;
+  }
+
   public Player(Pair<Integer, Integer> position, int status) {
     this.position = position;
     this.status = status;
