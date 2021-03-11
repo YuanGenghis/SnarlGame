@@ -18,7 +18,7 @@ public class GameManager {
     this.level = level;
   }
 
-  // test if the name is valid
+  // check if the name is valid
   boolean isValidName(List<Player> players, String name) {
     for (Player p: players) {
       if (p.name.equals(name)) {
@@ -27,6 +27,4 @@ public class GameManager {
     }
     return true;
   }
-
-
 }
