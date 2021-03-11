@@ -16,6 +16,7 @@ import java.awt.*;
 import javafx.print.PageOrientation;
 import javafx.util.Pair;
 
+// represents a Level of the game
 public class Level extends JPanel{
   List<Room> rooms;
   List<Hallway> hallways;
@@ -89,6 +90,7 @@ public class Level extends JPanel{
   public static final Adversary ad1 = new Adversary(aPosition);
 
 
+  // construct the level example
   public Level() {
     this.rooms = new ArrayList<>();
     this.hallways = new ArrayList<>();
@@ -104,17 +106,20 @@ public class Level extends JPanel{
     this.exitPosition = new int[2];
   }
 
+  // constructs the level with Given rooms and hallways
   public Level(List<Room> rooms, List<Hallway> hallways) {
     this.rooms = rooms;
     this.hallways = hallways;
     this.ads = new ArrayList<>();
   }
 
+  // init the level
   public void init() {
 //    this.setAds();
     this.setExit();
   }
 
+  // set Adversary by amount
   public void setAds(int amount) {
 //    for (int ii = 0; ii < this.ads.size(); ++ii) {
 //      int x = this.ads.get(ii).getPosition().getKey();
@@ -138,20 +143,24 @@ public class Level extends JPanel{
     }
   }
 
+  // set Exit position
   public void setExit() {
     this.rooms.get(1).layout[3][3] = 'E';
   }
 
+  // add a Room to current Level
   public void addRoom(Room room) {
     this.rooms.add(room);
   }
 
+  // add a Hallway to current Level
   public void addHallways(Hallway hw) {
     this.hallways.add(hw);
   }
 
   public int rectWidth = 25;
 
+  // Add a list of Adversary to the current Level
   public void addAds(List<Adversary> ads) {
     for (int ii = 0; ii < ads.size(); ++ii) {
       this.ads.add(ads.get(ii));
@@ -159,6 +168,7 @@ public class Level extends JPanel{
   }
 
   @Override
+  // render the Level
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
     g.clearRect(0, 0, getWidth(), getHeight());
@@ -168,6 +178,7 @@ public class Level extends JPanel{
     drawHallways(this.hallways, g);
   }
 
+  // draw Hallways
   private void drawHallways(List<Hallway> hallways, Graphics g) {
 //    for (Hallway hw: hallways) {
 //      int x = hw.position.getKey();
@@ -202,6 +213,7 @@ public class Level extends JPanel{
     }
   }
 
+  // Draw rooms
   private void drawRooms(List<Room> rooms, Graphics g) {
     for (Room r: rooms) {
       int x = r.position.getKey();
@@ -259,6 +271,7 @@ public class Level extends JPanel{
     }
   }
 
+  // get the position of the room
   public Pair<Integer, Integer> getRoomPosition(int[] point) {
     for (Room room: rooms) {
       int rows = room.layout.length;
