@@ -12,7 +12,7 @@ public class TestState {
   public static int[] point = new int[2];
   public static String name;
 
-  public static void stateBuilder(JSONObject jo) {
+  public static GameState stateBuilder(JSONObject jo) {
     JSONObject l = jo.getJSONObject("level");
     Level level = TestLevel.levelBuilder(l);
 
@@ -44,8 +44,8 @@ public class TestState {
       players.add(player);
     }
 
-
-//    String playerName = jo.getJSONObject("players")
+    GameState gameState = new GameState(players, levels);
+    return gameState;
 
   }
 
@@ -65,13 +65,14 @@ public class TestState {
 
     Object obj = jt.nextValue();
 
-    name = (String) ((JSONArray) obj).get(2);
+    String name = (String) ((JSONArray) obj).get(1).toString();
     point[0] = (int) ((JSONArray) (((JSONArray) obj).get(2))).get(0);
     point[1] = (int) ((JSONArray) (((JSONArray) obj).get(2))).get(1);
 
     JSONObject jo = (JSONObject) (((JSONArray) obj).get(0));
 
-//    GameState state = stateBuilder(jo);
-//    JSONObject output = level.checkForPoint(point);
+    GameState state = stateBuilder(jo);
+    JSONArray output = state.checkForPoint(name, point);
+    System.out.println(output);
   }
 }

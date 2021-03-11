@@ -336,7 +336,6 @@ public class Level extends JPanel{
       output.put("type", "room");
       output.put("reachable", reachables);
     }
-    System.out.println(output);
     return output;
   }
 
