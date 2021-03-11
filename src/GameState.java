@@ -1,3 +1,7 @@
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import java.util.*;
 import javafx.util.Pair;
 
@@ -61,6 +65,30 @@ public class GameState {
   public void render(Level level) {
     level.renderLevel(level);
   }
+
+  public JSONArray checkForPoint(String pName, int[] point) {
+    JSONArray output = new JSONArray();
+    if (playerInGame(pName)) {
+      output.put("yes");
+    } else {
+      output.put("Failure");
+      output.put("Player ");
+      output.put(pName);
+      output.put(" is not a part of the game.");
+    }
+    return output;
+  }
+
+  public boolean playerInGame(String name) {
+    for (int ii = 0; ii < players.size(); ++ii) {
+      if (players.get(ii).name.equals(name)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
 
 
 
