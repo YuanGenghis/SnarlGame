@@ -1,9 +1,9 @@
 [
+  "Success", "Player ", "joe", " exited.",
   {
     "exit-locked": false,
     "players": [
-      { "name": "ferd", "type": "player", "position": [ 4, 3 ] },
-      { "name": "joe", "type": "player", "position": [ 12, 8 ] }
+      { "name": "ferd", "type": "player", "position": [ 4, 3 ] }
     ],
     "type": "state",
     "adversaries": [
@@ -48,7 +48,10 @@
         }
       ],
       "objects": [
-        { "type": "exit", "position": [ 7, 17 ] }
+        {
+          "type": "exit",
+          "position": [ 7, 17 ]
+        }
       ],
       "hallways": [
         {
@@ -65,7 +68,5 @@
         }
       ]
     }
-  },
-  "joe",
-  [ 7, 17 ]
+  }
 ]

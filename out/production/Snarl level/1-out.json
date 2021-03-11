@@ -1,8 +1,9 @@
 [
+  "Success",
   {
     "exit-locked": false,
     "players": [
-      { "name": "ferd", "type": "player", "position": [ 4, 3 ] },
+      { "name": "ferd", "type": "player", "position": [ 4, 2 ] },
       { "name": "joe", "type": "player", "position": [ 12, 8 ] }
     ],
     "type": "state",
@@ -11,6 +12,17 @@
     ],
     "level": {
       "rooms": [
+        {
+          "origin": [ 3, 1 ],
+          "layout": [
+            [ 0, 0, 2, 0 ],
+            [ 0, 1, 1, 0 ],
+            [ 0, 1, 1, 0 ],
+            [ 0, 2, 0, 0 ]
+          ],
+          "type": "room",
+          "bounds": { "rows": 4, "columns": 4 }
+        },
         {
           "origin": [ 10, 5 ],
           "layout": [
@@ -34,17 +46,6 @@
           ],
           "type": "room",
           "bounds": { "rows": 5, "columns": 5 }
-        },
-        {
-          "origin": [ 3, 1 ],
-          "layout": [
-            [ 0, 0, 2, 0 ],
-            [ 0, 1, 1, 0 ],
-            [ 0, 1, 1, 0 ],
-            [ 0, 2, 0, 0 ]
-          ],
-          "type": "room",
-          "bounds": { "rows": 4, "columns": 4 }
         }
       ],
       "objects": [
@@ -58,14 +59,12 @@
           "type": "hallway"
         },
         {
-          "waypoints": [ [ 12, 2 ] ],
+          "waypoints": [ [ 12, 2 ] ], 
           "to": [ 12, 5 ],
-          "from": [ 6, 2 ],
+          "from": [ 6, 2 ], 
           "type": "hallway"
         }
       ]
     }
-  },
-  "joe",
-  [ 7, 17 ]
+  }
 ]
