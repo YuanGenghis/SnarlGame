@@ -1,8 +1,8 @@
 [
+  "Success", "Player ", "ferd", " was ejected.",
   {
     "exit-locked": false,
     "players": [
-      { "name": "ferd", "type": "player", "position": [ 4, 3 ] },
       { "name": "joe", "type": "player", "position": [ 12, 8 ] }
     ],
     "type": "state",
@@ -65,7 +65,5 @@
         }
       ]
     }
-  },
-  "joe",
-  [ 7, 17 ]
+  }
 ]

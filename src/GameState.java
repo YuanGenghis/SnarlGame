@@ -93,7 +93,7 @@ public class GameState {
             JSONArray jsonPlayers = jo.getJSONArray("players");
             JSONArray newPlayers = new JSONArray();
             for (int ii = 0; ii < jsonPlayers.length(); ++ii) {
-              if (jsonPlayers.getJSONObject(ii).getString("name") != pName) {
+              if (!jsonPlayers.getJSONObject(ii).getString("name").equals(pName)) {
                 newPlayers.put(jsonPlayers.getJSONObject(ii));
               }
             }
@@ -111,7 +111,7 @@ public class GameState {
             JSONArray jsonPlayers = jo.getJSONArray("players");
             JSONArray newPlayers = new JSONArray();
             for (int ii = 0; ii < jsonPlayers.length(); ++ii) {
-              if (jsonPlayers.getJSONObject(ii).getString("name") != pName) {
+              if (!jsonPlayers.getJSONObject(ii).getString("name").equals(pName)) {
                 newPlayers.put(jsonPlayers.getJSONObject(ii));
               }
             }
@@ -133,7 +133,7 @@ public class GameState {
           JSONArray jsonPlayers = jo.getJSONArray("players");
           JSONArray newPlayers = new JSONArray();
           for (int ii = 0; ii < jsonPlayers.length(); ++ii) {
-            if (jsonPlayers.getJSONObject(ii).getString("name") != pName) {
+            if (!jsonPlayers.getJSONObject(ii).getString("name").equals(pName)) {
               newPlayers.put(jsonPlayers.getJSONObject(ii));
             }
           }
@@ -163,7 +163,7 @@ public class GameState {
             JSONArray jsonPlayers = jo.getJSONArray("players");
             JSONArray newPlayers = new JSONArray();
             for (int ii = 0; ii < jsonPlayers.length(); ++ii) {
-              if (jsonPlayers.getJSONObject(ii).getString("name") == pName) {
+              if (jsonPlayers.getJSONObject(ii).getString("name").equals(pName)) {
                 JSONObject newPlayer = new JSONObject();
                 newPlayer.put("type", "player");
                 newPlayer.put("name", pName);
