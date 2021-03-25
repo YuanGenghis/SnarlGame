@@ -81,4 +81,8 @@ public class GameManager {
     System.out.println("YOU LOST!");
     System.exit(1);
   }
+
+  public void move() {
+
+  }
 }
