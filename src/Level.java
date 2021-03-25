@@ -6,14 +6,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 
-import javafx.print.PageOrientation;
 import javafx.util.Pair;
 
 // represents a Level of the game

@@ -1,7 +1,7 @@
 import javafx.util.Pair;
 
 // represents a Player
-public class Player {
+public class Player implements User{
   String name;
   Pair<Integer, Integer> position;
   int status;
@@ -36,5 +36,11 @@ public class Player {
   // get the position of the Player
   public Pair<Integer, Integer> getPosition() {
     return this.position;
+  }
+
+  @Override
+  public void update(int[] position, Level level) {
+    Pair<Integer, Integer> newPos = new Pair<>(position[0], position[1]);
+    this.position = newPos;
   }
 }
