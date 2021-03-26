@@ -23,6 +23,14 @@ public class GameState {
     initGame(playerAmount, level, ads);
   }
 
+  public GameState(List<Player> players) {
+    this.players = players;
+    this.levels = new ArrayList<>();
+    this.levels.add(new Level());
+    this.levelStatus = 0;
+    this.gameStatus = 1;
+  }
+
   //This is a intermediate game state with given player locations,
   //the adversary locations and the status of the level exit are store in the level
   //so also have to provide whole level info
