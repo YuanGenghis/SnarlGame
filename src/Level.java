@@ -21,6 +21,7 @@ public class Level extends JPanel{
   List<Adversary> ads;
   int[] keyPosition;
   int[] exitPosition;
+  boolean ifLocked;
 
   public static BufferedImage PlayerImage;
   public static BufferedImage ADImage;
@@ -102,6 +103,7 @@ public class Level extends JPanel{
     this.init();
     this.keyPosition = new int[2];
     this.exitPosition = new int[2];
+    this.ifLocked = true;
   }
 
   // constructs the level with Given rooms and hallways
