@@ -1,8 +1,7 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javafx.util.Pair;
 
@@ -19,9 +18,20 @@ public class GameManager {
     this.curPlayer = curPlayer;
   }
 
-  // init the level?
-  public void init(Level level) {
-    this.level = level;
+  //Start a simple one level game
+  public GameManager(List<String> names) {
+    this.players = new ArrayList<>();
+    this.level = new Level();
+    this.register(names);
+  }
+
+  // init the GameManager
+  public void init() {
+    for (Player p: players) {
+      this.level.setPlayer();
+    }
+    this.level.setAds(2);
+    level.renderLevel(this.level);
   }
 
   // check if the name is valid
@@ -34,10 +44,12 @@ public class GameManager {
     return true;
   }
 
-  // add player with given name to the player list if it’s valid
-  public void addPlayer(String name) {
-    Player p = new Player(name);
-    this.players.add(p);
+  // register players
+  public void register(List<String> names) {
+    for (String name: names) {
+      Player p = new Player(name);
+      this.players.add(p);
+    }
   }
 
   // get the view of player in specific position
@@ -54,7 +66,7 @@ public class GameManager {
 
   // interact with different object, change the status of player (to dead or got key or cross the exit)
   public void interact(Player p, int[] pos) {
-    if (level.checkIfKeyOrExit(pos) != -0) {
+    if (level.checkIfKeyOrExit(pos) != 0) {
       //update key or exit status
     }
     else if (level.checkIfOnAd(pos)) {
@@ -65,7 +77,9 @@ public class GameManager {
 
   // move a player to a position
   public void movePlayer(Player p, int[] pos) {
-    level.movePlayer(p,new Pair<>(pos[0], pos[1]));
+    if (RuleChecker.isValidMove(p, level, pos)) {
+      level.movePlayer(p,new Pair<>(pos[0], pos[1]));
+    }
   }
 
   // change the status of the player
@@ -125,7 +139,7 @@ public class GameManager {
   }
 
   public String checkMoveResult(Player p, int[] dst) {
-    if (p.status == 0) {
+    if (p.status == -1) {
       return "Eject";
     }
     else if (RuleChecker.isValidMove(p, level, dst)) {
@@ -136,7 +150,7 @@ public class GameManager {
         return "Key";
       }
       else {
-        return "Ok";
+        return "OK";
       }
     }
     else {
@@ -144,57 +158,110 @@ public class GameManager {
     }
   }
 
-  public JSONArray checkForMove(List<JSONArray> moves) {
+
+  //Just for Test task
+  public JSONArray checkForMove(List<JSONArray> moves, int moveAmount) {
     JSONArray output = new JSONArray();
-    boolean ifUpdateTurn = true;
-    boolean ifAllPlayersEnd = false;
-    //ii represent which player
+    //ii represent which player's move
     int ii = 0;
-    //yy represent which move, if all move done, end
-    int yy = 0;
-    while (true) {
-      JSONArray turn = new JSONArray();
-      boolean ifEnd = true;
-      for (JSONArray move : moves) {
-        if (move.length() > yy) {
-          ifEnd = false;
+
+    for (int i = 0; i < 2; ++i) {
+      JSONObject playerUpdate = new JSONObject();
+      JSONArray firstUpdate = new JSONArray();
+      firstUpdate.put(players.get(i));
+      playerUpdate.put("type", "player-update");
+      int[] playerPos = new int[2];
+      playerPos[0] = players.get(i).position.getKey();
+      playerPos[1] = players.get(i).position.getValue();
+      int[][] view = getViewOfPlayer(players.get(i), playerPos);
+      playerUpdate.put("layout", view);
+      playerUpdate.put("position", playerPos);
+      playerUpdate.put("objects", this.objectsInView(playerPos));
+      playerUpdate.put("actors", this.actorsInView(playerPos));
+      firstUpdate.put(playerUpdate);
+      output.put(firstUpdate);
+    }
+
+    HashMap<Integer, Integer> moveMap = new HashMap<>();
+    for (int t = 0; t < players.size(); ++t) {
+      moveMap.put(t, 0);
+    }
+
+    for (int zz = 0; zz < moveAmount; ) {
+      while (true) {
+        JSONArray move = new JSONArray();
+        move.put(players.get(ii).name);
+        int moveTurn = moveMap.get(ii);
+        JSONObject actorMove = moves.get(ii).getJSONObject(moveTurn);
+        moveMap.replace(ii, moveTurn+1);
+        move.put(actorMove);
+        int[] dst = new int[2];
+        String result;
+        if (actorMove.get("to") != JSONObject.NULL) {
+          dst[0] = ((JSONArray) actorMove.get("to")).getInt(0);
+          dst[1] = ((JSONArray) actorMove.get("to")).getInt(1);
+          result = this.checkMoveResult(players.get(ii), dst);
+        } else {
+          result = "OK";
+        }
+        move.put(result);
+        output.put(move);
+        System.out.println(Arrays.toString(dst));
+        System.out.println(players.get(ii).name + ":" + result);
+        if (!result.equals("Invalid")) {
+          Pair<Integer, Integer> newPos = new Pair<>(dst[0], dst[1]);
+          players.get(ii).position = newPos;
+          break;
         }
       }
 
-      if (ifEnd) break;
-
-      turn.put(players.get(ii).name);
-      if (ifUpdateTurn) {
+      int amount = 0;
+      while (amount != players.size()) {
+        JSONArray update = new JSONArray();
+        update.put(players.get(amount).name);
         JSONObject playerUpdate = new JSONObject();
         playerUpdate.put("type", "player-update");
         int[] playerPos = new int[2];
-        playerPos[0] = players.get(ii).position.getKey();
-        playerPos[1] = players.get(ii).position.getValue();
-        int[][] view = getViewOfPlayer(players.get(ii), playerPos);
+        playerPos[0] = players.get(amount).position.getKey();
+        playerPos[1] = players.get(amount).position.getValue();
+        int[][] view = getViewOfPlayer(players.get(amount), playerPos);
         playerUpdate.put("layout", view);
         playerUpdate.put("position", playerPos);
         playerUpdate.put("objects", this.objectsInView(playerPos));
         playerUpdate.put("actors", this.actorsInView(playerPos));
-        turn.put(playerUpdate);
+        update.put(playerUpdate);
+        output.put(update);
+        ++amount;
       }
-      else {
-        JSONObject actorMove = moves.get(ii).getJSONObject(yy);
-        turn.put(actorMove);
-        int[] dst = new int[2];
-        dst[0] = ((JSONArray)actorMove.get("to")).getInt(0);
-        dst[1] = ((JSONArray)actorMove.get("to")).getInt(1);
-        turn.put(this.checkMoveResult(players.get(ii),dst));
+      ++ii;
+
+      //represent all players have move once, one turn done
+      if (ii == players.size()) {
+        ++zz;
+        ii = 0;
       }
 
-      ++ii;
-      //represent one turn finish, all players move once
-      if (ii >= players.size()) {
-        ii = 0;
-        yy++;
-        ifUpdateTurn = !ifUpdateTurn;
-      }
-      output.put(turn);
     }
     return output;
+  }
+
+
+  public static void main(String[] args) {
+    Level level = new Level();
+
+
+
+    int[] pos = new int[2];
+    pos[0] = 1; pos[1] = 8;
+    int [][] view = RuleChecker.getPlayerView(pos, level.rooms.get(1));
+    System.out.println(level.rooms.get(1).position);
+
+//    for (int ii = 0; ii < 5; ++ii) {
+//      System.out.println(Arrays.toString(view[ii]));
+//    }
+
+
+    GameManager game = new GameManager(Arrays.asList("JC", "hollis"));
+    game.init();
   }
 }

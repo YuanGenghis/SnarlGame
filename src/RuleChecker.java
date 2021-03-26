@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RuleChecker {
@@ -47,8 +48,7 @@ public class RuleChecker {
         position[0] = p.getPosition().getKey();
         position[1] = p.getPosition().getValue();
         Room room = inWhichRoom(position, level);
-        List<int[]> rev = searchTraversablePoints(position, room);
-        return rev;
+        return searchTraversablePoints(position, room);
     }
 
     // return if the current level is end
@@ -80,39 +80,28 @@ public class RuleChecker {
 
     // search traversable points from a position in a Room
     public static List<int[]> searchTraversablePoints(int[] point, Room room) {
-        int[] origin = new int[2];
-        origin[0] = room.position.getKey();
-        origin[1] = room.position.getValue();
-        int row = point[0] - origin[0];
-        int col = point[1] - origin[1];
-        int rows = room.layout.length;
-        int cols = room.layout[0].length;
         List<int[]> output = new ArrayList<>();
-        int[] p = new int[2];
+        int[][] viewOfPlayer = getPlayerView(point, room);
 
-        if (row - 1 >= 0 && room.layout[row - 1][col] != 'x') {
-            p[0] = row-1;
-            p[1] = col;
-            output.add(p);
+        for (int[] ii : viewOfPlayer) {
+            System.out.println(Arrays.toString(ii));
         }
 
-        if (col - 1 >= 0 && room.layout[row][col - 1] != 'x') {
-            p[0] = row;
-            p[1] = col-1;
-            output.add(p);
+        for (int ii = 0; ii < viewOfPlayer.length; ++ii) {
+            for (int yy = 0; yy < viewOfPlayer[ii].length; ++yy) {
+                if (viewOfPlayer[ii][yy] !=  0) {
+                    int[] p = new int[2];
+                    p[0] = ii + point[0] - 2;
+                    p[1] = yy + point[1] - 2;
+                    output.add(p);
+                }
+            }
         }
 
-        if (col + 1 < cols  && room.layout[row][col + 1] != 0) {
-            p[0] = row;
-            p[1] = col+1;
-            output.add(p);
+        for (int ii = 0; ii < output.size(); ++ii) {
+            System.out.println(Arrays.toString(output.get(ii)));
         }
 
-        if (row + 1 < rows && room.layout[row + 1][col] != 0) {
-            p[0] = row+1;
-            p[1] = col;
-            output.add(p);
-        }
         return output;
     }
 
