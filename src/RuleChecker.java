@@ -18,7 +18,7 @@ public class RuleChecker {
     }
 
     // return the interaction of the Player
-    public String hasInteractionPlayer(Player p, Level level, int[] pos) {
+    public static String hasInteractionPlayer(Player p, Level level, int[] pos) {
         if (!isValidMove(p, level, pos)) {
             return "Invalid Move";
         }

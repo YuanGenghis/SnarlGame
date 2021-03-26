@@ -9,10 +9,10 @@ import javafx.util.Pair;
 public class GameManager {
   List<Player> players;
   Level level;
-  Player curPlayer;
+  int curPlayer;
 
   // construct the GameManager with given parameters
-  public GameManager(List<Player> players, Level level, Player curPlayer) {
+  public GameManager(List<Player> players, Level level, int curPlayer) {
     this.players = players;
     this.level = level;
     this.curPlayer = curPlayer;
@@ -23,13 +23,26 @@ public class GameManager {
     this.players = new ArrayList<>();
     this.level = new Level();
     this.register(names);
-    this.curPlayer = this.players.get(0);
+    this.curPlayer = 0;
+  }
+
+  // register players
+  public void register(List<String> names) {
+    for (String name: names) {
+      if (isValidName(name)) {
+        Player p = new Player(name);
+        this.players.add(p);
+      }
+      else {
+        System.out.println("Player already exist or not valid: " + name);
+      }
+    }
   }
 
   // init the GameManager
   public void init() {
-    for (int ii = 0; ii < players.size(); ++ii) {
-      this.players.get(ii).position = this.level.setPlayer();
+    for (Player player : players) {
+      player.position = this.level.setPlayer();
     }
     this.level.setAds(2);
     level.renderLevel(this.level);
@@ -43,19 +56,6 @@ public class GameManager {
       }
     }
     return true;
-  }
-
-  // register players
-  public void register(List<String> names) {
-    for (String name: names) {
-      if (isValidName(name)) {
-        Player p = new Player(name);
-        this.players.add(p);
-      }
-      else {
-        System.out.println("Player already exist: " + name);
-      }
-    }
   }
 
   // get the view of player in specific position
@@ -72,20 +72,32 @@ public class GameManager {
 
   // interact with different object, change the status of player (to dead or got key or cross the exit)
   public void interact(Player p, int[] pos) {
-    if (level.checkIfKeyOrExit(pos) == 1) {
-      //find key
-      this.level.ifLocked = false;
+    String result = RuleChecker.hasInteractionPlayer(p, this.level, pos);
+    switch (result) {
+      case "Invalid Move":
+        System.out.println(result);
+      case "Adversary":
+        p.status = -1;
+        this.checkAllPlayerStatus();
+        this.nextPlayer();
+      case "Key":
+        this.level.ifLocked = false;
+        this.nextPlayer();
+      case "Exit":
+        if (!this.level.ifLocked) this.win();
+        this.nextPlayer();
+      //represent a valid move
+      case "nothing":
+        this.nextPlayer();
     }
-    if (level.checkIfKeyOrExit(pos) == 2) {
-      //find exit
-      if (!this.level.ifLocked) {
-        this.win();
-      }
+  }
+
+  public void nextPlayer() {
+    if (curPlayer == this.players.size() - 1) {
+      curPlayer = 0;
     }
-    else if (level.checkIfOnAd(pos)) {
-      //player dead, maybe removed
-      p.status = -1;
-      this.checkAllPlayerStatus();
+    else {
+      curPlayer++;
     }
   }
 
@@ -94,6 +106,7 @@ public class GameManager {
     for (Player p: this.players) {
       if (p.status != -1) {
         ifAllDie = false;
+        break;
       }
     }
     if (ifAllDie) this.lost();
@@ -102,6 +115,7 @@ public class GameManager {
   // move a player to a position
   public void movePlayer(Player p, int[] pos) {
     if (RuleChecker.isValidMove(p, level, pos)) {
+      this.interact(p, pos);
       level.movePlayer(p,new Pair<>(pos[0], pos[1]));
     }
   }
@@ -123,6 +137,8 @@ public class GameManager {
     System.exit(1);
   }
 
+
+  //for M7 Test task
   public JSONArray objectsInView(int[] pos) {
     JSONArray objs = new JSONArray();
     if (pos[0] + 2 > this.level.keyPosition[0] && level.keyPosition[0] > pos[0] -2
