@@ -8,22 +8,25 @@ import javafx.util.Pair;
 // represents the GameManager
 public class GameManager {
   List<Player> players;
-  Level level;
   int curPlayer;
+  GameState gameState;
+  Level curLevel;
 
   // construct the GameManager with given parameters
-  public GameManager(List<Player> players, Level level, int curPlayer) {
+  public GameManager(List<Player> players, GameState gameState, int curPlayer) {
     this.players = players;
-    this.level = level;
+    this.gameState = gameState;
     this.curPlayer = curPlayer;
+    this.curLevel = gameState.levels.get(gameState.levelStatus);
   }
 
   //Start a simple one level game
   public GameManager(List<String> names) {
     this.players = new ArrayList<>();
-    this.level = new Level();
     this.register(names);
+    this.gameState = new GameState(this.players);
     this.curPlayer = 0;
+    this.curLevel = this.gameState.levels.get(0);
   }
 
   // register players
@@ -42,10 +45,10 @@ public class GameManager {
   // init the GameManager
   public void init() {
     for (Player player : players) {
-      player.position = this.level.setPlayer();
+      player.position = this.curLevel.setPlayer();
     }
-    this.level.setAds(2);
-    level.renderLevel(this.level);
+    this.curLevel.setAds(2);
+    curLevel.renderLevel(this.curLevel);
   }
 
   // check if the name is valid
@@ -61,8 +64,8 @@ public class GameManager {
   // get the view of player in specific position
   public int[][] getViewOfPlayer(Player p, int[] pos) {
     int[][] view = new int[5][5];
-    Pair<Integer, Integer> position = level.getRoomPosition(pos);
-    for (Room r: level.rooms) {
+    Pair<Integer, Integer> position = curLevel.getRoomPosition(pos);
+    for (Room r: curLevel.rooms) {
       if (position == r.position) {
         view = RuleChecker.getPlayerView(pos, r);
       }
@@ -72,7 +75,7 @@ public class GameManager {
 
   // interact with different object, change the status of player (to dead or got key or cross the exit)
   public void interact(Player p, int[] pos) {
-    String result = RuleChecker.hasInteractionPlayer(p, this.level, pos);
+    String result = RuleChecker.hasInteractionPlayer(p, this.curLevel, pos);
     switch (result) {
       case "Invalid Move":
         System.out.println(result);
@@ -81,10 +84,10 @@ public class GameManager {
         this.checkAllPlayerStatus();
         this.nextPlayer();
       case "Key":
-        this.level.ifLocked = false;
+        this.curLevel.ifLocked = false;
         this.nextPlayer();
       case "Exit":
-        if (!this.level.ifLocked) this.win();
+        if (!this.curLevel.ifLocked) this.win();
         this.nextPlayer();
       //represent a valid move
       case "nothing":
@@ -114,9 +117,9 @@ public class GameManager {
 
   // move a player to a position
   public void movePlayer(Player p, int[] pos) {
-    if (RuleChecker.isValidMove(p, level, pos)) {
+    if (RuleChecker.isValidMove(p, curLevel, pos)) {
       this.interact(p, pos);
-      level.movePlayer(p,new Pair<>(pos[0], pos[1]));
+      curLevel.movePlayer(p,new Pair<>(pos[0], pos[1]));
     }
   }
 
@@ -141,19 +144,19 @@ public class GameManager {
   //for M7 Test task
   public JSONArray objectsInView(int[] pos) {
     JSONArray objs = new JSONArray();
-    if (pos[0] + 2 > this.level.keyPosition[0] && level.keyPosition[0] > pos[0] -2
-            && pos[1] + 2 > level.keyPosition[1] && level.keyPosition[1] > pos[1] - 2) {
+    if (pos[0] + 2 > this.curLevel.keyPosition[0] && curLevel.keyPosition[0] > pos[0] -2
+            && pos[1] + 2 > curLevel.keyPosition[1] && curLevel.keyPosition[1] > pos[1] - 2) {
       JSONObject obj = new JSONObject();
       obj.put("type", "key");
-      obj.put("position", level.keyPosition);
+      obj.put("position", curLevel.keyPosition);
       objs.put(obj);
     }
 
-    if (pos[0] + 2 > level.exitPosition[0] && level.exitPosition[0] > pos[0] -2
-            && pos[1] + 2 > level.exitPosition[1] && level.exitPosition[1] > pos[1] - 2) {
+    if (pos[0] + 2 > curLevel.exitPosition[0] && curLevel.exitPosition[0] > pos[0] -2
+            && pos[1] + 2 > curLevel.exitPosition[1] && curLevel.exitPosition[1] > pos[1] - 2) {
       JSONObject obj = new JSONObject();
       obj.put("type", "exit");
-      obj.put("position", level.exitPosition);
+      obj.put("position", curLevel.exitPosition);
       objs.put(obj);
     }
 
@@ -162,10 +165,10 @@ public class GameManager {
 
   public JSONArray actorsInView(int[] pos) {
     JSONArray actors = new JSONArray();
-    for (int ii = 0; ii < level.ads.size(); ++ii) {
+    for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
       int[] adPos = new int[2];
-      adPos[0] = level.ads.get(ii).getPosition().getKey();
-      adPos[1] = level.ads.get(ii).getPosition().getValue();
+      adPos[0] = curLevel.ads.get(ii).getPosition().getKey();
+      adPos[1] = curLevel.ads.get(ii).getPosition().getValue();
       if (pos[0] + 2 > adPos[0] && adPos[0] > pos[0] - 2
               && pos[1] + 2 > adPos[1] && adPos[1] > pos[1] - 2) {
         JSONObject actor = new JSONObject();
@@ -182,11 +185,11 @@ public class GameManager {
     if (p.status == -1) {
       return "Eject";
     }
-    else if (RuleChecker.isValidMove(p, level, dst)) {
-      if (dst[0] == level.exitPosition[0] && dst[1] == level.exitPosition[1]) {
+    else if (RuleChecker.isValidMove(p, curLevel, dst)) {
+      if (dst[0] == curLevel.exitPosition[0] && dst[1] == curLevel.exitPosition[1]) {
         return "Exit";
       }
-      else if (dst[0] == level.keyPosition[0] && dst[1] == level.keyPosition[1]) {
+      else if (dst[0] == curLevel.keyPosition[0] && dst[1] == curLevel.keyPosition[1]) {
         return "Key";
       }
       else {
