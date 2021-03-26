@@ -23,19 +23,20 @@ public class GameManager {
     this.players = new ArrayList<>();
     this.level = new Level();
     this.register(names);
+    this.curPlayer = this.players.get(0);
   }
 
   // init the GameManager
   public void init() {
-    for (Player p: players) {
-      this.level.setPlayer();
+    for (int ii = 0; ii < players.size(); ++ii) {
+      this.players.get(ii).position = this.level.setPlayer();
     }
     this.level.setAds(2);
     level.renderLevel(this.level);
   }
 
   // check if the name is valid
-  public boolean isValidName(List<Player> players, String name) {
+  public boolean isValidName(String name) {
     for (Player p: players) {
       if (p.name.equals(name)) {
         return false;
@@ -47,8 +48,13 @@ public class GameManager {
   // register players
   public void register(List<String> names) {
     for (String name: names) {
-      Player p = new Player(name);
-      this.players.add(p);
+      if (isValidName(name)) {
+        Player p = new Player(name);
+        this.players.add(p);
+      }
+      else {
+        System.out.println("Player already exist: " + name);
+      }
     }
   }
 
@@ -66,13 +72,31 @@ public class GameManager {
 
   // interact with different object, change the status of player (to dead or got key or cross the exit)
   public void interact(Player p, int[] pos) {
-    if (level.checkIfKeyOrExit(pos) != 0) {
-      //update key or exit status
+    if (level.checkIfKeyOrExit(pos) == 1) {
+      //find key
+      this.level.ifLocked = false;
+    }
+    if (level.checkIfKeyOrExit(pos) == 2) {
+      //find exit
+      if (!this.level.ifLocked) {
+        this.win();
+      }
     }
     else if (level.checkIfOnAd(pos)) {
       //player dead, maybe removed
       p.status = -1;
+      this.checkAllPlayerStatus();
     }
+  }
+
+  public void checkAllPlayerStatus() {
+    boolean ifAllDie = true;
+    for (Player p: this.players) {
+      if (p.status != -1) {
+        ifAllDie = false;
+      }
+    }
+    if (ifAllDie) this.lost();
   }
 
   // move a player to a position
@@ -247,19 +271,6 @@ public class GameManager {
 
 
   public static void main(String[] args) {
-    Level level = new Level();
-
-
-
-    int[] pos = new int[2];
-    pos[0] = 1; pos[1] = 8;
-    int [][] view = RuleChecker.getPlayerView(pos, level.rooms.get(1));
-    System.out.println(level.rooms.get(1).position);
-
-//    for (int ii = 0; ii < 5; ++ii) {
-//      System.out.println(Arrays.toString(view[ii]));
-//    }
-
 
     GameManager game = new GameManager(Arrays.asList("JC", "hollis"));
     game.init();
