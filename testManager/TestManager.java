@@ -84,9 +84,9 @@ public class TestManager {
     output.put(stateObj);
 
 
-
     GameManager gameManager = new GameManager(players, level, players.get(0));
-    output.put(gameManager.checkForMove(moves));
+    JSONArray moveResults = gameManager.checkForMove(moves, natural);
+    output.put(moveResults);
     return output;
 
   }
