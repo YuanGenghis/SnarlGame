@@ -1,0 +1,66 @@
+[
+  [ "dio", "ferd" ],
+  {
+    "type": "level",
+    "rooms": [
+      {
+        "type": "room",
+        "origin": [ 2, 2 ],
+        "bounds": { "rows": 5, "columns": 5 },
+        "layout": [
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 2 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ]
+      },
+      {
+        "type": "room",
+        "origin": [ 8, 8 ],
+        "bounds": { "rows": 5, "columns": 5 },
+        "layout": [
+          [ 0, 0, 2, 0, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ]
+      }
+    ],
+    "hallways": [
+      {
+        "type": "hallway",
+        "from": [ 4, 6 ],
+        "to": [ 8, 10 ],
+        "waypoints": [ [ 4, 10 ] ]
+      }
+    ],
+    "objects": [
+      { "type": "exit", "position": [ 4, 4 ] },
+      { "type": "key", "position": [ 10, 10 ] }
+    ]
+  },
+  5,
+  [ [ 4, 3 ], [ 11, 10 ], [ 9, 10 ] ],
+  [
+    [
+      { "type": "move", "to": [ 4, 4 ] },
+      { "type": "move", "to": [ 4, 6 ] },
+      { "type": "move", "to": [ 4, 8 ] },
+      { "type": "move", "to": [ 4, 10 ] },
+      { "type": "move", "to": [ 4, 12 ] },
+      { "type": "move", "to": [ 6, 10 ] },
+      { "type": "move", "to": [ 8, 10 ] }
+    ],
+    [
+      { "type": "move", "to": [ 12, 10 ] },
+      { "type": "move", "to": [ 10, 10 ] },
+      { "type": "move", "to": null },
+      { "type": "move", "to": [ 11, 11 ] },
+      { "type": "move", "to": [ 9, 11 ] },
+      { "type": "move", "to": [ 9, 10 ] },
+      { "type": "move", "to": [ 7, 10 ] }
+    ]
+  ]
+]

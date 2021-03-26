@@ -17,6 +17,7 @@ public class Player implements User{
   public Player(String name, Pair<Integer, Integer> position) {
     this.name = name;
     this.position = position;
+    this.status = 1;
   }
   // construct the Player
   public Player(Pair<Integer, Integer> position, int status) {

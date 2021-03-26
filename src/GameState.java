@@ -1,3 +1,5 @@
+import com.sun.javafx.css.Rule;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -206,6 +208,19 @@ public class GameState {
 
   public static void main(String[] args) {
     Level level = new Level();
+
+
+
+    int[] pos = new int[2];
+    pos[0] = 1; pos[1] = 8;
+    int [][] view = RuleChecker.getPlayerView(pos, level.rooms.get(1));
+    System.out.println(level.rooms.get(1).position);
+
+    for (int ii = 0; ii < 5; ++ii) {
+      System.out.println(Arrays.toString(view[ii]));
+    }
+
+
     GameState game = new GameState(2, level, 2);
 //    level.movePlayer(game.players.get(0), new Pair<>(3,3));
 //    level.renderLevel(level);
