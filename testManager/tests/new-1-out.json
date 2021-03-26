@@ -1,0 +1,439 @@
+[
+  {
+    "type": "state",
+    "level": {
+      "type": "level",
+      "rooms": [
+        {
+          "type": "room",
+          "origin": [ 2, 2 ],
+          "bounds": { "rows": 5, "columns": 5 },
+          "layout": [
+            [ 0, 0, 0, 0, 0 ],
+            [ 0, 1, 1, 1, 0 ],
+            [ 0, 1, 1, 1, 2 ],
+            [ 0, 1, 1, 1, 0 ],
+            [ 0, 0, 0, 0, 0 ]
+          ]
+        },
+        {
+          "type": "room",
+          "origin": [ 8, 8 ],
+          "bounds": { "rows": 5, "columns": 5 },
+          "layout": [
+            [ 0, 0, 2, 0, 0 ],
+            [ 0, 1, 1, 1, 0 ],
+            [ 0, 1, 1, 1, 0 ],
+            [ 0, 1, 1, 1, 0 ],
+            [ 0, 0, 0, 0, 0 ]
+          ]
+        }
+      ],
+      "hallways": [
+        {
+          "type": "hallway",
+          "from": [ 4, 6 ],
+          "to": [ 8, 10 ],
+          "waypoints": [ [ 4, 10 ] ]
+        }
+      ],
+      "objects": [
+        { "type": "exit", "position": [ 4, 4 ] }
+      ]
+    },
+    "players": [
+      { "type": "player", "name": "dio", "position": [ 6, 10 ] }
+    ],
+    "adversaries": [
+      { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+    ],
+    "exit-locked": false
+  },
+  [
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 4, 3 ],
+        "layout": [
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 0, 1, 1, 1 ],
+          [ 0, 0, 1, 1, 1 ],
+          [ 0, 0, 1, 1, 1 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [
+          { "type": "exit", "position": [ 4, 4 ] }
+        ],
+        "actors": []
+      }
+    ],
+    [
+      "ferd",
+      {
+        "type": "player-update",
+        "position": [ 11, 10 ],
+        "layout": [
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [
+          { "type": "key", "position": [ 10, 10 ] }
+        ],
+        "actors": [
+          { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+        ]
+      }
+    ],
+    [ "dio", { "type": "move", "to": [ 4, 4 ] }, "OK" ],
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 4, 4 ],
+        "layout": [
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 2 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [
+          { "type": "exit", "position": [ 4, 4 ] }
+        ],
+        "actors": []
+      }
+    ],
+    [
+      "ferd",
+      {
+        "type": "player-update",
+        "position": [ 11, 10 ],
+        "layout": [
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [
+          { "type": "key", "position": [ 10, 10 ] }
+        ],
+        "actors": [
+          { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+        ]
+      }
+    ],
+    [ "ferd", { "type": "move", "to": [ 12, 10 ] }, "Invalid" ],
+    [ "ferd", { "type": "move", "to": [ 10, 10 ] }, "Key" ],
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 4, 4 ],
+        "layout": [
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 2 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [
+          { "type": "exit", "position": [ 4, 4 ] }
+        ],
+        "actors": []
+      }
+    ],
+    [
+      "ferd",
+      {
+        "type": "player-update",
+        "position": [ 10, 10 ],
+        "layout": [
+          [ 0, 0, 2, 0, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": [
+          { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+        ]
+      }
+    ],
+    [ "dio", { "type": "move", "to": [ 4, 6 ] }, "OK" ],
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 4, 6 ],
+        "layout": [
+          [ 0, 0, 0, 0, 0 ],
+          [ 1, 1, 0, 0, 0 ],
+          [ 1, 1, 2, 1, 1 ],
+          [ 1, 1, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [
+          { "type": "exit", "position": [ 4, 4 ] }
+        ],
+        "actors": []
+      }
+    ],
+    [
+      "ferd",
+      {
+        "type": "player-update",
+        "position": [ 10, 10 ],
+        "layout": [
+          [ 0, 0, 2, 0, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": [
+          { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+        ]
+      }
+    ],
+    [ "ferd", { "type": "move", "to": null }, "OK" ],
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 4, 6 ],
+        "layout": [
+          [ 0, 0, 0, 0, 0 ],
+          [ 1, 1, 0, 0, 0 ],
+          [ 1, 1, 2, 1, 1 ],
+          [ 1, 1, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [
+          {
+            "type": "exit",
+            "position": [ 4, 4 ]
+          }
+        ],
+        "actors": []
+      }
+    ],
+    [
+      "ferd",
+      {
+        "type": "player-update",
+        "position": [ 10, 10 ],
+        "layout": [
+          [ 0, 0, 2, 0, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": [
+          { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+        ]
+      }
+    ],
+    [ "dio", { "type": "move", "to": [ 4, 8 ] }, "OK" ],
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 4, 8 ],
+        "layout": [
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ],
+          [ 2, 1, 1, 1, 1 ],
+          [ 0, 0, 0, 0, 1 ],
+          [ 0, 0, 0, 0, 1 ]
+        ],
+        "objects": [],
+        "actors": []
+      }
+    ],
+    [
+      "ferd",
+      {
+        "type": "player-update",
+        "position": [ 10, 10 ],
+        "layout": [
+          [ 0, 0, 2, 0, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 1, 1, 1, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": [
+          { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+        ]
+      }
+    ],
+    [ "ferd", { "type": "move", "to": [ 11, 11 ] }, "OK" ],
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 4, 8 ],
+        "layout": [
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ],
+          [ 2, 1, 1, 1, 1 ],
+          [ 0, 0, 0, 0, 1 ],
+          [ 0, 0, 0, 0, 1 ]
+        ],
+        "objects": [],
+        "actors": []
+      }
+    ],
+    [
+      "ferd",
+      {
+        "type": "player-update",
+        "position": [ 11, 11 ],
+        "layout": [
+          [ 1, 1, 1, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": [
+          { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+        ]
+      }
+    ],
+    [ "dio", { "type": "move", "to": [ 4, 10 ] }, "OK" ],
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 4, 10 ],
+        "layout": [
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ],
+          [ 0, 0, 1, 0, 0 ],
+          [ 0, 0, 1, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": []
+      }
+    ],
+    [
+      "ferd",
+      {
+        "type": "player-update",
+        "position": [ 11, 11 ],
+        "layout": [
+          [ 1, 1, 1, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": [
+          { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+        ]
+      }
+    ],
+    [ "ferd", { "type": "move", "to": [ 9, 11 ] }, "OK" ],
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 4, 10 ],
+        "layout": [
+          [ 0, 0, 0, 0, 0 ],
+          [ 0, 0, 0, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ],
+          [ 0, 0, 1, 0, 0 ],
+          [ 0, 0, 1, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": []
+      }
+    ],
+    [
+      "ferd",
+      {
+        "type": "player-update",
+        "position": [ 9, 11 ],
+        "layout": [
+          [ 0, 1, 0, 0, 0 ],
+          [ 0, 2, 0, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": [
+          { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+        ]
+      }
+    ],
+    [ "dio", { "type": "move", "to": [ 4, 12 ] }, "Invalid" ],
+    [ "dio", { "type": "move", "to": [ 6, 10 ] }, "OK" ],
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 6, 10 ],
+        "layout": [
+          [ 1, 1, 1, 0, 0 ],
+          [ 0, 0, 1, 0, 0 ],
+          [ 0, 0, 1, 0, 0 ],
+          [ 0, 0, 1, 0, 0 ],
+          [ 0, 0, 2, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": []
+      }
+    ],
+    [
+      "ferd",
+      {
+        "type": "player-update",
+        "position": [ 9, 11 ],
+        "layout": [
+          [ 0, 1, 0, 0, 0 ],
+          [ 0, 2, 0, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ],
+          [ 1, 1, 1, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": [
+          { "type": "ghost", "name": "ghost1", "position": [ 9, 10 ] }
+        ]
+      }
+    ],
+    [ "ferd", { "type": "move", "to": [ 9, 10 ] }, "Eject" ],
+    [
+      "dio",
+      {
+        "type": "player-update",
+        "position": [ 6, 10 ],
+        "layout": [
+          [ 1, 1, 1, 0, 0 ],
+          [ 0, 0, 1, 0, 0 ],
+          [ 0, 0, 1, 0, 0 ],
+          [ 0, 0, 1, 0, 0 ],
+          [ 0, 0, 2, 0, 0 ]
+        ],
+        "objects": [],
+        "actors": []
+      }
+    ]
+  ]
+]

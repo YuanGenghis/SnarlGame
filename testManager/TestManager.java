@@ -8,8 +8,16 @@ import javafx.util.Pair;
 
 public class TestManager {
 
-  public static GameManager managerBuilder(JSONArray ja) {
+  public static JSONArray managerBuilder(JSONArray ja) {
+    JSONArray output = new JSONArray();
+
+    JSONArray moveList = ja.getJSONArray(4);
+    List<JSONArray> moves = new ArrayList<>();
+    for (int ii = 0; ii < moveList.length(); ++ii) {
+      moves.add(moveList.getJSONArray(ii));
+    }
     JSONArray nameList = (JSONArray) ja.get(0);
+
     List<String> names = new ArrayList<>();
     for (int ii = 0; ii < nameList.length(); ++ii) {
       names.add(nameList.getString(ii));
@@ -24,7 +32,7 @@ public class TestManager {
       p[1] = ((JSONArray)pointList.get(ii)).getInt(1);
       points.add(p);
     }
-    JSONArray moveList = ja.getJSONArray(4);
+
     List<Player> players = new ArrayList<>();
     for (int ii = 0; ii < names.size(); ++ii) {
       Pair<Integer, Integer> position = new Pair<>(points.get(ii)[0], points.get(ii)[1]);
@@ -32,8 +40,54 @@ public class TestManager {
       players.add(p);
     }
 
+    List<int[]> adPositions = new ArrayList<>();
+    int playerAmount = nameList.length();
+    for (int ii = playerAmount; ii < points.size(); ++ii) {
+      int[] p = new int[2];
+      p[0] = ((JSONArray) pointList.get((ii))).getInt(0);
+      p[1] = ((JSONArray) pointList.get((ii))).getInt(1);
+      adPositions.add(p);
+    }
+    for (int[] position: adPositions) {
+      Pair<Integer, Integer> p = new Pair<>(position[0], position[1]);
+      Adversary ad = new Adversary(p);
+      level.addAd(ad);
+    }
+
+
+    JSONObject levelObj = ja.getJSONObject(1);
+    JSONObject stateObj = new JSONObject();
+    stateObj.put("type", "state");
+    stateObj.put("level", levelObj);
+    //for player
+    JSONArray actorPositionList = new JSONArray();
+    //for adversary
+    JSONArray actorPositionList2 = new JSONArray();
+    for (int ii = 0; ii < nameList.length(); ++ii) {
+      JSONObject actor = new JSONObject();
+      actor.put("type", "player");
+      actor.put("name", names.get(ii));
+      actor.put("position", points.get(ii));
+      actorPositionList.put(actor);
+    }
+    stateObj.put("players", actorPositionList);
+    for (int ii = nameList.length(); ii < pointList.length(); ++ii) {
+      JSONObject actor = new JSONObject();
+      actor.put("type", "ghost");
+      actor.put("name", "ghost"+ii);
+      actor.put("position", pointList.get(ii));
+      actorPositionList2.put(actor);
+    }
+    stateObj.put("adversaries", actorPositionList2);
+    stateObj.put("exit-locked", true);
+
+    output.put(stateObj);
+
+
+
     GameManager gameManager = new GameManager(players, level, players.get(0));
-    return gameManager;
+    output.put(gameManager.checkForMove(moves));
+    return output;
 
   }
 
@@ -54,10 +108,8 @@ public class TestManager {
 
     JSONArray ja = (JSONArray) jt.nextValue();
 
-    GameManager gameManager = managerBuilder(ja);
 
-//    //check if the move valid
-//    JSONArray output = state.checkForPoint(name, point, jo);
-//    System.out.println(output);
+    System.out.println(managerBuilder(ja));
+
   }
 }

@@ -1,0 +1,73 @@
+[
+  {
+    "exit-locked": true,
+    "players": [
+      { "name": "ferd", "type": "player", "position": [ 4, 3 ] },
+      { "name": "joe", "type": "player", "position": [ 12, 8 ] }
+    ],
+    "type": "state",
+    "adversaries": [
+      { "name": "zombie1", "type": "zombie", "position": [ 7, 15 ] }
+    ],
+    "level": {
+      "type" : "level",
+      "rooms": [
+        {
+          "origin": [ 3, 1 ],
+          "layout": [
+            [ 0, 0, 2, 0 ],
+            [ 0, 1, 1, 0 ],
+            [ 0, 1, 1, 0 ],
+            [ 0, 2, 0, 0 ]
+          ],
+          "type": "room",
+          "bounds": { "rows": 4, "columns": 4 }
+        },
+        {
+          "origin": [ 10, 5 ],
+          "layout": [
+            [ 0, 0, 0, 0, 0 ],
+            [ 0, 1, 1, 1, 0 ],
+            [ 2, 1, 1, 1, 0 ],
+            [ 0, 1, 1, 1, 0 ],
+            [ 0, 0, 0, 0, 0 ]
+          ],
+          "type": "room",
+          "bounds": { "rows": 5, "columns": 5 }
+        },
+        {
+          "origin": [ 4, 14 ],
+          "layout": [
+            [ 0, 0, 2, 0, 0 ],
+            [ 0, 1, 1, 1, 0 ],
+            [ 0, 1, 1, 1, 0 ],
+            [ 0, 1, 1, 1, 0 ],
+            [ 0, 0, 0, 0, 0 ]
+          ],
+          "type": "room",
+          "bounds": { "rows": 5, "columns": 5 }
+        }
+      ],
+      "objects": [
+        { "type": "key", "position": [ 4, 2 ] },
+        { "type": "exit", "position": [ 7, 17 ] }
+      ],
+      "hallways": [
+        {
+          "waypoints": [ [ 1, 3 ], [ 1, 16 ] ],
+          "to": [ 4, 16 ],
+          "from": [ 3, 3 ],
+          "type": "hallway"
+        },
+        {
+          "waypoints": [ [ 12, 2 ] ],
+          "to": [ 12, 5 ],
+          "from": [ 6, 2 ],
+          "type": "hallway"
+        }
+      ]
+    }
+  },
+  "ferd",
+  [ 4, 2 ]
+]

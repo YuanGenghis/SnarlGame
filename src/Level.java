@@ -117,6 +117,10 @@ public class Level extends JPanel{
     this.setExit();
   }
 
+  public void addAd(Adversary ad) {
+    this.ads.add(ad);
+  }
+
   // set Adversary by amount
   public void setAds(int amount) {
 //    for (int ii = 0; ii < this.ads.size(); ++ii) {

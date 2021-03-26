@@ -6,7 +6,7 @@ public class RuleChecker {
     int gameStatus = 0; // 0 represents ongoing, 1 represents user wins, -1 represents lost
 
     // is the move valid for the Player
-    public boolean isValidMove(Player p, Level level, int[] pos) {
+    public static boolean isValidMove(Player p, Level level, int[] pos) {
         List<int[]> validPoints = traversablePoints(p, level);
         for (int[] point: validPoints) {
             if (point[0] == pos[0] && point[1] == pos[1]) {
@@ -42,7 +42,7 @@ public class RuleChecker {
     }
 
     // return all the traversable points of the given Player
-    List<int[]> traversablePoints(Player p, Level level) {
+    static List<int[]> traversablePoints(Player p, Level level) {
         int[] position = new int[2];
         position[0] = p.getPosition().getKey();
         position[1] = p.getPosition().getValue();
@@ -62,7 +62,7 @@ public class RuleChecker {
     }
 
     // find which room the given position in
-    public Room inWhichRoom(int[] position, Level level) {
+    public static Room inWhichRoom(int[] position, Level level) {
         for (Room room: level.rooms) {
             int rows = room.layout.length;
             int cols = room.layout[0].length;
@@ -114,5 +114,31 @@ public class RuleChecker {
             output.add(p);
         }
         return output;
+    }
+
+    public static int[][] getPlayerView(int[] pos, Room r) {
+        int[][] view = new int[5][5];
+
+        int rows = 0;
+        for (int ii = 2; ii > -3; --ii) {
+            int cols = 0;
+            for (int yy = 2; yy > -3; --yy) {
+                if (pos[0] - ii < r.position.getKey()
+                        || pos[1] - yy < r.position.getValue()
+                        || pos[0] - ii >= r.position.getKey() + r.layout.length
+                        || pos[1] - yy >= r.position.getValue() + r.layout[0].length) {
+                    view[rows][cols] = 0;
+                }
+                else if (r.layout[(pos[0] - ii) - r.position.getKey()]
+                        [(pos[1] - yy) - r.position.getValue()] == 'x') {
+                    view[rows][cols] = 0;
+                } else {
+                    view[rows][cols] = 1;
+                }
+                ++cols;
+            }
+            ++rows;
+        }
+        return view;
     }
 }
