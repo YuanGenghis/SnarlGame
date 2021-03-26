@@ -163,6 +163,7 @@ public class GameManager {
     return objs;
   }
 
+  //for M7 Test task
   public JSONArray actorsInView(int[] pos) {
     JSONArray actors = new JSONArray();
     for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
@@ -181,6 +182,7 @@ public class GameManager {
     return actors;
   }
 
+  //for M7 Test task
   public String checkMoveResult(Player p, int[] dst) {
     if (p.status == -1) {
       return "Eject";
@@ -293,5 +295,6 @@ public class GameManager {
 
     GameManager game = new GameManager(Arrays.asList("JC", "hollis"));
     game.init();
+
   }
 }
