@@ -1,6 +1,8 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -15,7 +17,7 @@ import java.awt.*;
 import javafx.util.Pair;
 
 // represents a Level of the game
-public class Level extends JPanel{
+public class Level extends JPanel implements KeyListener {
   List<Room> rooms;
   List<Hallway> hallways;
   List<Adversary> ads;
@@ -516,11 +518,42 @@ public class Level extends JPanel{
       public void run() {
         JFrame frame = new JFrame("Game");
         frame.add(level);
+        frame.addKeyListener(level);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        frame.pack();
         frame.setVisible(true);
         frame.setSize(2000,2000);
       }
     });
+  }
+
+  @Override
+  public void keyTyped(KeyEvent e) {
+
+  }
+
+  @Override
+  public void keyPressed(KeyEvent e) {
+    int keyCode = e.getKeyCode();
+    switch( keyCode ) {
+      case KeyEvent.VK_UP:
+        // handle up
+        System.out.println(1);
+        break;
+      case KeyEvent.VK_DOWN:
+        // handle down
+        break;
+      case KeyEvent.VK_LEFT:
+        // handle left
+        break;
+      case KeyEvent.VK_RIGHT :
+        // handle right
+        break;
+    }
+  }
+
+  @Override
+  public void keyReleased(KeyEvent e) {
+
   }
 }
