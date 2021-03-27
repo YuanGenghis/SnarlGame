@@ -20,6 +20,13 @@ public class GameManager {
     this.curLevel = gameState.levels.get(gameState.levelStatus);
   }
 
+  //constructor for test task
+  public GameManager(List<Player> players, Level curLevel, int curPlayer) {
+    this.players = players;
+    this.curPlayer = curPlayer;
+    this.curLevel = curLevel;
+  }
+
   //Start a simple one level game
   public GameManager(List<String> names) {
     this.players = new ArrayList<>();
@@ -64,11 +71,18 @@ public class GameManager {
   // get the view of player in specific position
   public int[][] getViewOfPlayer(Player p, int[] pos) {
     int[][] view = new int[5][5];
+    boolean ifInHW = true;
     Pair<Integer, Integer> position = curLevel.getRoomPosition(pos);
     for (Room r: curLevel.rooms) {
       if (position == r.position) {
-        view = RuleChecker.getPlayerView(pos, r);
+        ifInHW = false;
+        List<int[]> hallwaysPoints = RuleChecker.findHallwayPoints(curLevel.hallways);
+        view = RuleChecker.getPlayerView(pos, r, hallwaysPoints, curLevel.rooms);
       }
+    }
+    if (ifInHW) {
+      List<int[]> hallwaysPoints = RuleChecker.findHallwayPoints(curLevel.hallways);
+      view = RuleChecker.getPlayerView(pos, null, hallwaysPoints, curLevel.rooms);
     }
     return view;
   }
@@ -144,19 +158,22 @@ public class GameManager {
   //for M7 Test task
   public JSONArray objectsInView(int[] pos) {
     JSONArray objs = new JSONArray();
-    if (pos[0] + 2 > this.curLevel.keyPosition[0] && curLevel.keyPosition[0] > pos[0] -2
-            && pos[1] + 2 > curLevel.keyPosition[1] && curLevel.keyPosition[1] > pos[1] - 2) {
+    int[] keyPos = this.curLevel.keyPosition;
+    if (pos[0] + 2 >= keyPos[0] && keyPos[0] >= pos[0] -2
+            && pos[1] + 2 >= keyPos[1] && keyPos[1] >= pos[1] - 2
+            && curLevel.ifLocked) {
       JSONObject obj = new JSONObject();
       obj.put("type", "key");
-      obj.put("position", curLevel.keyPosition);
+      obj.put("position", keyPos);
       objs.put(obj);
     }
 
-    if (pos[0] + 2 > curLevel.exitPosition[0] && curLevel.exitPosition[0] > pos[0] -2
-            && pos[1] + 2 > curLevel.exitPosition[1] && curLevel.exitPosition[1] > pos[1] - 2) {
+    int[] exitPos = this.curLevel.exitPosition;
+    if (pos[0] + 2 >= exitPos[0] && exitPos[0] >= pos[0] -2
+            && pos[1] + 2 >= exitPos[1] && exitPos[1] >= pos[1] - 2) {
       JSONObject obj = new JSONObject();
       obj.put("type", "exit");
-      obj.put("position", curLevel.exitPosition);
+      obj.put("position", exitPos);
       objs.put(obj);
     }
 
@@ -166,15 +183,17 @@ public class GameManager {
   //for M7 Test task
   public JSONArray actorsInView(int[] pos) {
     JSONArray actors = new JSONArray();
+    System.out.println(Arrays.toString(pos));
     for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
       int[] adPos = new int[2];
       adPos[0] = curLevel.ads.get(ii).getPosition().getKey();
       adPos[1] = curLevel.ads.get(ii).getPosition().getValue();
-      if (pos[0] + 2 > adPos[0] && adPos[0] > pos[0] - 2
-              && pos[1] + 2 > adPos[1] && adPos[1] > pos[1] - 2) {
+      if (pos[0] + 2 >= adPos[0] && adPos[0] >= pos[0] - 2
+              && pos[1] + 2 >= adPos[1] && adPos[1] >= pos[1] - 2) {
+        System.out.println("inside");
         JSONObject actor = new JSONObject();
         actor.put("type", "ghost");
-        actor.put("name", "ghost" + ii);
+        actor.put("name", "ghost" + (ii + 1));
         actor.put("position", adPos);
         actors.put(actor);
       }
@@ -189,10 +208,19 @@ public class GameManager {
     }
     else if (RuleChecker.isValidMove(p, curLevel, dst)) {
       if (dst[0] == curLevel.exitPosition[0] && dst[1] == curLevel.exitPosition[1]) {
-        return "Exit";
+        if (curLevel.ifLocked) {
+          return "OK";
+        } else {
+          return "Exit";
+        }
       }
       else if (dst[0] == curLevel.keyPosition[0] && dst[1] == curLevel.keyPosition[1]) {
-        return "Key";
+        if (curLevel.ifLocked) {
+          curLevel.ifLocked = false;
+          return "Key";
+        } else {
+          return "OK";
+        }
       }
       else {
         return "OK";
@@ -206,14 +234,15 @@ public class GameManager {
 
   //Just for Test task
   public JSONArray checkForMove(List<JSONArray> moves, int moveAmount) {
+    System.out.println(curLevel.ifLocked);
     JSONArray output = new JSONArray();
     //ii represent which player's move
     int ii = 0;
-
+    //first update
     for (int i = 0; i < 2; ++i) {
       JSONObject playerUpdate = new JSONObject();
       JSONArray firstUpdate = new JSONArray();
-      firstUpdate.put(players.get(i));
+      firstUpdate.put(players.get(i).name);
       playerUpdate.put("type", "player-update");
       int[] playerPos = new int[2];
       playerPos[0] = players.get(i).position.getKey();
@@ -232,6 +261,7 @@ public class GameManager {
       moveMap.put(t, 0);
     }
 
+    //move-turn
     for (int zz = 0; zz < moveAmount; ) {
       while (true) {
         JSONArray move = new JSONArray();
@@ -248,11 +278,15 @@ public class GameManager {
           result = this.checkMoveResult(players.get(ii), dst);
         } else {
           result = "OK";
+          move.put(result);
+          output.put(move);
+          break;
         }
         move.put(result);
         output.put(move);
-        System.out.println(Arrays.toString(dst));
-        System.out.println(players.get(ii).name + ":" + result);
+//        System.out.println("pos: " + players.get(ii).position);
+//        System.out.println("dst: " + Arrays.toString(dst));
+//        System.out.println(players.get(ii).name + ": " + result);
         if (!result.equals("Invalid")) {
           Pair<Integer, Integer> newPos = new Pair<>(dst[0], dst[1]);
           players.get(ii).position = newPos;
@@ -260,6 +294,7 @@ public class GameManager {
         }
       }
 
+      //update turn
       int amount = 0;
       while (amount != players.size()) {
         JSONArray update = new JSONArray();

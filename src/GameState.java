@@ -221,7 +221,8 @@ public class GameState {
 
     int[] pos = new int[2];
     pos[0] = 1; pos[1] = 8;
-    int [][] view = RuleChecker.getPlayerView(pos, level.rooms.get(1));
+    int [][] view = RuleChecker.getPlayerView(pos, level.rooms.get(1),
+            RuleChecker.findHallwayPoints(level.hallways), level.rooms);
     System.out.println(level.rooms.get(1).position);
 
     for (int ii = 0; ii < 5; ++ii) {

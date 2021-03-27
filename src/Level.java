@@ -111,6 +111,7 @@ public class Level extends JPanel{
     this.rooms = rooms;
     this.hallways = hallways;
     this.ads = new ArrayList<>();
+    this.ifLocked = true;
   }
 
   // init the level
@@ -283,8 +284,8 @@ public class Level extends JPanel{
       int positionX = room.position.getKey();
       int positionY = room.position.getValue();
 
-      if (positionY <= point[1] && point[1] <= positionY + rows) {
-        if (positionX <= point[0] && point[0] <= positionX + cols) {
+      if (positionY <= point[1] && point[1] < positionY + rows) {
+        if (positionX <= point[0] && point[0] < positionX + cols) {
           return room.position;
         }
       }
