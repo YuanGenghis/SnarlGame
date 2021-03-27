@@ -18,6 +18,17 @@ public class User implements UserInterface {
         gm.init();
     }
 
+    @Override
+    public void update(int[] position, GameState state) {
+        gm.movePlayer(state.players.get(gm.curPlayer), position);
+
+    }
+
+    @Override
+    public void move(int[] dst, Player player) {
+        gm.movePlayer(player, dst);
+    }
+
     public static void main(String[] args) {
         User user = new User(Arrays.asList("JC", "hollis"));
         System.out.println(user.gm.players.get(0).position);
@@ -34,6 +45,8 @@ public class User implements UserInterface {
 //                frame.setSize(2000,2000);
 //            }
 //        });
+
+
         class Panel extends JPanel implements KeyListener {
             Timer timer;
             Panel() {
@@ -88,29 +101,27 @@ public class User implements UserInterface {
                         System.out.println("up");
                         dst[0] = p.position.getKey() -1;
                         dst[1] = p.position.getValue();
-                        user.gm.movePlayer(user.gm.players.get(user.gm.curPlayer), dst);
                         break;
                     case KeyEvent.VK_DOWN:
                         // handle down
                         System.out.println("down");
                         dst[0] = p.position.getKey() + 1;
                         dst[1] = p.position.getValue();
-                        user.gm.movePlayer(user.gm.players.get(user.gm.curPlayer), dst);
                         break;
                     case KeyEvent.VK_LEFT:
                         // handle left
                         dst[0] = p.position.getKey();
                         dst[1] = p.position.getValue() -1;
-                        user.gm.movePlayer(user.gm.players.get(user.gm.curPlayer), dst);
                         break;
                     case KeyEvent.VK_RIGHT :
                         // handle right
                         dst[0] = p.position.getKey();
                         dst[1] = p.position.getValue() + 1;
-                        user.gm.movePlayer(user.gm.players.get(user.gm.curPlayer), dst);
                         break;
                 }
+                user.move(dst, user.gm.players.get(user.gm.curPlayer));
             }
+
 
             /**
              * Invoked when a key has been released. See the class description for {@link KeyEvent} for a
@@ -131,7 +142,6 @@ public class User implements UserInterface {
         frame.setVisible(true);
 
     }
-
 
 }
 
