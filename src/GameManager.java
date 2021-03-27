@@ -55,7 +55,7 @@ public class GameManager {
       player.position = this.curLevel.setPlayer();
     }
     this.curLevel.setAds(2);
-    curLevel.renderLevel(this.curLevel);
+//    curLevel.renderLevel(this.curLevel);
   }
 
   // check if the name is valid

@@ -170,7 +170,7 @@ public class TestLevel {
     Level level = levelBuilder(jo);
 
     //render the level
-    level.renderLevel(level);
+//    level.renderLevel(level);
     JSONObject output = level.checkForPoint(point);
     System.out.println(output);
   }

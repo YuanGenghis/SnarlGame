@@ -17,7 +17,7 @@ import java.awt.*;
 import javafx.util.Pair;
 
 // represents a Level of the game
-public class Level extends JPanel implements KeyListener {
+public class Level extends JPanel{
   List<Room> rooms;
   List<Hallway> hallways;
   List<Adversary> ads;
@@ -46,10 +46,10 @@ public class Level extends JPanel implements KeyListener {
   public static final char[][] room2Tails = {
           {'x','x','x','x','x'},
           {'x','.','.','.','x',},
-          {'|','.','.','.','x'},
+          {'|','|','.','.','x'},
           {'x','.','.','.','x',},
           {'x','x','x','x','x'}};
-  public static final Pair<Integer, Integer> room2Position = new Pair<>(8,0);
+  public static final Pair<Integer, Integer> room2Position = new Pair<>(0,8);
   public static final Room room2 = new Room(room2Tails, room2Position);
 
 
@@ -60,34 +60,34 @@ public class Level extends JPanel implements KeyListener {
           {'x','.','.','.','x',},
           {'x','.','.','.','x'},
           {'x','x','x','x','x'}};
-  public static final Pair<Integer, Integer> room3Position = new Pair<>(0,8);
+  public static final Pair<Integer, Integer> room3Position = new Pair<>(8,0);
   public static final Room room3 = new Room(room3Tails, room3Position);
 
   public static final List<Pair<Integer, Integer>> tilesPosition1 =
           new ArrayList<>(Arrays.asList(
-          new Pair<>(5,2), new Pair<>(6,2), new Pair<>(7,2)
+          new Pair<>(2,5), new Pair<>(2,6), new Pair<>(2,7)
   ));
-  public static final Pair<Integer, Integer> room1door1 = new Pair<>(4, 2);
-  public static final Pair<Integer, Integer> room2door1 = new Pair<>(8, 2);
+  public static final Pair<Integer, Integer> room1door1 = new Pair<>(2, 4);
+  public static final Pair<Integer, Integer> room2door1 = new Pair<>(2, 8);
   public static final Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> hw1Connect =
           new Pair<>(room1door1, room2door1);
   public static final List<Pair<Integer, Integer>> hw1Waypoints =
-          new ArrayList<>(Arrays.asList(new Pair<>(6,2)));
+          new ArrayList<>(Arrays.asList(new Pair<>(2,6)));
   public static final Hallway hw1 = new Hallway(tilesPosition1, hw1Connect, hw1Waypoints);
 
   public static final List<Pair<Integer, Integer>> tilesPosition2 =
           new ArrayList<>(Arrays.asList(
-                  new Pair<>(2,5), new Pair<>(2,6), new Pair<>(2,7)
+                  new Pair<>(5,2), new Pair<>(6,2), new Pair<>(7,2)
           ));
-  public static final Pair<Integer, Integer> room1door2 = new Pair<>(2, 4);
-  public static final Pair<Integer, Integer> room3door1 = new Pair<>(2, 8);
+  public static final Pair<Integer, Integer> room1door2 = new Pair<>(4, 2);
+  public static final Pair<Integer, Integer> room3door1 = new Pair<>(8, 2);
   public static final Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> hw2Connect =
           new Pair<>(room1door2, room3door1);
   public static final List<Pair<Integer, Integer>> hw2Waypoints =
-          new ArrayList<>(Arrays.asList(new Pair<>(2,6)));
+          new ArrayList<>(Arrays.asList(new Pair<>(6,2)));
   public static final Hallway hw2 = new Hallway(tilesPosition2, hw2Connect, hw2Waypoints);
 
-  public static final Pair<Integer, Integer> aPosition = new Pair<>(3,12);
+  public static final Pair<Integer, Integer> aPosition = new Pair<>(12,3);
   public static final Adversary ad1 = new Adversary(aPosition);
 
 
@@ -174,42 +174,9 @@ public class Level extends JPanel implements KeyListener {
     }
   }
 
-  @Override
-  // render the Level
-  public void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    g.clearRect(0, 0, getWidth(), getHeight());
-
-    drawRooms(this.rooms, g);
-
-    drawHallways(this.hallways, g);
-  }
 
   // draw Hallways
-  private void drawHallways(List<Hallway> hallways, Graphics g) {
-//    for (Hallway hw: hallways) {
-//      int x = hw.position.getKey();
-//      int y = hw.position.getValue();
-//      int width = hw.layout[0].length;
-//      int height = hw.layout.length;
-//      for (int ii = y; ii < height + y; ++ii) {
-//        for (int j = x; j < width + x; ++j) {
-//          int xx = ii * rectWidth;
-//          int yy = j * rectWidth;
-//
-//          if (hw.layout[ii - y][j - x] == 'x') {
-//            g.setColor(Color.DARK_GRAY);
-//          } else if (hw.layout[ii - y][j - x] == '.') {
-//            g.setColor(Color.GRAY);
-//          } else if (hw.layout[ii - y][j - x] == '|' || hw.layout[ii - y][j - x] == '-') {
-//            g.setColor(Color.CYAN);
-//          }
-//          g.fillRect(yy, xx, rectWidth, rectWidth);
-//          g.setColor(Color.black);
-//          g.drawRect(yy, xx, rectWidth, rectWidth);
-//        }
-//      }
-//    }
+  public void drawHallways(Graphics g) {
     for (Hallway hw: hallways) {
       for (Pair p : hw.layout) {
         g.setColor((Color.GRAY));
@@ -221,30 +188,30 @@ public class Level extends JPanel implements KeyListener {
   }
 
   // Draw rooms
-  private void drawRooms(List<Room> rooms, Graphics g) {
+  public void drawRooms(Graphics g) {
     for (Room r: rooms) {
       int x = r.position.getKey();
       int y = r.position.getValue();
       int width = r.layout[0].length;
       int height = r.layout.length;
-      for (int ii = y; ii < height+y; ++ii) {
-        for (int j = x; j < width+x; ++j) {
-          int xx = ii * rectWidth;
-          int yy = j * rectWidth;
+      for (int ii = x; ii < height+x; ++ii) {
+        for (int j = y; j < width+y; ++j) {
+          int xx = j * rectWidth;
+          int yy = ii * rectWidth;
 
-          if (r.layout[ii-y][j-x] == 'x'){
+          if (r.layout[ii-x][j-y] == 'x'){
             g.setColor(Color.DARK_GRAY);
-          } else if (r.layout[ii-y][j-x] == '.') {
+          } else if (r.layout[ii-x][j-y] == '.') {
             g.setColor(Color.GRAY);
-          } else if (r.layout[ii-y][j-x] == '|' || r.layout[ii-y][j-x] == '-') {
+          } else if (r.layout[ii-x][j-y] == '|' || r.layout[ii-x][j-y] == '-') {
             g.setColor(Color.CYAN);
           } else {
             g.setColor(Color.GRAY);
           }
-          g.fillRect(yy, xx, rectWidth, rectWidth);
+          g.fillRect(xx, yy, rectWidth, rectWidth);
           g.setColor(Color.black);
-          g.drawRect(yy, xx, rectWidth, rectWidth);
-          if (r.layout[ii-y][j-x] == 'P') {
+          g.drawRect(xx, yy, rectWidth, rectWidth);
+          if (r.layout[ii-x][j-y] == 'P') {
             try {
               URL url = new URL(PlayerUrl);
               PlayerImage = ImageIO.read(url);
@@ -253,10 +220,10 @@ public class Level extends JPanel implements KeyListener {
               System.out.println("Image not found");
             }
 
-            g.drawImage(PlayerImage, rectWidth* j, rectWidth *ii,
+            g.drawImage(PlayerImage, xx, yy,
                     rectWidth -1, rectWidth -1, null);
           }
-          else if (r.layout[ii-y][j-x] == 'A') {
+          else if (r.layout[ii-x][j-y] == 'A') {
             try {
               URL url = new URL(ADUrl);
               ADImage = ImageIO.read(url);
@@ -264,10 +231,10 @@ public class Level extends JPanel implements KeyListener {
             catch(IOException e) {
               System.out.println("Image not found");
             }
-            g.drawImage(ADImage, rectWidth* j, rectWidth * ii,
+            g.drawImage(ADImage,  xx,yy,
                     rectWidth -1, rectWidth - 1, null);
           }
-          else if (r.layout[ii-y][j-x] == 'E') {
+          else if (r.layout[ii-x][j-y] == 'E') {
             g.setColor(Color.RED);
             Font tr = new Font("TimesRoman", Font.PLAIN, 12);
             g.setFont(tr);
@@ -295,6 +262,7 @@ public class Level extends JPanel implements KeyListener {
     return new Pair<>(-1,-1);
   }
 
+  //for test
   public JSONObject checkForPoint(int[] point) {
     JSONObject output = new JSONObject();
     int type = checkTailType(point);
@@ -420,6 +388,23 @@ public class Level extends JPanel implements KeyListener {
     return false;
   }
 
+  // find which room the given position in
+  public Room inWhichRoom(int[] position) {
+    for (Room room: this.rooms) {
+      int rows = room.layout.length;
+      int cols = room.layout[0].length;
+      int positionX = room.position.getKey();
+      int positionY = room.position.getValue();
+
+      if (positionY <= position[1] && position[1] <= positionY + rows) {
+        if (positionX <= position[0] && position[0] <= positionX + cols) {
+//                    System.out.println("In Room:" + room.position);
+          return room;
+        }
+      }
+    }
+    return null;
+  }
 
   public int checkIfInHallways(int[] point) {
     for (int ii = 0; ii < hallways.size(); ++ii) {
@@ -494,66 +479,34 @@ public class Level extends JPanel implements KeyListener {
 
   public void movePlayer(Player player, Pair<Integer, Integer> newPosition) {
     Pair<Integer, Integer> oldPosition = player.getPosition();
-    Pair<Integer, Integer> dst;
+    int[] old = new int[2];
+    old[0] = oldPosition.getKey(); old[1] = oldPosition.getValue();
+    Room oldRoom = inWhichRoom(old);
+
+    int[] dst = new int[2];
+    dst[0] = newPosition.getKey(); dst[1] = newPosition.getValue();
+    Room dstRoom = inWhichRoom(dst);
+
     for (Room r: this.rooms) {
-      if (oldPosition.getKey() > r.position.getKey() &&
-              oldPosition.getValue() > r.position.getValue()) {
-        dst = new Pair<>(newPosition.getKey() - r.position.getKey(),
-                newPosition.getValue() - r.position.getValue());
-        if (r.layout[dst.getValue() - r.position.getValue()]
-                [dst.getKey() - r.position.getKey()] == '.') {
-          r.layout[oldPosition.getValue() - r.position.getValue()]
-                  [oldPosition.getKey() - r.position.getKey()] = '.';
-          r.layout[dst.getValue()][dst.getKey()] = 'P';
-          player.position = newPosition;
+      if (dstRoom != null) {
+        if (r.position == dstRoom.position) {
+          r.layout[dst[0] - r.position.getKey()][dst[1] - r.position.getValue()] = 'P';
         }
       }
     }
-  }
 
-
-  public void renderLevel(Level level) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        JFrame frame = new JFrame("Game");
-        frame.add(level);
-        frame.addKeyListener(level);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.pack();
-        frame.setVisible(true);
-        frame.setSize(2000,2000);
+    for (Room r: this.rooms) {
+      if (oldRoom != null) {
+        if (r.position == oldRoom.position) {
+          r.layout[old[0] - r.position.getKey()][old[1] - r.position.getValue()] = '.';
+        }
       }
-    });
-  }
-
-  @Override
-  public void keyTyped(KeyEvent e) {
-
-  }
-
-  @Override
-  public void keyPressed(KeyEvent e) {
-    int keyCode = e.getKeyCode();
-    switch( keyCode ) {
-      case KeyEvent.VK_UP:
-        // handle up
-        System.out.println(1);
-        break;
-      case KeyEvent.VK_DOWN:
-        // handle down
-        break;
-      case KeyEvent.VK_LEFT:
-        // handle left
-        break;
-      case KeyEvent.VK_RIGHT :
-        // handle right
-        break;
     }
+
+    player.position = newPosition;
+
+    System.out.println(player.name + "move from:" + oldPosition + " to: " + newPosition);
   }
 
-  @Override
-  public void keyReleased(KeyEvent e) {
 
-  }
 }
