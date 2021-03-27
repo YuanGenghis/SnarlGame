@@ -52,7 +52,7 @@ public class GameState {
     this.gameStatus = 1;
     initGame(2, level, 1);
     this.levels.get(levelStatus).movePlayer(this.players.get(0), new Pair<>(3,3));
-    this.render(this.levels.get(levelStatus));
+//    this.render(this.levels.get(levelStatus));
   }
 
   public List<Level> getLevels() {
@@ -68,12 +68,12 @@ public class GameState {
     this.levels.add(level);
     this.levels.get(levelStatus).setAds(ads);
 
-    this.render(level);
+//    this.render(level);
   }
 
-  public void render(Level level) {
-    level.renderLevel(level);
-  }
+//  public void render(Level level) {
+//    level.renderLevel(level);
+//  }
 
   public JSONArray checkForPoint(String pName, int[] point, JSONObject jo) {
     boolean exitLocked = (boolean) jo.get("exit-locked");

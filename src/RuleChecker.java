@@ -91,20 +91,7 @@ public class RuleChecker {
 
     // find which room the given position in
     public static Room inWhichRoom(int[] position, Level level) {
-        for (Room room: level.rooms) {
-            int rows = room.layout.length;
-            int cols = room.layout[0].length;
-            int positionX = room.position.getKey();
-            int positionY = room.position.getValue();
-
-            if (positionY <= position[1] && position[1] <= positionY + rows) {
-                if (positionX <= position[0] && position[0] <= positionX + cols) {
-//                    System.out.println("In Room:" + room.position);
-                    return room;
-                }
-            }
-        }
-        return null;
+        return level.inWhichRoom(position);
     }
 
     public static List<int[]> searchTraversablePointsInHallway(int[] pos, List<Hallway> hws) {
