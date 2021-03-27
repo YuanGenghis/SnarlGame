@@ -203,7 +203,8 @@ public class GameManager {
 
   //for M7 Test task
   public String checkMoveResult(Player p, int[] dst) {
-    if (p.status == -1) {
+    if (curLevel.checkIfOnAd(dst)) {
+      p.status = -1;
       return "Eject";
     }
     else if (RuleChecker.isValidMove(p, curLevel, dst)) {
@@ -264,6 +265,9 @@ public class GameManager {
     //move-turn
     for (int zz = 0; zz < moveAmount; ) {
       while (true) {
+        if (players.get(ii).status == -1) {
+          break;
+        }
         JSONArray move = new JSONArray();
         move.put(players.get(ii).name);
         int moveTurn = moveMap.get(ii);
@@ -297,21 +301,25 @@ public class GameManager {
       //update turn
       int amount = 0;
       while (amount != players.size()) {
-        JSONArray update = new JSONArray();
-        update.put(players.get(amount).name);
-        JSONObject playerUpdate = new JSONObject();
-        playerUpdate.put("type", "player-update");
-        int[] playerPos = new int[2];
-        playerPos[0] = players.get(amount).position.getKey();
-        playerPos[1] = players.get(amount).position.getValue();
-        int[][] view = getViewOfPlayer(players.get(amount), playerPos);
-        playerUpdate.put("layout", view);
-        playerUpdate.put("position", playerPos);
-        playerUpdate.put("objects", this.objectsInView(playerPos));
-        playerUpdate.put("actors", this.actorsInView(playerPos));
-        update.put(playerUpdate);
-        output.put(update);
-        ++amount;
+        if (players.get(amount).status == -1) {
+          ++amount;
+        } else {
+          JSONArray update = new JSONArray();
+          update.put(players.get(amount).name);
+          JSONObject playerUpdate = new JSONObject();
+          playerUpdate.put("type", "player-update");
+          int[] playerPos = new int[2];
+          playerPos[0] = players.get(amount).position.getKey();
+          playerPos[1] = players.get(amount).position.getValue();
+          int[][] view = getViewOfPlayer(players.get(amount), playerPos);
+          playerUpdate.put("layout", view);
+          playerUpdate.put("position", playerPos);
+          playerUpdate.put("objects", this.objectsInView(playerPos));
+          playerUpdate.put("actors", this.actorsInView(playerPos));
+          update.put(playerUpdate);
+          output.put(update);
+          ++amount;
+        }
       }
       ++ii;
 

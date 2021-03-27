@@ -54,38 +54,56 @@ public class TestManager {
       level.addAd(ad);
     }
 
+    GameManager gameManager = new GameManager(players, level,0);
+    JSONArray moveResults = gameManager.checkForMove(moves, natural);
 
     JSONObject levelObj = ja.getJSONObject(1);
+    JSONObject updateLevel = new JSONObject();
     JSONObject stateObj = new JSONObject();
+
+    if (!level.ifLocked) {
+      updateLevel.put("type", "level");
+      updateLevel.put("rooms", levelObj.getJSONArray("rooms"));
+      updateLevel.put("hallways", levelObj.getJSONArray("hallways"));
+      JSONObject exit = levelObj.getJSONArray("objects").getJSONObject(0);
+      JSONArray updateObj = new JSONArray().put(exit);
+      updateLevel.put("objects", updateObj);
+    } else {
+      updateLevel = levelObj;
+    }
     stateObj.put("type", "state");
-    stateObj.put("level", levelObj);
+    stateObj.put("level", updateLevel);
     //for player
     JSONArray actorPositionList = new JSONArray();
     //for adversary
     JSONArray actorPositionList2 = new JSONArray();
     for (int ii = 0; ii < nameList.length(); ++ii) {
-      JSONObject actor = new JSONObject();
-      actor.put("type", "player");
-      actor.put("name", names.get(ii));
-      actor.put("position", points.get(ii));
-      actorPositionList.put(actor);
+      if (gameManager.players.get(ii).status != -1) {
+        JSONObject actor = new JSONObject();
+        actor.put("type", "player");
+        actor.put("name", names.get(ii));
+        int[] updatePos = new int[2];
+        updatePos[0] = gameManager.players.get(ii).position.getKey();
+        updatePos[1] = gameManager.players.get(ii).position.getValue();
+        actor.put("position", updatePos);
+        actorPositionList.put(actor);
+      }
     }
     stateObj.put("players", actorPositionList);
+    int adAmount = 0;
     for (int ii = nameList.length(); ii < pointList.length(); ++ii) {
+      ++adAmount;
       JSONObject actor = new JSONObject();
       actor.put("type", "ghost");
-      actor.put("name", "ghost"+ii);
+      actor.put("name", "ghost"+adAmount);
       actor.put("position", pointList.get(ii));
       actorPositionList2.put(actor);
     }
     stateObj.put("adversaries", actorPositionList2);
-    stateObj.put("exit-locked", true);
+    stateObj.put("exit-locked", level.ifLocked);
+
 
     output.put(stateObj);
-
-
-    GameManager gameManager = new GameManager(players, level,0);
-    JSONArray moveResults = gameManager.checkForMove(moves, natural);
     output.put(moveResults);
     return output;
 
