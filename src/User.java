@@ -11,6 +11,7 @@ import javax.swing.Timer;
 
 public class User implements UserInterface {
     GameManager gm;
+    public int moveAmount = 0;
 
 
     public User(List<String> names) {
@@ -32,19 +33,7 @@ public class User implements UserInterface {
     public static void main(String[] args) {
         User user = new User(Arrays.asList("JC", "hollis"));
         System.out.println(user.gm.players.get(0).position);
-        System.out.println(user.gm.players.get(1).position);
 
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                JFrame frame = new JFrame("Game");
-//                frame.add(user);
-//                frame.addKeyListener(user);
-//                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                frame.setVisible(true);
-//                frame.setSize(2000,2000);
-//            }
-//        });
 
 
         class Panel extends JPanel implements KeyListener {
@@ -59,6 +48,8 @@ public class User implements UserInterface {
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.clearRect(0, 0, getWidth(), getHeight());
+
+                user.gm.drawPlayerView(g);
 
 //                user.gm.curLevel.drawRooms(g);
 //                user.gm.curLevel.drawHallways(g);
@@ -101,25 +92,37 @@ public class User implements UserInterface {
                         System.out.println("up");
                         dst[0] = p.position.getKey() -1;
                         dst[1] = p.position.getValue();
+                        ++user.moveAmount;
                         break;
                     case KeyEvent.VK_DOWN:
                         // handle down
                         System.out.println("down");
                         dst[0] = p.position.getKey() + 1;
                         dst[1] = p.position.getValue();
+                        ++user.moveAmount;
                         break;
                     case KeyEvent.VK_LEFT:
                         // handle left
                         dst[0] = p.position.getKey();
                         dst[1] = p.position.getValue() -1;
+                        ++user.moveAmount;
                         break;
                     case KeyEvent.VK_RIGHT :
                         // handle right
                         dst[0] = p.position.getKey();
                         dst[1] = p.position.getValue() + 1;
+                        ++user.moveAmount;
                         break;
+
                 }
-                user.move(dst, user.gm.players.get(user.gm.curPlayer));
+
+                if (keyCode == KeyEvent.VK_ENTER) {
+                    user.gm.nextPlayer();
+                    user.moveAmount = 0;
+                }
+                if (user.moveAmount <= 2) {
+                    user.move(dst, user.gm.players.get(user.gm.curPlayer));
+                }
             }
 
 

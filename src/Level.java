@@ -105,6 +105,8 @@ public class Level extends JPanel{
     this.init();
     this.keyPosition = new int[2];
     this.exitPosition = new int[2];
+    exitPosition[0] = 2;
+    exitPosition[1] = 10;
     this.ifLocked = true;
   }
 
@@ -222,7 +224,7 @@ public class Level extends JPanel{
           int xx = j * rectWidth;
           int yy = ii * rectWidth;
 
-          if (r.layout[ii-x][j-y] == 'x'){
+          if (r.layout[ii-x][j-y] == 'x') {
             g.setColor(Color.DARK_GRAY);
           } else if (r.layout[ii-x][j-y] == '.') {
             g.setColor(Color.GRAY);
