@@ -509,6 +509,7 @@ public class Level extends JPanel{
     dst[0] = newPosition.getKey(); dst[1] = newPosition.getValue();
     Room dstRoom = inWhichRoom(dst);
 
+    //handle old position
     for (Room r: this.rooms) {
       if (oldRoom != null) {
         if (r.position.equals(oldRoom.position)) {
@@ -527,9 +528,11 @@ public class Level extends JPanel{
       }
     }
 
+    //handle dst position
     for (Room r: this.rooms) {
       if (dstRoom != null) {
         if (r.position.equals(dstRoom.position)) {
+          System.out.println("to new room: " + r.position);
           r.layout[dst[0] - r.position.getKey()][dst[1] - r.position.getValue()] = 'P';
         }
       }
