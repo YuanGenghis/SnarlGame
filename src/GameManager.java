@@ -135,6 +135,9 @@ public class GameManager {
       this.interact(p, pos);
       curLevel.movePlayer(p,new Pair<>(pos[0], pos[1]));
     }
+    else {
+      System.out.println("Invalid move, move again!");
+    }
   }
 
   // change the status of the player

@@ -8,6 +8,8 @@ public class Hallway {
   List<Pair<Integer,Integer>> layout;
   Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> connection;
   List<Pair<Integer, Integer>> waypoints;
+  boolean ifPlayerInside;
+  int[] playerPosition;
 
   // construct the Hallway
   public Hallway(List<Pair<Integer,Integer>> tilesPosition,
@@ -16,6 +18,8 @@ public class Hallway {
     this.layout = tilesPosition;
     this.connection = connection;
     this.waypoints = waypoints;
+    ifPlayerInside = false;
+    playerPosition = new int[2];
   }
 
   // init a default Hallway
@@ -23,6 +27,8 @@ public class Hallway {
     this.layout = new ArrayList<>();
     this.connection = new Pair<>(new Pair<>(0,0), new Pair<>(0,0));
     this.waypoints = new ArrayList<>();
+    ifPlayerInside = false;
+    playerPosition = new int[2];
   }
 
   // set the connection of the Hallway
