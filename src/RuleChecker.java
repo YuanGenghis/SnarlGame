@@ -156,8 +156,8 @@ public class RuleChecker {
         for (Room r: rooms) {
             int x = pos[0] - r.position.getKey();
             int y = pos[1] - r.position.getValue();
-            System.out.println("X:" + x);
-            System.out.println("y:" + x);
+//            System.out.println("X:" + x);
+//            System.out.println("y:" + x);
             if (x >= 0 && x < r.layout.length
                     && y >= 0 && y < r.layout[0].length) {
                 if (r.layout[x][y] == '-' || r.layout[x][y] == '|') {
@@ -201,6 +201,17 @@ public class RuleChecker {
                         || r.layout[(pos[0] - ii) - r.position.getKey()]
                         [(pos[1] - yy) - r.position.getValue()] == '|') {
                     view[rows][cols] = 2;
+                } else if (r.layout[(pos[0] - ii) - r.position.getKey()]
+                        [(pos[1] - yy) - r.position.getValue()] == 'P') {
+                    view[rows][cols] = 3;
+                }
+                else if (r.layout[(pos[0] - ii) - r.position.getKey()]
+                        [(pos[1] - yy) - r.position.getValue()] == 'A') {
+                    view[rows][cols] = -1;
+                }
+                else if (r.layout[(pos[0] - ii) - r.position.getKey()]
+                        [(pos[1] - yy) - r.position.getValue()] == 'E') {
+                    view[rows][cols] = 5;
                 }
                 else {
                     view[rows][cols] = 1;
