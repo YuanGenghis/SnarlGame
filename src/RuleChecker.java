@@ -73,11 +73,12 @@ public class RuleChecker {
         List<int[]> hallwayPoints = findHallwayPoints(level.hallways);
         if (room == null) {
 //            System.out.println("in hallway");
-            return searchTraversablePointsInHallway(position, level.hallways);
+            return searchTraversablePointsInHallway(position, level.hallways, level);
         } else {
             return searchTraversablePoints(position, room, hallwayPoints, level.rooms);
         }
     }
+
 
     // return if the current level is end
     public boolean isCurrentLevelEnd() {
@@ -94,14 +95,26 @@ public class RuleChecker {
         return level.inWhichRoom(position);
     }
 
-    public static List<int[]> searchTraversablePointsInHallway(int[] pos, List<Hallway> hws) {
-        List<int[]> points = new ArrayList<>();
-        for (int[] point: findHallwayPoints(hws)) {
-            if (Math.abs(point[0] - pos[0]) + Math.abs(point[1] - pos[1]) <= 2) {
-                points.add(point);
+
+    public static List<int[]> searchTraversablePointsInHallway(int[] pos, List<Hallway> hws, Level level) {
+
+        List<int[]> output = new ArrayList<>();
+        List<int[]> hallwaysPoints = findHallwayPoints(level.hallways);
+        int [][] view = getPlayerView(pos, null, hallwaysPoints, level.rooms);
+
+        for (int ii = 0; ii < view.length; ++ii) {
+            for (int yy = 0; yy < view[ii].length; ++yy) {
+                if (view[ii][yy] !=  0) {
+                    int[] p = new int[2];
+                    p[0] = ii + pos[0] - 2;
+                    p[1] = yy + pos[1] - 2;
+                    output.add(p);
+                }
             }
         }
-        return points;
+
+        return output;
+
     }
 
     // search traversable points from a position in a Room
