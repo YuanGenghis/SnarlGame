@@ -8,7 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/testLevel" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/testState" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/testManager" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/testSnarl" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/local" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
