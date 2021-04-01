@@ -178,11 +178,34 @@ public class Level extends JPanel{
   // draw Hallways
   public void drawHallways(Graphics g) {
     for (Hallway hw: hallways) {
-      for (Pair p : hw.layout) {
-        g.setColor((Color.GRAY));
-        g.fillRect(((int)p.getKey()) * rectWidth, ((int)p.getValue()) * rectWidth, rectWidth, rectWidth);
-        g.setColor((Color.blue));
-        g.drawRect(((int)p.getKey()) * rectWidth, ((int)p.getValue()) * rectWidth, rectWidth, rectWidth);
+      for (Pair<Integer, Integer> p : hw.layout) {
+        int xx = p.getKey() * rectWidth;
+        int yy = p.getValue() * rectWidth;
+        if (!hw.ifPlayerInside) {
+          g.setColor((Color.GRAY));
+          g.fillRect(yy, xx, rectWidth, rectWidth);
+          g.setColor((Color.blue));
+          g.drawRect(yy, xx, rectWidth, rectWidth);
+        } else {
+          if (p.getKey() == hw.playerPosition[0] && p.getValue() == hw.playerPosition[1]) {
+            System.out.println("in hw");
+            try {
+              URL url = new URL(PlayerUrl);
+              PlayerImage = ImageIO.read(url);
+            }
+            catch(IOException e) {
+              System.out.println("Image not found");
+            }
+            g.drawImage(PlayerImage, yy, xx,
+                    rectWidth -1, rectWidth -1, null);
+          }
+          else {
+            g.setColor((Color.GRAY));
+            g.fillRect(yy, xx, rectWidth, rectWidth);
+            g.setColor((Color.blue));
+            g.drawRect(yy, xx, rectWidth, rectWidth);
+          }
+        }
       }
     }
   }
@@ -396,9 +419,8 @@ public class Level extends JPanel{
       int positionX = room.position.getKey();
       int positionY = room.position.getValue();
 
-      if (positionY <= position[1] && position[1] <= positionY + rows) {
-        if (positionX <= position[0] && position[0] <= positionX + cols) {
-//                    System.out.println("In Room:" + room.position);
+      if (positionY <= position[1] && position[1] < positionY + rows) {
+        if (positionX <= position[0] && position[0] < positionX + cols) {
           return room;
         }
       }
@@ -488,20 +510,43 @@ public class Level extends JPanel{
     Room dstRoom = inWhichRoom(dst);
 
     for (Room r: this.rooms) {
-      if (dstRoom != null) {
-        if (r.position == dstRoom.position) {
-          r.layout[dst[0] - r.position.getKey()][dst[1] - r.position.getValue()] = 'P';
+      if (oldRoom != null) {
+        if (r.position.equals(oldRoom.position)) {
+          r.layout[old[0] - r.position.getKey()][old[1] - r.position.getValue()] = '.';
+        }
+      }
+      else {
+        for (Hallway hw: hallways) {
+          for (Pair<Integer, Integer> point: hw.layout) {
+            if (oldPosition.equals(point)) {
+              hw.ifPlayerInside = false;
+              hw.playerPosition = new int[2];;
+            }
+          }
         }
       }
     }
 
     for (Room r: this.rooms) {
-      if (oldRoom != null) {
-        if (r.position == oldRoom.position) {
-          r.layout[old[0] - r.position.getKey()][old[1] - r.position.getValue()] = '.';
+      if (dstRoom != null) {
+        if (r.position.equals(dstRoom.position)) {
+          r.layout[dst[0] - r.position.getKey()][dst[1] - r.position.getValue()] = 'P';
+        }
+      }
+      else {
+        for (Hallway hw: hallways) {
+          for (Pair<Integer, Integer> point: hw.layout) {
+            if (newPosition.equals(point)) {
+              hw.ifPlayerInside = true;
+              int [] playerPos = new int[2];
+              playerPos[0] = point.getKey(); playerPos[1] = point.getValue();
+              hw.playerPosition = playerPos;
+            }
+          }
         }
       }
     }
+
 
     player.position = newPosition;
 
