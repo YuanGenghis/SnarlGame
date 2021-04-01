@@ -60,8 +60,8 @@ public class User implements UserInterface {
                 super.paintComponent(g);
                 g.clearRect(0, 0, getWidth(), getHeight());
 
-                user.gm.curLevel.drawRooms(g);
-                user.gm.curLevel.drawHallways(g);
+//                user.gm.curLevel.drawRooms(g);
+//                user.gm.curLevel.drawHallways(g);
             }
             public void refreshScreen() {
                 timer = new Timer(0, new ActionListener() {
