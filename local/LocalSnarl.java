@@ -26,5 +26,7 @@ public class LocalSnarl {
         System.out.println("ObserverMode: " + isObserverMode);
       }
     }
+
+
   }
 }
