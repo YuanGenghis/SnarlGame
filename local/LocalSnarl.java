@@ -35,6 +35,7 @@ public class LocalSnarl {
         System.out.println("ObserverMode: " + isObserverMode);
       }
     }
+
     // load user names
     Scanner scanner = new Scanner(System.in);
     for (int i = 0; i < numberOfPlayer; i++) {
@@ -48,9 +49,6 @@ public class LocalSnarl {
     }
     System.out.println(usernames);
     User user1 = new User(usernames);
-
-
-
 
   }
 }

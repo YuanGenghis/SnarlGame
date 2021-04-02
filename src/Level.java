@@ -1,8 +1,6 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -88,7 +86,7 @@ public class Level extends JPanel{
   public static final Hallway hw2 = new Hallway(tilesPosition2, hw2Connect, hw2Waypoints);
 
   public static final Pair<Integer, Integer> aPosition = new Pair<>(12,3);
-  public static final Adversary ad1 = new Adversary(aPosition);
+  public static final Zombie ad1 = new Zombie(aPosition);
 
 
   // construct the level example
@@ -123,7 +121,7 @@ public class Level extends JPanel{
     this.setKey();
   }
 
-  public void addAd(Adversary ad) {
+  public void addAd(Zombie ad) {
     this.ads.add(ad);
   }
 
@@ -178,7 +176,7 @@ public class Level extends JPanel{
   public int rectWidth = 25;
 
   // Add a list of Adversary to the current Level
-  public void addAds(List<Adversary> ads) {
+  public void addAds(List<Zombie> ads) {
     for (int ii = 0; ii < ads.size(); ++ii) {
       this.ads.add(ads.get(ii));
     }

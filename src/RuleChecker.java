@@ -1,7 +1,4 @@
-import com.sun.java.swing.plaf.windows.WindowsTextAreaUI;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javafx.util.Pair;
@@ -57,7 +54,7 @@ public class RuleChecker {
     }
 
     // return the interaction of the Adversary
-    public String hasInteractionAdversary(List<Player> players, Adversary a, Level level, int[] pos) {
+    public String hasInteractionAdversary(List<Player> players, Zombie a, Level level, int[] pos) {
         if (level.checkIfOnPlayer(players, pos)) {
             return "Player";
         }
