@@ -11,17 +11,22 @@ public class Observer implements ObserverInterface {
     this.gs = gameState;
   }
 
+
+  public static void main(String[] args) {
+
+  }
+
   @Override
   public void printInfo() {
     for (Player p: gs.players) {
       System.out.println(p.name + ", Position: " + p.position);
     }
 
-    for (Adversary ad: gs.levels.get(gs.levelStatus).ads) {
-      System.out.println(ad.name + ", Position: " + ad.position);
+    for (Adversary ad: gs.levels.get(gs.curLevel).ads) {
+      System.out.println("Ad: " + ", Position: " + ad.position);
     }
 
-    System.out.println(gs.levels.get(gs.levelStatus).ifLocked);
+    System.out.println(gs.levels.get(gs.curLevel).ifLocked);
     System.out.println("GameStatus: " + gs.gameStatus);
 
   }
@@ -44,8 +49,8 @@ public class Observer implements ObserverInterface {
         super.paintComponent(g);
         g.clearRect(0, 0, getWidth(), getHeight());
 
-        observer.gs.levels.get(observer.gs.levelStatus).drawRooms(g);
-        observer.gs.levels.get(observer.gs.levelStatus).drawHallways(g);
+        observer.gs.levels.get(observer.gs.curLevel).drawRooms(g);
+        observer.gs.levels.get(observer.gs.curLevel).drawHallways(g);
       }
       public void refreshScreen() {
         timer = new Timer(0, new ActionListener() {

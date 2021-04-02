@@ -17,6 +17,7 @@ public class GameManager {
   List<Player> players;
   int curPlayer;
   GameState gameState;
+
   Level curLevel;
 
   public int rectWidth = 25;
@@ -35,14 +36,18 @@ public class GameManager {
     this.players = players;
     this.gameState = gameState;
     this.curPlayer = curPlayer;
-    this.curLevel = gameState.levels.get(gameState.levelStatus);
+    this.curLevel = gameState.levels.get(gameState.curLevel);
   }
 
   //constructor for test task
   public GameManager(List<Player> players, Level curLevel, int curPlayer) {
     this.players = players;
     this.curPlayer = curPlayer;
-    this.curLevel = curLevel;
+
+    List<Level> levels = new ArrayList<>();
+    levels.add(curLevel);
+    this.gameState = new GameState(players, levels);
+    this.curLevel = this.gameState.levels.get(this.gameState.curLevel);
   }
 
   //Start a simple one level game
@@ -130,6 +135,7 @@ public class GameManager {
 
   public void nextPlayer() {
     if (curPlayer == this.players.size() - 1) {
+
       curPlayer = 0;
     }
     else {

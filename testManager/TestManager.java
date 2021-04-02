@@ -50,7 +50,7 @@ public class TestManager {
     }
     for (int[] position: adPositions) {
       Pair<Integer, Integer> p = new Pair<>(position[0], position[1]);
-      Adversary ad = new Adversary(p);
+      Zombie ad = new Zombie(p);
       level.addAd(ad);
     }
 
