@@ -33,6 +33,7 @@ public class User implements UserInterface {
     public static void main(String[] args) {
         User user = new User(Arrays.asList("JC", "hollis"));
         System.out.println(user.gm.players.get(0).position);
+        System.out.println(user.gm.curLevel.exitPosition[0] + ":" + user.gm.curLevel.exitPosition[1]);
 
 
 

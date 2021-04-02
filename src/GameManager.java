@@ -150,6 +150,7 @@ public class GameManager {
 
   // move a player to a position
   public void movePlayer(Player p, int[] pos) {
+    System.out.println("move to:" + pos[0] + ":" + pos[1]);
     if (RuleChecker.isValidMove(p, curLevel, pos)) {
       this.interact(p, pos);
       curLevel.movePlayer(p,new Pair<>(pos[0], pos[1]));
@@ -378,13 +379,22 @@ public class GameManager {
         g.drawRect(xx, yy, rectWidth, rectWidth);
 
         if (view[row][col] == 5) {
+          g.setColor(Color.GRAY);
+          g.drawRect(xx, yy, rectWidth, rectWidth);
           g.setColor(Color.RED);
           Font tr = new Font("TimesRoman", Font.PLAIN, 12);
           g.setFont(tr);
-          g.drawString("E", xx, yy);
+          g.drawString("E", xx + 10, yy + 15);
         }
-
-        if (view[row][col] == -1) {
+        else if (view[row][col] == 4) {
+          g.setColor(Color.GRAY);
+          g.drawRect(xx, yy, rectWidth, rectWidth);
+          g.setColor(Color.blue);
+          Font tr = new Font("TimesRoman", Font.PLAIN, 12);
+          g.setFont(tr);
+          g.drawString("K", xx + 10, yy + 15);
+        }
+        else if (view[row][col] == -1) {
           try {
             URL url = new URL(ADUrl);
             ADImage = ImageIO.read(url);
@@ -398,8 +408,6 @@ public class GameManager {
         }
 
         if ((ii == 0 && zz == 0) || view[row][col] == 3) {
-          System.out.println("X: " + xx);
-          System.out.println("Y: " + yy);
           try {
             URL url = new URL(PlayerUrl);
             PlayerImage = ImageIO.read(url);

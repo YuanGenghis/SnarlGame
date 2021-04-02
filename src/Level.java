@@ -46,7 +46,7 @@ public class Level extends JPanel{
   public static final char[][] room2Tails = {
           {'x','x','x','x','x'},
           {'x','.','.','.','x',},
-          {'|','|','.','.','x'},
+          {'|','.','.','.','x'},
           {'x','.','.','.','x',},
           {'x','x','x','x','x'}};
   public static final Pair<Integer, Integer> room2Position = new Pair<>(0,8);
@@ -102,12 +102,10 @@ public class Level extends JPanel{
     this.hallways.add(hw2);
     this.ads = new ArrayList<>();
     this.ads.add(ad1);
-    this.init();
     this.keyPosition = new int[2];
     this.exitPosition = new int[2];
-    exitPosition[0] = 2;
-    exitPosition[1] = 10;
     this.ifLocked = true;
+    this.init();
   }
 
   // constructs the level with Given rooms and hallways
@@ -122,6 +120,7 @@ public class Level extends JPanel{
   public void init() {
 //    this.setAds();
     this.setExit();
+    this.setKey();
   }
 
   public void addAd(Adversary ad) {
@@ -154,7 +153,16 @@ public class Level extends JPanel{
 
   // set Exit position
   public void setExit() {
-    this.rooms.get(1).layout[3][3] = 'E';
+    this.rooms.get(1).layout[2][3] = 'E';
+    this.exitPosition[0] = 2;
+    this.exitPosition[1] = 11;
+  }
+
+  // set Exit position
+  public void setKey() {
+    this.rooms.get(2).layout[3][2] = 'K';
+    this.exitPosition[0] = 11;
+    this.exitPosition[1] = 1;
   }
 
   // add a Room to current Level
