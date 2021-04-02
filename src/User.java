@@ -9,12 +9,17 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.Timer;
 
-public class User implements UserInterface {
+public class User extends JPanel implements KeyListener, UserInterface {
+    private static User user;
     GameManager gm;
     public int moveAmount = 0;
-
+    JPanel jp;
 
     public User(List<String> names) {
+        jp = new JPanel();
+        setBackground(Color.BLACK);
+        setForeground(Color.WHITE);
+        refreshScreen();
         this.gm = new GameManager(names);
         gm.init();
     }
@@ -25,123 +30,126 @@ public class User implements UserInterface {
 
     }
 
+    Timer timer;
+    @Override
+    // render the Level
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.clearRect(0, 0, getWidth(), getHeight());
+
+        user.gm.drawPlayerView(g);
+
+//                user.gm.curLevel.drawRooms(g);
+//                user.gm.curLevel.drawHallways(g);
+    }
+    public void refreshScreen() {
+        timer = new Timer(0, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                repaint();
+            }
+        });
+        timer.setRepeats(true);
+        // Aprox. 60 FPS
+        timer.setDelay(17);
+        timer.start();
+    }
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(650, 480);
+    }
+
+
+    /**
+     * Invoked when a key has been typed. See the class description for {@link KeyEvent} for a
+     * definition of a key typed event.
+     */
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    // deal with arrow movement of user
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        Player p = user.gm.players.get(user.gm.curPlayer);
+        int[] dst = new int[2];
+        switch( keyCode ) {
+            case KeyEvent.VK_UP:
+                // handle up
+                System.out.println("up");
+                dst[0] = p.position.getKey() -1;
+                dst[1] = p.position.getValue();
+                ++user.moveAmount;
+                break;
+            case KeyEvent.VK_DOWN:
+                // handle down
+                System.out.println("down");
+                dst[0] = p.position.getKey() + 1;
+                dst[1] = p.position.getValue();
+                ++user.moveAmount;
+                break;
+            case KeyEvent.VK_LEFT:
+                // handle left
+                dst[0] = p.position.getKey();
+                dst[1] = p.position.getValue() -1;
+                ++user.moveAmount;
+                break;
+            case KeyEvent.VK_RIGHT :
+                // handle right
+                dst[0] = p.position.getKey();
+                dst[1] = p.position.getValue() + 1;
+                ++user.moveAmount;
+                break;
+
+        }
+
+        if (keyCode == KeyEvent.VK_ENTER) {
+            user.gm.nextPlayer();
+            user.moveAmount = 0;
+        }
+        if (user.moveAmount <= 2) {
+            user.move(dst, user.gm.players.get(user.gm.curPlayer));
+        }
+    }
+
+
+    /**
+     * Invoked when a key has been released. See the class description for {@link KeyEvent} for a
+     * definition of a key released event.
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+
     @Override
     public void move(int[] dst, Player player) {
         gm.movePlayer(player, dst);
     }
 
     public static void main(String[] args) {
-        User user = new User(Arrays.asList("JC", "hollis"));
+        user = new User(Arrays.asList("JC", "hollis"));
         System.out.println(user.gm.players.get(0).position);
         System.out.println(user.gm.curLevel.exitPosition[0] + ":" + user.gm.curLevel.exitPosition[1]);
 
 
 
-        class Panel extends JPanel implements KeyListener {
-            Timer timer;
-            Panel() {
-                setBackground(Color.BLACK);
-                setForeground(Color.WHITE);
-                refreshScreen();
-            }
-            @Override
-            // render the Level
-            public void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.clearRect(0, 0, getWidth(), getHeight());
-
-                user.gm.drawPlayerView(g);
-
-//                user.gm.curLevel.drawRooms(g);
-//                user.gm.curLevel.drawHallways(g);
-            }
-            public void refreshScreen() {
-                timer = new Timer(0, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        repaint();
-                    }
-                });
-                timer.setRepeats(true);
-                // Aprox. 60 FPS
-                timer.setDelay(17);
-                timer.start();
-            }
-            @Override
-            public Dimension getPreferredSize() {
-                return new Dimension(650, 480);
-            }
-
-
-            /**
-             * Invoked when a key has been typed. See the class description for {@link KeyEvent} for a
-             * definition of a key typed event.
-             */
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            // deal with arrow movement of user
-            public void keyPressed(KeyEvent e) {
-                int keyCode = e.getKeyCode();
-                Player p = user.gm.players.get(user.gm.curPlayer);
-                int[] dst = new int[2];
-                switch( keyCode ) {
-                    case KeyEvent.VK_UP:
-                        // handle up
-                        System.out.println("up");
-                        dst[0] = p.position.getKey() -1;
-                        dst[1] = p.position.getValue();
-                        ++user.moveAmount;
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        // handle down
-                        System.out.println("down");
-                        dst[0] = p.position.getKey() + 1;
-                        dst[1] = p.position.getValue();
-                        ++user.moveAmount;
-                        break;
-                    case KeyEvent.VK_LEFT:
-                        // handle left
-                        dst[0] = p.position.getKey();
-                        dst[1] = p.position.getValue() -1;
-                        ++user.moveAmount;
-                        break;
-                    case KeyEvent.VK_RIGHT :
-                        // handle right
-                        dst[0] = p.position.getKey();
-                        dst[1] = p.position.getValue() + 1;
-                        ++user.moveAmount;
-                        break;
-
-                }
-
-                if (keyCode == KeyEvent.VK_ENTER) {
-                    user.gm.nextPlayer();
-                    user.moveAmount = 0;
-                }
-                if (user.moveAmount <= 2) {
-                    user.move(dst, user.gm.players.get(user.gm.curPlayer));
-                }
-            }
-
-
-            /**
-             * Invoked when a key has been released. See the class description for {@link KeyEvent} for a
-             * definition of a key released event.
-             */
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        }
+//        class Panel {
+//
+//            Panel() {
+//                setBackground(Color.BLACK);
+//                setForeground(Color.WHITE);
+//                refreshScreen();
+//            }
+//
+//        }
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Panel p = new Panel();
-        frame.add(p);
-        frame.addKeyListener(p);
+//        Panel p = new Panel();
+        frame.add(user);
+        frame.addKeyListener(user);
         frame.pack();
         frame.setVisible(true);
 
