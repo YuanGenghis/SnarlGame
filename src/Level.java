@@ -127,12 +127,6 @@ public class Level extends JPanel{
 
   // set Adversary by amount
   public void setAds(int amount) {
-//    for (int ii = 0; ii < this.ads.size(); ++ii) {
-//      int x = this.ads.get(ii).getPosition().getKey();
-//      int y = this.ads.get(ii).getPosition().getValue();
-//      Room r = this.rooms.get(2);
-//      r.layout[y - r.position.getValue()][x - r.position.getKey()] = 'A';
-//    }
     Room r = this.rooms.get(2);
     int length = r.layout[0].length;
     for (int ii = r.layout.length; ii > 0; --ii) {
@@ -146,6 +140,14 @@ public class Level extends JPanel{
           }
         }
       }
+    }
+  }
+
+  public void moveAds(int adversary, int[] pos) {
+    Adversary ad = this.ads.get(adversary);
+    Room r = inWhichRoom(pos);
+    if (r.layout[pos[0] - r.position.getKey()][pos[1] - r.position.getValue()] == 'A') {
+      r.layout[pos[0] - r.position.getKey()][pos[1] - r.position.getValue()] = '.';
     }
   }
 
