@@ -213,6 +213,10 @@ public class RuleChecker {
                         [(pos[1] - yy) - r.position.getValue()] == 'E') {
                     view[rows][cols] = 5;
                 }
+                else if (r.layout[(pos[0] - ii) - r.position.getKey()]
+                        [(pos[1] - yy) - r.position.getValue()] == 'K') {
+                    view[rows][cols] = 4;
+                }
                 else {
                     view[rows][cols] = 1;
                 }
