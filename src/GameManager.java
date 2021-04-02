@@ -91,6 +91,16 @@ public class GameManager {
     return true;
   }
 
+  public void adversaryMove() {
+    for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
+      int[] dst = RuleChecker.getAdNextMove(curLevel.ads.get(ii), curLevel);
+
+      if (dst != null) {
+        this.curLevel.moveAds(ii, dst);
+      }
+    }
+  }
+
   // get the view of player in specific position
   public int[][] getViewOfPlayer(Player p, int[] pos) {
     int[][] view = new int[5][5];
@@ -135,7 +145,7 @@ public class GameManager {
 
   public void nextPlayer() {
     if (curPlayer == this.players.size() - 1) {
-
+      this.adversaryMove();
       curPlayer = 0;
     }
     else {

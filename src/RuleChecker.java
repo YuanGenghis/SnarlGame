@@ -93,6 +93,15 @@ public class RuleChecker {
     }
 
 
+    //Check adversary type, make unique move
+    public static int[] getAdNextMove(Adversary ad, Level curLevel) {
+        int[] dst = new int[2];
+
+
+        return null;
+    }
+
+
     public static List<int[]> searchTraversablePointsInHallway(int[] pos, List<Hallway> hws, Level level) {
 
         List<int[]> output = new ArrayList<>();

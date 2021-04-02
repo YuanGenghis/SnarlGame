@@ -1,5 +1,5 @@
 public interface ObserverInterface {
   public void printInfo();
 
-  public void render(GameState gameState);
+  public void render(Observer observer);
 }

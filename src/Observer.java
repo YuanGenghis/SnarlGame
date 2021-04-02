@@ -1,39 +1,44 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
+import javax.swing.Timer;
 
 public class Observer implements ObserverInterface {
-  GameState gs;
+  GameManager gm;
 
-  public Observer(GameState gameState) {
-    this.gs = gameState;
+  public Observer(List<String> names) {
+    this.gm = new GameManager(names);
+    gm.init();
   }
 
 
   public static void main(String[] args) {
-
+    Observer ob = new Observer(Arrays.asList("s"));
+    ob.render(ob);
+    ob.printInfo();
   }
 
   @Override
   public void printInfo() {
-    for (Player p: gs.players) {
+    for (Player p: gm.players) {
       System.out.println(p.name + ", Position: " + p.position);
     }
 
-    for (Adversary ad: gs.levels.get(gs.curLevel).ads) {
+    for (Adversary ad: gm.curLevel.ads) {
       System.out.println("Ad: " + ", Position: " + ad.position);
     }
 
-    System.out.println(gs.levels.get(gs.curLevel).ifLocked);
-    System.out.println("GameStatus: " + gs.gameStatus);
+    System.out.println(gm.curLevel.ifLocked);
+    System.out.println("GameStatus: " + gm.gameState.gameStatus);
 
   }
 
   @Override
-  public void render(GameState gameState) {
-    Observer observer = new Observer(gameState);
+  public void render(Observer ob) {
 
 
     class Panel extends JPanel{
@@ -49,8 +54,8 @@ public class Observer implements ObserverInterface {
         super.paintComponent(g);
         g.clearRect(0, 0, getWidth(), getHeight());
 
-        observer.gs.levels.get(observer.gs.curLevel).drawRooms(g);
-        observer.gs.levels.get(observer.gs.curLevel).drawHallways(g);
+        ob.gm.gameState.levels.get(ob.gm.gameState.curLevel).drawRooms(g);
+        ob.gm.gameState.levels.get(ob.gm.gameState.curLevel).drawHallways(g);
       }
       public void refreshScreen() {
         timer = new Timer(0, new ActionListener() {
