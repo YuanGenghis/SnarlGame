@@ -1,5 +1,3 @@
-import com.sun.javafx.css.Rule;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -8,7 +6,7 @@ import javafx.util.Pair;
 
 public class GameState {
   List<Level> levels;
-  int levelStatus;
+  int curLevel;
   int gameStatus;
   List<Player> players;
 
@@ -18,7 +16,7 @@ public class GameState {
   public GameState(int playerAmount, Level level, int ads) {
     this.levels = new ArrayList<>();
     this.players = new ArrayList<>();
-    this.levelStatus = 0;
+    this.curLevel = 0;
     this.gameStatus = 1;
     initGame(playerAmount, level, ads);
   }
@@ -27,7 +25,7 @@ public class GameState {
     this.players = players;
     this.levels = new ArrayList<>();
     this.levels.add(new Level());
-    this.levelStatus = 0;
+    this.curLevel = 0;
     this.gameStatus = 1;
   }
 
@@ -37,7 +35,7 @@ public class GameState {
   public GameState(List<Player> players, List<Level> levels) {
     this.players = players;
     this.levels = levels;
-    this.levelStatus = 0;
+    this.curLevel = 0;
     this.gameStatus = 1;
   }
 
@@ -48,10 +46,10 @@ public class GameState {
     Level level = new Level();
     this.levels = new ArrayList<>();
     this.players = new ArrayList<>();
-    this.levelStatus = 0;
+    this.curLevel = 0;
     this.gameStatus = 1;
     initGame(2, level, 1);
-    this.levels.get(levelStatus).movePlayer(this.players.get(0), new Pair<>(3,3));
+    this.levels.get(curLevel).movePlayer(this.players.get(0), new Pair<>(3,3));
 //    this.render(this.levels.get(levelStatus));
   }
 
@@ -66,7 +64,7 @@ public class GameState {
       this.players.add(player);
     }
     this.levels.add(level);
-    this.levels.get(levelStatus).setAds(ads);
+    this.levels.get(curLevel).setAds(ads);
 
 //    this.render(level);
   }
@@ -79,7 +77,7 @@ public class GameState {
     boolean exitLocked = (boolean) jo.get("exit-locked");
     JSONObject updateState = new JSONObject();
     JSONArray output = new JSONArray();
-    Level level = this.levels.get(levelStatus);
+    Level level = this.levels.get(curLevel);
     //if the player is part of the players
     if (playerInGame(pName)) {
       //if this the destination position is invalid(a wall or outside the room or hallway)

@@ -21,14 +21,14 @@ public class TestState {
     JSONArray jsonPlayers = jo.getJSONArray("players");
     JSONArray jsonAds = jo.getJSONArray("adversaries");
 
-    List<Adversary> ads = new ArrayList<>();
+    List<Zombie> ads = new ArrayList<>();
     for (int ii = 0; ii < jsonAds.length(); ++ii) {
       JSONObject jAd = jsonAds.getJSONObject(ii);
       String name = jAd.getString("name");
       String type = jAd.getString("type");
       int x = ((JSONArray) jAd.get("position")).getInt(0);
       int y = ((JSONArray) jAd.get("position")).getInt(1);
-      Adversary ad = new Adversary(type, name, new Pair<>(x,y));
+      Zombie ad = new Zombie(new Pair<>(x,y));
       ads.add(ad);
     }
     level.addAds(ads);
