@@ -1,6 +1,11 @@
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 
 public class LocalSnarl {
 
@@ -12,6 +17,7 @@ public class LocalSnarl {
     List<String> usernames = new ArrayList<>();
     int numberOfZombies = 1;
     int numberOfGhosts = 1;
+    int naturalNum = 0;
 
     // read the arguments
     for (int i = 0; i < args.length; i++) {
@@ -51,8 +57,30 @@ public class LocalSnarl {
 
     // render user mode
     if (!isObserverMode) {
-      User user1 = new User(usernames);
+      StringBuilder jsonFile = new StringBuilder();
+      try {
+        File myObj = new File(fileName);
+        Scanner myReader = new Scanner(myObj);
+        naturalNum = myReader.nextInt();
+        while (myReader.hasNextLine()) {
+          String data = myReader.nextLine();
+          jsonFile.append(data);
+        }
+        myReader.close();
+      } catch (FileNotFoundException e) {
+        System.out.println("An error occurred.");
+        e.printStackTrace();
+      }
+      String jsonString = jsonFile.toString();
+      JSONObject jo = new JSONObject(jsonString);
+      Level l = TestLevel.levelBuilder(jo);
+      List<Level> levels = new ArrayList<>();
+      levels.add(l);
+
+      User user1 = new User(1, levels, usernames);
+      System.out.println(user1.gm.players.get(0).position[0] + ":" + user1.gm.players.get(0).position[1]);
       user1.render();
+
     } else {
       Observer observer = new Observer(usernames);
 

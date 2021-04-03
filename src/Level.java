@@ -502,18 +502,13 @@ public class Level extends JPanel{
 
 
   public int[] setPlayer() {
-//    for (int ii = 0; ii < players.size(); ++ii) {
-//      int x = players.get(ii).getPosition().getKey();
-//      int y = players.get(ii).getPosition().getValue();
-//      this.rooms.get(0).layout[y][x] = 'P';
-//    }
     Room r = this.rooms.get(0);
     int[] res = new int[2];
     for (int ii = 0; ii < r.layout.length; ++ii) {
       for (int jj = 0; jj < r.layout[0].length; ++jj) {
         if (r.layout[ii][jj] == '.') {
           r.layout[ii][jj] = 'P';
-          res[0] = ii; res[1] = jj;
+          res[0] = ii + r.position[0]; res[1] = jj + r.position[1];
           return res;
         }
       }
