@@ -20,7 +20,7 @@ public class Level extends JPanel{
   List<Adversary> ads;
   int[] keyPosition;
   int[] exitPosition;
-  boolean ifLocked;
+  boolean isLocked = true;
 
   public static BufferedImage PlayerImage;
   public static BufferedImage ADImage;
@@ -108,7 +108,7 @@ public class Level extends JPanel{
     this.ads.add(ad1);
     this.keyPosition = new int[2];
     this.exitPosition = new int[2];
-    this.ifLocked = true;
+    this.isLocked = true;
   }
 
 
@@ -123,7 +123,7 @@ public class Level extends JPanel{
     this.rooms = rooms;
     this.hallways = hallways;
     this.ads = new ArrayList<>();
-    this.ifLocked = true;
+    this.isLocked = true;
   }
 
   public void addAd(Zombie ad) {
@@ -611,7 +611,7 @@ public class Level extends JPanel{
         }
       }
     }
-    
+
     player.position = newPosition;
 
 //    System.out.println(player.name + "move from:" + oldPosition + " to: " + newPosition);

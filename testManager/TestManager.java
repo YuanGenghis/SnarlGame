@@ -60,7 +60,7 @@ public class TestManager {
     JSONObject updateLevel = new JSONObject();
     JSONObject stateObj = new JSONObject();
 
-    if (!level.ifLocked) {
+    if (!level.isLocked) {
       updateLevel.put("type", "level");
       updateLevel.put("rooms", levelObj.getJSONArray("rooms"));
       updateLevel.put("hallways", levelObj.getJSONArray("hallways"));
@@ -99,7 +99,7 @@ public class TestManager {
       actorPositionList2.put(actor);
     }
     stateObj.put("adversaries", actorPositionList2);
-    stateObj.put("exit-locked", level.ifLocked);
+    stateObj.put("exit-locked", level.isLocked);
 
 
     output.put(stateObj);

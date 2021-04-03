@@ -142,17 +142,24 @@ public class GameManager {
     switch (result) {
       case "Invalid Move":
         System.out.println(result);
+        break;
       case "Adversary":
         p.status = -1;
         this.checkAllPlayerStatus();
         this.nextPlayer();
+        break;
       case "Key":
-        gameState.levels.get(gameState.curLevel).ifLocked = false;
+        gameState.levels.get(gameState.curLevel).isLocked = false;
+        break;
       case "Exit":
-        if (!gameState.levels.get(gameState.curLevel).ifLocked) {
+        System.out.println("i have no idea why this can be reached");
+        if (!gameState.levels.get(gameState.curLevel).isLocked) {
           this.win();
         }
-      default:
+        break;
+
+
+      default: break;
 
     }
   }
@@ -200,7 +207,7 @@ public class GameManager {
   // run win scene
   public void win() {
     if (gameState.curLevel == gameState.levels.size() - 1) {
-      System.out.println("YOU WIN!");
+      System.out.println("YOU WIN!!!");
       System.exit(1);
     } else {
       System.out.println("next level");
@@ -222,7 +229,7 @@ public class GameManager {
     int[] keyPos = gameState.levels.get(gameState.curLevel).keyPosition;
     if (pos[0] + 2 >= keyPos[0] && keyPos[0] >= pos[0] -2
             && pos[1] + 2 >= keyPos[1] && keyPos[1] >= pos[1] - 2
-            && gameState.levels.get(gameState.curLevel).ifLocked) {
+            && gameState.levels.get(gameState.curLevel).isLocked) {
       JSONObject obj = new JSONObject();
       obj.put("type", "key");
       obj.put("position", keyPos);
@@ -269,7 +276,7 @@ public class GameManager {
     else if (RuleChecker.isValidMove(p, gameState.levels.get(gameState.curLevel), dst)) {
       if (dst[0] == gameState.levels.get(gameState.curLevel).exitPosition[0]
               && dst[1] == gameState.levels.get(gameState.curLevel).exitPosition[1]) {
-        if (gameState.levels.get(gameState.curLevel).ifLocked) {
+        if (gameState.levels.get(gameState.curLevel).isLocked) {
           return "OK";
         } else {
           return "Exit";
@@ -277,8 +284,8 @@ public class GameManager {
       }
       else if (dst[0] == gameState.levels.get(gameState.curLevel).keyPosition[0]
               && dst[1] == gameState.levels.get(gameState.curLevel).keyPosition[1]) {
-        if (gameState.levels.get(gameState.curLevel).ifLocked) {
-          gameState.levels.get(gameState.curLevel).ifLocked = false;
+        if (gameState.levels.get(gameState.curLevel).isLocked) {
+          gameState.levels.get(gameState.curLevel).isLocked = false;
           return "Key";
         } else {
           return "OK";
@@ -296,7 +303,7 @@ public class GameManager {
 
   //Just for Test task
   public JSONArray checkForMove(List<JSONArray> moves, int moveAmount) {
-    System.out.println(gameState.levels.get(gameState.curLevel).ifLocked);
+    System.out.println(gameState.levels.get(gameState.curLevel).isLocked);
     JSONArray output = new JSONArray();
     //ii represent which player's move
     int ii = 0;
