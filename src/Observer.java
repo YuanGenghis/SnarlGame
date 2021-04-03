@@ -39,7 +39,7 @@ public class Observer extends JPanel implements ObserverInterface {
       System.out.println("Ad: " + ", Position: " + ad.position);
     }
 
-    System.out.println(gm.gameState.levels.get(gm.gameState.curLevel).ifLocked);
+    System.out.println(gm.gameState.levels.get(gm.gameState.curLevel).isLocked);
     System.out.println("GameStatus: " + gm.gameState.gameStatus);
 
   }
