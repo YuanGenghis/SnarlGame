@@ -89,6 +89,7 @@ public class GameManager {
     return true;
   }
 
+  // move adversary
   public void adversaryMove() {
     for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
       int[] dst = RuleChecker.getAdNextMove(curLevel.ads.get(ii), curLevel, players);
