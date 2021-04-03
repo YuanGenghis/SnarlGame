@@ -152,8 +152,9 @@ public class Level extends JPanel{
     }
   }
 
-  public void moveAds(int adversary, int[] pos) {
-    Adversary ad = this.ads.get(adversary);
+  //
+  public void moveAds(int index, int[] pos) {
+    Adversary ad = this.ads.get(index);
     Room r = inWhichRoom(pos);
     if (r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] == 'A') {
       r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] = '.';
@@ -516,6 +517,7 @@ public class Level extends JPanel{
     return res;
   }
 
+  // move player to the given position
   public void movePlayer(Player player, int[] newPosition) {
     int[] oldPosition = player.getPosition();
     int[] old = new int[2];

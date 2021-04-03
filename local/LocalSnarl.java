@@ -83,7 +83,7 @@ public class LocalSnarl {
 
     } else {
       Observer observer = new Observer(usernames);
-
+      observer.render();
     }
 
   }

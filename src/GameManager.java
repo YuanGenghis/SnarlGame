@@ -97,7 +97,7 @@ public class GameManager {
     return true;
   }
 
-  // move adversary
+  // move each adversary
   public void adversaryMove() {
     for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
       int[] dst = RuleChecker.getAdNextMove(curLevel.ads.get(ii), curLevel, players);
@@ -149,7 +149,9 @@ public class GameManager {
     }
   }
 
+  // move to the next Player's round
   public void nextPlayer() {
+    // after all players' rounds, the adversaries move
     if (curPlayer == this.players.size() - 1) {
       this.adversaryMove();
       curPlayer = 0;
