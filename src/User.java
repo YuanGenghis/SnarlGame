@@ -80,14 +80,12 @@ public class User extends JPanel implements KeyListener, UserInterface {
         switch( keyCode ) {
             case KeyEvent.VK_UP:
                 // handle up
-                System.out.println("up");
                 dst[0] = p.position[0] -1;
                 dst[1] = p.position[1];
                 ++moveAmount;
                 break;
             case KeyEvent.VK_DOWN:
                 // handle down
-                System.out.println("down");
                 dst[0] = p.position[0] + 1;
                 dst[1] = p.position[1];
                 ++moveAmount;
@@ -138,8 +136,6 @@ public class User extends JPanel implements KeyListener, UserInterface {
 
     public static void main(String[] args) {
         user = new User(Arrays.asList("JC", "hollis"));
-        System.out.println(user.gm.players.get(0).position);
-        System.out.println(user.gm.curLevel.exitPosition[0] + ":" + user.gm.curLevel.exitPosition[1]);
         user.render();
     }
 }
