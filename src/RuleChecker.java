@@ -295,8 +295,12 @@ public class RuleChecker {
                     view[rows][cols] = 3;
                 }
                 else if (r.layout[(pos[0] - ii) - r.position[0]]
-                        [(pos[1] - yy) - r.position[1]] == 'A') {
+                        [(pos[1] - yy) - r.position[1]] == 'Z') {
                     view[rows][cols] = -1;
+                }
+                else if (r.layout[(pos[0] - ii) - r.position[0]]
+                        [(pos[1] - yy) - r.position[1]] == 'G') {
+                    view[rows][cols] = -2;
                 }
                 else if (r.layout[(pos[0] - ii) - r.position[0]]
                         [(pos[1] - yy) - r.position[1]] == 'E') {

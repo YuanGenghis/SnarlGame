@@ -16,7 +16,6 @@ public class GameManager {
   List<Player> players;
   int curPlayer;
   GameState gameState;
-  Level curLevel;
 
   public int rectWidth = 25;
   public static BufferedImage PlayerImage;
@@ -34,7 +33,6 @@ public class GameManager {
     this.players = players;
     this.gameState = gameState;
     this.curPlayer = curPlayer;
-    this.curLevel = gameState.levels.get(gameState.curLevel);
   }
 
   //constructor for test task
@@ -45,7 +43,6 @@ public class GameManager {
     List<Level> levels = new ArrayList<>();
     levels.add(curLevel);
     this.gameState = new GameState(players, levels);
-    this.curLevel = this.gameState.levels.get(this.gameState.curLevel);
   }
 
   public GameManager(List<Level> levels, List<String> names) {
@@ -53,7 +50,6 @@ public class GameManager {
     this.register(names);
     this.curPlayer = 0;
     this.gameState = new GameState(this.players, levels);
-    this.curLevel = this.gameState.levels.get(0);
   }
 
   //Start a simple one level game
@@ -62,7 +58,6 @@ public class GameManager {
     this.register(names);
     this.gameState = new GameState(this.players);
     this.curPlayer = 0;
-    this.curLevel = this.gameState.levels.get(0);
   }
 
   // register players
@@ -80,11 +75,20 @@ public class GameManager {
 
   // init the GameManager
   public void init() {
+    Level level = this.gameState.levels.get(this.gameState.curLevel);
     for (Player player : players) {
-      player.position = this.curLevel.setPlayer();
+      player.position = level.setPlayer();
     }
-    this.curLevel.setAds(2);
-//    curLevel.renderLevel(this.curLevel);
+
+    int zombieAmount = ((gameState.curLevel + 1)/ 2) + 1;
+    for (int ii = 0; ii < gameState.levels.size(); ++ii) {
+      gameState.levels.get(ii).setZombiesInLevel(zombieAmount);
+    }
+
+    int ghostAmount = gameState.curLevel/ 2;
+    for (int ii = 0; ii < gameState.levels.size(); ++ii) {
+      gameState.levels.get(ii).setGhostInLevel(ghostAmount);
+    }
   }
 
   // check if the name is valid
@@ -99,11 +103,12 @@ public class GameManager {
 
   // move each adversary
   public void adversaryMove() {
-    for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
-      int[] dst = RuleChecker.getAdNextMove(curLevel.ads.get(ii), curLevel, players);
+    for (int ii = 0; ii < gameState.levels.get(gameState.curLevel).ads.size(); ++ii) {
+      int[] dst = RuleChecker.getAdNextMove(gameState.levels.get(gameState.curLevel).ads.get(ii),
+              gameState.levels.get(gameState.curLevel), players);
 
       if (dst != null) {
-        this.curLevel.moveAds(ii, dst);
+        this.gameState.levels.get(gameState.curLevel).moveAds(ii, dst);
       }
     }
   }
@@ -112,24 +117,28 @@ public class GameManager {
   public int[][] getViewOfPlayer(Player p, int[] pos) {
     int[][] view = new int[5][5];
     boolean ifInHW = true;
-    int[] position = curLevel.getRoomPosition(pos);
-    for (Room r: curLevel.rooms) {
+    int[] position = gameState.levels.get(gameState.curLevel).getRoomPosition(pos);
+    for (Room r: gameState.levels.get(gameState.curLevel).rooms) {
       if (position == r.position) {
         ifInHW = false;
-        List<int[]> hallwaysPoints = RuleChecker.findHallwayPoints(curLevel.hallways);
-        view = RuleChecker.getPlayerView(pos, r, hallwaysPoints, curLevel.rooms);
+        List<int[]> hallwaysPoints =
+                RuleChecker.findHallwayPoints(gameState.levels.get(gameState.curLevel).hallways);
+        view =
+                RuleChecker.getPlayerView(pos, r, hallwaysPoints, gameState.levels.get(gameState.curLevel).rooms);
       }
     }
     if (ifInHW) {
-      List<int[]> hallwaysPoints = RuleChecker.findHallwayPoints(curLevel.hallways);
-      view = RuleChecker.getPlayerView(pos, null, hallwaysPoints, curLevel.rooms);
+      List<int[]> hallwaysPoints =
+              RuleChecker.findHallwayPoints(gameState.levels.get(gameState.curLevel).hallways);
+      view = RuleChecker.getPlayerView(pos, null, hallwaysPoints, gameState.levels.get(gameState.curLevel).rooms);
     }
     return view;
   }
 
   // interact with different object, change the status of player (to dead or got key or cross the exit)
   public void interact(Player p, int[] pos) {
-    String result = RuleChecker.hasInteractionPlayer(p, this.curLevel, pos);
+    String result = RuleChecker.hasInteractionPlayer(p, gameState.levels.get(gameState.curLevel), pos);
+    System.out.println(result);
     switch (result) {
       case "Invalid Move":
         System.out.println(result);
@@ -138,14 +147,13 @@ public class GameManager {
         this.checkAllPlayerStatus();
         this.nextPlayer();
       case "Key":
-        this.curLevel.ifLocked = false;
-//        this.nextPlayer();
+        gameState.levels.get(gameState.curLevel).ifLocked = false;
       case "Exit":
-        if (!this.curLevel.ifLocked) this.win();
-//        this.nextPlayer();
-//      //represent a valid move
-//      case "nothing":
-//        this.nextPlayer();
+        if (!gameState.levels.get(gameState.curLevel).ifLocked) {
+          this.win();
+        }
+      default:
+
     }
   }
 
@@ -175,9 +183,9 @@ public class GameManager {
   // move a player to a position
   public void movePlayer(Player p, int[] pos) {
 //    System.out.println("move to:" + pos[0] + ":" + pos[1]);
-    if (RuleChecker.isValidMove(p, curLevel, pos)) {
+    if (RuleChecker.isValidMove(p, gameState.levels.get(gameState.curLevel), pos)) {
       this.interact(p, pos);
-      curLevel.movePlayer(p, pos);
+      gameState.levels.get(gameState.curLevel).movePlayer(p, pos);
     }
     else {
       System.out.println("Invalid move, move again!");
@@ -191,8 +199,14 @@ public class GameManager {
 
   // run win scene
   public void win() {
-    System.out.println("YOU WIN!");
-    System.exit(1);
+    if (gameState.curLevel == gameState.levels.size() - 1) {
+      System.out.println("YOU WIN!");
+      System.exit(1);
+    } else {
+      System.out.println("next level");
+      this.gameState.curLevel++;
+    }
+
   }
 
   // run lost scene
@@ -205,17 +219,17 @@ public class GameManager {
   //for M7 Test task
   public JSONArray objectsInView(int[] pos) {
     JSONArray objs = new JSONArray();
-    int[] keyPos = this.curLevel.keyPosition;
+    int[] keyPos = gameState.levels.get(gameState.curLevel).keyPosition;
     if (pos[0] + 2 >= keyPos[0] && keyPos[0] >= pos[0] -2
             && pos[1] + 2 >= keyPos[1] && keyPos[1] >= pos[1] - 2
-            && curLevel.ifLocked) {
+            && gameState.levels.get(gameState.curLevel).ifLocked) {
       JSONObject obj = new JSONObject();
       obj.put("type", "key");
       obj.put("position", keyPos);
       objs.put(obj);
     }
 
-    int[] exitPos = this.curLevel.exitPosition;
+    int[] exitPos = gameState.levels.get(gameState.curLevel).exitPosition;
     if (pos[0] + 2 >= exitPos[0] && exitPos[0] >= pos[0] -2
             && pos[1] + 2 >= exitPos[1] && exitPos[1] >= pos[1] - 2) {
       JSONObject obj = new JSONObject();
@@ -230,10 +244,10 @@ public class GameManager {
   //for M7 Test task
   public JSONArray actorsInView(int[] pos) {
     JSONArray actors = new JSONArray();
-    for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
+    for (int ii = 0; ii < gameState.levels.get(gameState.curLevel).ads.size(); ++ii) {
       int[] adPos = new int[2];
-      adPos[0] = curLevel.ads.get(ii).getPosition()[0];
-      adPos[1] = curLevel.ads.get(ii).getPosition()[1];
+      adPos[0] = gameState.levels.get(gameState.curLevel).ads.get(ii).getPosition()[0];
+      adPos[1] = gameState.levels.get(gameState.curLevel).ads.get(ii).getPosition()[1];
       if (pos[0] + 2 >= adPos[0] && adPos[0] >= pos[0] - 2
               && pos[1] + 2 >= adPos[1] && adPos[1] >= pos[1] - 2) {
         JSONObject actor = new JSONObject();
@@ -248,21 +262,23 @@ public class GameManager {
 
   //for M7 Test task
   public String checkMoveResult(Player p, int[] dst) {
-    if (curLevel.checkIfOnAd(dst)) {
+    if (gameState.levels.get(gameState.curLevel).checkIfOnAd(dst)) {
       p.status = -1;
       return "Eject";
     }
-    else if (RuleChecker.isValidMove(p, curLevel, dst)) {
-      if (dst[0] == curLevel.exitPosition[0] && dst[1] == curLevel.exitPosition[1]) {
-        if (curLevel.ifLocked) {
+    else if (RuleChecker.isValidMove(p, gameState.levels.get(gameState.curLevel), dst)) {
+      if (dst[0] == gameState.levels.get(gameState.curLevel).exitPosition[0]
+              && dst[1] == gameState.levels.get(gameState.curLevel).exitPosition[1]) {
+        if (gameState.levels.get(gameState.curLevel).ifLocked) {
           return "OK";
         } else {
           return "Exit";
         }
       }
-      else if (dst[0] == curLevel.keyPosition[0] && dst[1] == curLevel.keyPosition[1]) {
-        if (curLevel.ifLocked) {
-          curLevel.ifLocked = false;
+      else if (dst[0] == gameState.levels.get(gameState.curLevel).keyPosition[0]
+              && dst[1] == gameState.levels.get(gameState.curLevel).keyPosition[1]) {
+        if (gameState.levels.get(gameState.curLevel).ifLocked) {
+          gameState.levels.get(gameState.curLevel).ifLocked = false;
           return "Key";
         } else {
           return "OK";
@@ -280,7 +296,7 @@ public class GameManager {
 
   //Just for Test task
   public JSONArray checkForMove(List<JSONArray> moves, int moveAmount) {
-    System.out.println(curLevel.ifLocked);
+    System.out.println(gameState.levels.get(gameState.curLevel).ifLocked);
     JSONArray output = new JSONArray();
     //ii represent which player's move
     int ii = 0;
