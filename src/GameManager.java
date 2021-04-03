@@ -152,7 +152,6 @@ public class GameManager {
         gameState.levels.get(gameState.curLevel).isLocked = false;
         break;
       case "Exit":
-        System.out.println("i have no idea why this can be reached");
         if (!gameState.levels.get(gameState.curLevel).isLocked) {
           this.win();
         }
@@ -211,7 +210,12 @@ public class GameManager {
       System.exit(1);
     } else {
       System.out.println("next level");
-      this.gameState.curLevel++;
+      ++gameState.curLevel;
+
+      Level level = this.gameState.levels.get(this.gameState.curLevel);
+      for (Player player : players) {
+        player.position = level.setPlayer();
+      }
     }
 
   }
