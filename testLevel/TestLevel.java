@@ -3,8 +3,6 @@ import com.sun.corba.se.spi.ior.ObjectKey;
 import java.util.*;
 import org.json.*;
 
-import javafx.util.Pair;
-
 
 public class TestLevel {
   public static int[] point = new int[2];
@@ -48,34 +46,36 @@ public class TestLevel {
     for (int ii = 0; ii < hws.length(); ++ii) {
       JSONObject h = (JSONObject) hws.get(ii);
       Hallway hw = new Hallway();
-      List<Pair<Integer, Integer>> waypoints = new ArrayList<>();
+      List<int[]> waypoints = new ArrayList<>();
       int fromX = ((JSONArray) h.get("from")).getInt(0);
       int fromY = ((JSONArray) h.get("from")).getInt(1);
       int toX = ((JSONArray) h.get("to")).getInt(0);
       int toY = ((JSONArray) h.get("to")).getInt(1);
       hw.setConnection(fromX, fromY, toX, toY);
 
-      List<Pair<Integer, Integer>> layout = new ArrayList<>();
+      List<int[]> layout = new ArrayList<>();
       JSONArray wps = h.getJSONArray("waypoints");
       for (int jj = 0; jj < wps.length(); ++jj) {
         int x = ((JSONArray) wps.get(jj)).getInt(0);
         int y = ((JSONArray) wps.get(jj)).getInt(1);
-        Pair<Integer, Integer> point = new Pair<>(x, y);
+        int[] point = new int[2]; point[0] = x; point[1] = y;
         waypoints.add(point);
       }
-      Pair<Integer, Integer> startPoint = new Pair<>(fromX, fromY);
+      int[] startPoint = new int[2]; startPoint[0] = fromX; startPoint[1] = fromY;
       int rowDif, colDif;
       int val = 1;
       //check for waypoints and use waypoints to save to path and add to hallway layout
       for (int zz = 0; zz < waypoints.size(); ++zz) {
-        rowDif = waypoints.get(zz).getKey() - startPoint.getKey();
-        colDif = waypoints.get(zz).getValue() - startPoint.getValue();
+        rowDif = waypoints.get(zz)[0] - startPoint[0];
+        colDif = waypoints.get(zz)[1] - startPoint[1];
         if (rowDif != 0) {
           if (rowDif < 0) {
             val = -1;
           } else {val = 1;}
           for (int i = 0; i < Math.abs(rowDif) - 1; ++i) {
-            Pair<Integer, Integer> point = new Pair<>(startPoint.getKey() + val, startPoint.getValue());
+            int[] point = new int[2];
+            point[0] = startPoint[0] + val;
+            point[1] = startPoint[1];
             layout.add(point);
             startPoint = point;
           }
@@ -84,7 +84,8 @@ public class TestLevel {
             val = -1;
           } else {val = 1;}
           for (int i = 0; i < Math.abs(colDif) - 1; ++i) {
-            Pair<Integer, Integer> point = new Pair<>(startPoint.getKey(), startPoint.getValue() + val);
+            int[] point = new int[2];
+            point[0] = startPoint[0]; point[1] = startPoint[1] + val;
             layout.add(point);
             startPoint = point;
           }
@@ -92,14 +93,15 @@ public class TestLevel {
         startPoint = waypoints.get(zz);
         layout.add(waypoints.get(zz));
       }
-      rowDif = toX - startPoint.getKey();
-      colDif = toY - startPoint.getValue();
+      rowDif = toX - startPoint[0];
+      colDif = toY - startPoint[1];
       if (rowDif != 0) {
         if (rowDif < 0) {
           val = -1;
         } else {val = 1;}
         for (int jj = 0; jj < Math.abs(rowDif) - 1; ++jj) {
-          Pair<Integer, Integer> point = new Pair<>(startPoint.getKey() + val, startPoint.getValue());
+          int[] point = new int[2];
+          point[0] = startPoint[0] + val; point[1] = startPoint[1];
           layout.add(point);
           startPoint = point;
         }
@@ -109,7 +111,8 @@ public class TestLevel {
           val = -1;
         } else {val = 1;}
         for (int jj = 0; jj < Math.abs(colDif) - 1; ++jj) {
-          Pair<Integer, Integer> point = new Pair<>(startPoint.getKey(), startPoint.getValue() + val);
+          int[] point = new int[2];
+          point[0] = startPoint[0]; point[1] = startPoint[1] + val;
           layout.add(point);
           startPoint = point;
         }

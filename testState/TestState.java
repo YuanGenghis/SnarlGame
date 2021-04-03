@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import javafx.util.Pair;
 
 public class TestState {
   public static int[] point = new int[2];
@@ -28,7 +27,8 @@ public class TestState {
       String type = jAd.getString("type");
       int x = ((JSONArray) jAd.get("position")).getInt(0);
       int y = ((JSONArray) jAd.get("position")).getInt(1);
-      Zombie ad = new Zombie(new Pair<>(x,y));
+      int[] p = new int[2]; p[0] = x; p[1] = y;
+      Zombie ad = new Zombie(p);
       ads.add(ad);
     }
     level.addAds(ads);
@@ -41,7 +41,8 @@ public class TestState {
       String name = p.getString("name");
       int x = ((JSONArray) p.get("position")).getInt(0);
       int y = ((JSONArray) p.get("position")).getInt(1);
-      Player player = new Player(name, new Pair<>(x,y));
+      int[] p2 = new int[2]; p2[0] = x; p2[1] = y;
+      Player player = new Player(name, p2);
       players.add(player);
     }
 

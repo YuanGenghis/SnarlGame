@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.util.Pair;
-
 public class RuleChecker {
     boolean isLevelEnd = false;
     int gameStatus = 0; // 0 represents ongoing, 1 represents user wins, -1 represents lost
@@ -27,9 +25,9 @@ public class RuleChecker {
     public static List<int[]> findHallwayPoints(List<Hallway> hws) {
         List<int[]> hwps = new ArrayList<>();
         for (Hallway hw: hws) {
-            for (Pair<Integer, Integer> p: hw.layout) {
+            for (int[] p: hw.layout) {
                 int[] point = new int[2];
-                point[0] = p.getKey(); point[1] = p.getValue();
+                point[0] = p[0]; point[1] = p[1];
                 hwps.add(point);
             }
         }
@@ -64,8 +62,8 @@ public class RuleChecker {
     // return all the traversable points of the given Player
     static List<int[]> traversablePoints(Player p, Level level) {
         int[] position = new int[2];
-        position[0] = p.getPosition().getKey();
-        position[1] = p.getPosition().getValue();
+        position[0] = p.getPosition()[0];
+        position[1] = p.getPosition()[1];
         Room room = inWhichRoom(position, level);
         List<int[]> hallwayPoints = findHallwayPoints(level.hallways);
         if (room == null) {
@@ -94,11 +92,96 @@ public class RuleChecker {
 
 
     //Check adversary type, make unique move
-    public static int[] getAdNextMove(Adversary ad, Level curLevel) {
+    public static int[] getAdNextMove(Adversary ad, Level curLevel, List<Player> players) {
         int[] dst = new int[2];
+        List<int[]> playerPos = new ArrayList<>();
+        for (int ii = 0; ii < players.size(); ++ii) {
+            int[] pos = new int[2];
+            pos[0] = players.get(ii).position[0];
+            pos[1] = players.get(ii).position[1];
+            playerPos.add(pos);
+        }
 
+
+        int[] adPos = new int[2];
+        adPos[0] = ad.getPosition()[0];
+        adPos[1] = ad.getPosition()[1];
+
+        int[] closestPlayerPos = closestPoint(playerPos, adPos);
+
+        List<int[]> surrunding = surrundings(adPos);
+        if (ad.getType().equals("Ghost")) {
+
+        }
+        else {
+            dst = closestPoint(surrunding, closestPlayerPos);
+            while (true) {
+                if (dst != null && checkIfAdMoveValid(dst, curLevel))
+                {
+                    return dst;
+                }
+                else if (dst != null) {
+                    surrunding.remove(dst);
+                    dst = closestPoint(surrunding, closestPlayerPos);
+                }
+                else {
+                    return null;
+                }
+            }
+        }
 
         return null;
+    }
+
+    public static boolean checkIfAdMoveValid(int[] pos, Level level) {
+        Room r = inWhichRoom(pos, level);
+        char tile = r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]];
+        if (tile == 'x' || tile == '|' || tile == '-') {
+            return false;
+        }
+        return true;
+    }
+
+    public static int[] closestPoint(List<int[]> points, int[] pos) {
+        if (points == null) return null;
+        int[] first = points.get(0);
+        int distance = Math.abs(pos[0] - first[0])
+                + Math.abs(pos[1] - first[1]);
+        int index = 0;
+        for (int ii = 0; ii < points.size(); ++ii) {
+            int d = Math.abs(pos[0] - points.get(ii)[0])
+                    + Math.abs(pos[1] - points.get(ii)[1]);
+            if (d < distance) {
+                index = ii;
+                distance = d;
+            }
+        }
+        return points.get(index);
+    }
+
+    public static List<int[]> surrundings(int[] pos) {
+        List<int[]> output = new ArrayList<>();
+        int[] up = new int[2];
+        up[0] = pos[0] + 1;
+        up[1] = pos[1];
+
+        int[] down = new int[2];
+        down[0] = pos[0] - 1;
+        down[1] = pos[1];
+
+        int[] left = new int[2];
+        left[0] = pos[0];
+        left[1] = pos[1] - 1;
+
+        int[] right = new int[2];
+        right[0] = pos[0];
+        right[1] = pos[1] + 1;
+
+        output.add(up);
+        output.add(right);
+        output.add(down);
+        output.add(left);
+        return output;
     }
 
 
@@ -160,8 +243,8 @@ public class RuleChecker {
 
     public static int checkRoomTailInsideHW(int[] pos, List<Room> rooms) {
         for (Room r: rooms) {
-            int x = pos[0] - r.position.getKey();
-            int y = pos[1] - r.position.getValue();
+            int x = pos[0] - r.position[0];
+            int y = pos[1] - r.position[1];
 //            System.out.println("X:" + x);
 //            System.out.println("y:" + x);
             if (x >= 0 && x < r.layout.length
@@ -193,34 +276,34 @@ public class RuleChecker {
                 else if (r == null) {
                     view[rows][cols] = checkRoomTailInsideHW(hp, rooms);
                 }
-                else if (pos[0] - ii < r.position.getKey()
-                        || pos[1] - yy < r.position.getValue()
-                        || pos[0] - ii >= r.position.getKey() + r.layout.length
-                        || pos[1] - yy >= r.position.getValue() + r.layout[0].length) {
+                else if (pos[0] - ii < r.position[0]
+                        || pos[1] - yy < r.position[1]
+                        || pos[0] - ii >= r.position[0] + r.layout.length
+                        || pos[1] - yy >= r.position[1] + r.layout[0].length) {
                     view[rows][cols] = 0;
                 }
-                else if (r.layout[(pos[0] - ii) - r.position.getKey()]
-                        [(pos[1] - yy) - r.position.getValue()] == 'x') {
+                else if (r.layout[(pos[0] - ii) - r.position[0]]
+                        [(pos[1] - yy) - r.position[1]] == 'x') {
                     view[rows][cols] = 0;
-                } else if (r.layout[(pos[0] - ii) - r.position.getKey()]
-                        [(pos[1] - yy) - r.position.getValue()] == '-'
-                        || r.layout[(pos[0] - ii) - r.position.getKey()]
-                        [(pos[1] - yy) - r.position.getValue()] == '|') {
+                } else if (r.layout[(pos[0] - ii) - r.position[0]]
+                        [(pos[1] - yy) - r.position[1]] == '-'
+                        || r.layout[(pos[0] - ii) - r.position[0]]
+                        [(pos[1] - yy) - r.position[1]] == '|') {
                     view[rows][cols] = 2;
-                } else if (r.layout[(pos[0] - ii) - r.position.getKey()]
-                        [(pos[1] - yy) - r.position.getValue()] == 'P') {
+                } else if (r.layout[(pos[0] - ii) - r.position[0]]
+                        [(pos[1] - yy) - r.position[1]] == 'P') {
                     view[rows][cols] = 3;
                 }
-                else if (r.layout[(pos[0] - ii) - r.position.getKey()]
-                        [(pos[1] - yy) - r.position.getValue()] == 'A') {
+                else if (r.layout[(pos[0] - ii) - r.position[0]]
+                        [(pos[1] - yy) - r.position[1]] == 'A') {
                     view[rows][cols] = -1;
                 }
-                else if (r.layout[(pos[0] - ii) - r.position.getKey()]
-                        [(pos[1] - yy) - r.position.getValue()] == 'E') {
+                else if (r.layout[(pos[0] - ii) - r.position[0]]
+                        [(pos[1] - yy) - r.position[1]] == 'E') {
                     view[rows][cols] = 5;
                 }
-                else if (r.layout[(pos[0] - ii) - r.position.getKey()]
-                        [(pos[1] - yy) - r.position.getValue()] == 'K') {
+                else if (r.layout[(pos[0] - ii) - r.position[0]]
+                        [(pos[1] - yy) - r.position[1]] == 'K') {
                     view[rows][cols] = 4;
                 }
                 else {

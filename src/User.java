@@ -73,27 +73,27 @@ public class User extends JPanel implements KeyListener, UserInterface {
             case KeyEvent.VK_UP:
                 // handle up
                 System.out.println("up");
-                dst[0] = p.position.getKey() -1;
-                dst[1] = p.position.getValue();
+                dst[0] = p.position[0] -1;
+                dst[1] = p.position[1];
                 ++moveAmount;
                 break;
             case KeyEvent.VK_DOWN:
                 // handle down
                 System.out.println("down");
-                dst[0] = p.position.getKey() + 1;
-                dst[1] = p.position.getValue();
+                dst[0] = p.position[0] + 1;
+                dst[1] = p.position[1];
                 ++moveAmount;
                 break;
             case KeyEvent.VK_LEFT:
                 // handle left
-                dst[0] = p.position.getKey();
-                dst[1] = p.position.getValue() -1;
+                dst[0] = p.position[0];
+                dst[1] = p.position[1] -1;
                 ++moveAmount;
                 break;
             case KeyEvent.VK_RIGHT :
                 // handle right
-                dst[0] = p.position.getKey();
-                dst[1] = p.position.getValue() + 1;
+                dst[0] = p.position[0];
+                dst[1] = p.position[1] + 1;
                 ++moveAmount;
                 break;
         }

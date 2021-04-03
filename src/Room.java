@@ -5,10 +5,10 @@ import javafx.util.Pair;
 // represents a Room
 public class Room {
   char[][] layout;
-  Pair<Integer, Integer> position;
+  int[] position;
 
   // construct the room
-  public Room(char[][] tiles, Pair<Integer, Integer> position) {
+  public Room(char[][] tiles, int[] position) {
     this.layout = tiles;
     this.position = position;
   }
@@ -16,7 +16,7 @@ public class Room {
   // construct the empty Room
   public Room(int row, int col) {
     this.layout = new char[col][row];
-    this.position = new Pair<>(0,0);
+    this.position = new int[2];
   }
 
   // add tiles to empty Room
@@ -32,6 +32,8 @@ public class Room {
 
   // set the position of the origin of Room
   public void setPosition(int x, int y) {
-    this.position = new Pair<>(x,y);
+    this.position = new int[2];
+    this.position[0] = x;
+    this.position[1] = y;
   }
 }
