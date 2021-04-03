@@ -5,19 +5,25 @@ import javafx.util.Pair;
 
 // represents a Hallway
 public class Hallway {
-  List<Pair<Integer,Integer>> layout;
-  Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> connection;
-  List<Pair<Integer, Integer>> waypoints;
+  List<int[]> layout;
+  List<int[]> waypoints;
+  List<int[]> connection;
   boolean ifPlayerInside;
   int[] playerPosition;
 
   // construct the Hallway
-  public Hallway(List<Pair<Integer,Integer>> tilesPosition,
-                 Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> connection,
-                 List<Pair<Integer, Integer>> waypoints) {
+  public Hallway(List<int[]> tilesPosition, List<int[]> waypoints) {
     this.layout = tilesPosition;
-    this.connection = connection;
     this.waypoints = waypoints;
+    ifPlayerInside = false;
+    playerPosition = new int[2];
+  }
+
+  // construct the Hallway
+  public Hallway(List<int[]> tilesPosition, List<int[]> connection, List<int[]> waypoints) {
+    this.layout = tilesPosition;
+    this.waypoints = waypoints;
+    this.connection = connection;
     ifPlayerInside = false;
     playerPosition = new int[2];
   }
@@ -25,7 +31,6 @@ public class Hallway {
   // init a default Hallway
   public Hallway() {
     this.layout = new ArrayList<>();
-    this.connection = new Pair<>(new Pair<>(0,0), new Pair<>(0,0));
     this.waypoints = new ArrayList<>();
     ifPlayerInside = false;
     playerPosition = new int[2];
@@ -33,16 +38,20 @@ public class Hallway {
 
   // set the connection of the Hallway
   public void setConnection(int x1, int y1, int x2, int y2) {
-    this.connection = new Pair<>(new Pair<>(x1,y1), new Pair<>(x2,y2));
+    List<int[]> lists = new ArrayList<>();
+    int[] p1 = new int[2]; p1[0] = x1; p1[1] = y1;
+    int[] p2 = new int[2]; p2[0] = x2; p2[1] = y2;
+    lists.add(p1); lists.add(p2);
+    this.connection = lists;
   }
 
   // set the waypoints of the Hallway
-  public void setWaypoints(List<Pair<Integer, Integer>> ways) {
+  public void setWaypoints(List<int[]> ways) {
     this.waypoints = ways;
   }
 
   // set the layout of the Hallway
-  public void setLayout(List<Pair<Integer,Integer>> layout) {
+  public void setLayout(List<int[]> layout) {
     this.layout = layout;
   }
 }

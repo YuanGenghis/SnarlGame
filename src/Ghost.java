@@ -1,16 +1,20 @@
-import javafx.util.Pair;
 
 public class Ghost implements Adversary {
   String type = "Ghost";
-  Pair<Integer, Integer> position;
+  int[] position;
 
   // init the Adversary with type, name, and position
-  public Ghost(Pair<Integer, Integer> position) {
+  public Ghost(int[] position) {
     this.position = position;
   }
 
   // return the position of the Adversary
-  public Pair<Integer, Integer> getPosition() {
+  public int[] getPosition() {
     return this.position;
+  }
+
+  @Override
+  public String getType() {
+    return type;
   }
 }

@@ -4,8 +4,6 @@ import org.json.JSONTokener;
 
 import java.util.*;
 
-import javafx.util.Pair;
-
 public class TestManager {
 
   public static JSONArray managerBuilder(JSONArray ja) {
@@ -35,7 +33,8 @@ public class TestManager {
 
     List<Player> players = new ArrayList<>();
     for (int ii = 0; ii < names.size(); ++ii) {
-      Pair<Integer, Integer> position = new Pair<>(points.get(ii)[0], points.get(ii)[1]);
+      int[] position = new int[2];
+      position[0] = points.get(ii)[0]; position[1] = points.get(ii)[1];
       Player p = new Player(names.get(ii), position);
       players.add(p);
     }
@@ -49,7 +48,7 @@ public class TestManager {
       adPositions.add(p);
     }
     for (int[] position: adPositions) {
-      Pair<Integer, Integer> p = new Pair<>(position[0], position[1]);
+      int[] p = new int[2]; p[0] = position[0]; p[1] = position[1];
       Zombie ad = new Zombie(p);
       level.addAd(ad);
     }
@@ -83,8 +82,8 @@ public class TestManager {
         actor.put("type", "player");
         actor.put("name", names.get(ii));
         int[] updatePos = new int[2];
-        updatePos[0] = gameManager.players.get(ii).position.getKey();
-        updatePos[1] = gameManager.players.get(ii).position.getValue();
+        updatePos[0] = gameManager.players.get(ii).position[0];
+        updatePos[1] = gameManager.players.get(ii).position[1];
         actor.put("position", updatePos);
         actorPositionList.put(actor);
       }

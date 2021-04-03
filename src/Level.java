@@ -12,8 +12,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 
-import javafx.util.Pair;
-
 // represents a Level of the game
 public class Level extends JPanel{
   List<Room> rooms;
@@ -31,66 +29,71 @@ public class Level extends JPanel{
   private static String PlayerUrl =
           "https://avatars.githubusercontent.com/u/46980128?s=400&u=abab5bff473ece8159ceb6f29ebf7cf3fc132e2b&v=4";
 
-  public static final char[][] room1Tails = {
-          {'x','x','x','x','x'},
-          {'x','.','.','.','x',},
-          {'x','.','.','.','|'},
-          {'x','.','.','.','x',},
-          {'x','x','-','x','x'}};
-  public static final Pair<Integer, Integer> room1Position = new Pair<>(0,0);
-  public static final Room room1 = new Room(room1Tails, room1Position);
+
+  public void initDefult() {
+    char[][] room1Tails = {
+            {'x','x','x','x','x'},
+            {'x','.','.','.','x',},
+            {'x','.','.','.','|'},
+            {'x','.','.','.','x',},
+            {'x','x','-','x','x'}};
+    int[] room1Position = new int[2];
+    room1Position[0] = 0; room1Position[1] = 0;
+    Room room1 = new Room(room1Tails, room1Position);
 
 
-  public static final char[][] room2Tails = {
-          {'x','x','x','x','x'},
-          {'x','.','.','.','x',},
-          {'|','.','.','.','x'},
-          {'x','.','.','.','x',},
-          {'x','x','x','x','x'}};
-  public static final Pair<Integer, Integer> room2Position = new Pair<>(0,8);
-  public static final Room room2 = new Room(room2Tails, room2Position);
+    char[][] room2Tails = {
+            {'x','x','x','x','x'},
+            {'x','.','.','.','x',},
+            {'|','.','.','.','x'},
+            {'x','.','.','.','x',},
+            {'x','x','x','x','x'}};
+    int[] room2Position = new int[2];
+    room2Position[0] = 0; room2Position[1] = 8;
+    Room room2 = new Room(room2Tails, room2Position);
 
 
-  public static final char[][] room3Tails = {
-          {'x','x','-','x','x'},
-          {'x','.','.','.','x',},
-          {'x','.','.','.','x'},
-          {'x','.','.','.','x',},
-          {'x','.','.','.','x'},
-          {'x','x','x','x','x'}};
-  public static final Pair<Integer, Integer> room3Position = new Pair<>(8,0);
-  public static final Room room3 = new Room(room3Tails, room3Position);
-
-  public static final List<Pair<Integer, Integer>> tilesPosition1 =
-          new ArrayList<>(Arrays.asList(
-          new Pair<>(2,5), new Pair<>(2,6), new Pair<>(2,7)
-  ));
-  public static final Pair<Integer, Integer> room1door1 = new Pair<>(2, 4);
-  public static final Pair<Integer, Integer> room2door1 = new Pair<>(2, 8);
-  public static final Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> hw1Connect =
-          new Pair<>(room1door1, room2door1);
-  public static final List<Pair<Integer, Integer>> hw1Waypoints =
-          new ArrayList<>(Arrays.asList(new Pair<>(2,6)));
-  public static final Hallway hw1 = new Hallway(tilesPosition1, hw1Connect, hw1Waypoints);
-
-  public static final List<Pair<Integer, Integer>> tilesPosition2 =
-          new ArrayList<>(Arrays.asList(
-                  new Pair<>(5,2), new Pair<>(6,2), new Pair<>(7,2)
-          ));
-  public static final Pair<Integer, Integer> room1door2 = new Pair<>(4, 2);
-  public static final Pair<Integer, Integer> room3door1 = new Pair<>(8, 2);
-  public static final Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> hw2Connect =
-          new Pair<>(room1door2, room3door1);
-  public static final List<Pair<Integer, Integer>> hw2Waypoints =
-          new ArrayList<>(Arrays.asList(new Pair<>(6,2)));
-  public static final Hallway hw2 = new Hallway(tilesPosition2, hw2Connect, hw2Waypoints);
-
-  public static final Pair<Integer, Integer> aPosition = new Pair<>(12,3);
-  public static final Zombie ad1 = new Zombie(aPosition);
+    final char[][] room3Tails = {
+            {'x','x','-','x','x'},
+            {'x','.','.','.','x',},
+            {'x','.','.','.','x'},
+            {'x','.','.','.','x',},
+            {'x','.','.','.','x'},
+            {'x','x','x','x','x'}};
+    int[] room3Position = new int[2];
+    room3Position[0] = 8; room3Position[1] = 0;
+    Room room3 = new Room(room3Tails, room3Position);
 
 
-  // construct the level example
-  public Level() {
+    int[] hw1p1 = new int[2]; hw1p1[0] = 2; hw1p1[1] = 5;
+    int[] hw1p2 = new int[2]; hw1p2[0] = 2; hw1p2[1] = 6;
+    int[] hw1p3 = new int[2]; hw1p3[0] = 2; hw1p3[1] = 7;
+    List<int[]> tilesPosition1 =
+            new ArrayList<>(Arrays.asList(hw1p1, hw1p2, hw1p3));
+    int[] room1door1 = new int[2]; room1door1[0] = 2; room1door1[1] = 4;
+    int[] room2door1 = new int[2]; room2door1[0] = 2; room2door1[1] = 8;
+
+    int[] hw1wp1 = new int[2]; hw1wp1[0] = 2; hw1wp1[1] = 6;
+    List<int[]> hw1Waypoints =
+            new ArrayList<>(Arrays.asList(hw1wp1));
+    Hallway hw1 = new Hallway(tilesPosition1, hw1Waypoints);
+
+    int[] hw2p1 = new int[2]; hw2p1[0] = 5; hw2p1[1] = 2;
+    int[] hw2p2 = new int[2]; hw2p2[0] = 6; hw2p2[1] = 2;
+    int[] hw2p3 = new int[2]; hw2p3[0] = 7; hw2p3[1] = 2;
+
+    List<int[]> tilesPosition2 =
+            new ArrayList<>(Arrays.asList(hw2p1, hw2p2, hw2p3));
+    int[] room1door2 = new int[2]; room1door2[0] = 4; room1door2[1] = 2;
+    int[] room3door1 = new int[2]; room3door1[0] = 8; room3door1[1] = 2;
+    int[] hw2wp1 = new int[2]; hw2wp1[0] = 6; hw2wp1[1] = 2;
+    List<int[]> hw2Waypoints =
+            new ArrayList<>(Arrays.asList(hw2wp1));
+    Hallway hw2 = new Hallway(tilesPosition2, hw2Waypoints);
+
+    int[] aPosition = new int[2]; aPosition[0] = 12; aPosition[1] = 3;
+    Zombie ad1 = new Zombie(aPosition);
+
     this.rooms = new ArrayList<>();
     this.hallways = new ArrayList<>();
     this.rooms.add(room1);
@@ -103,6 +106,12 @@ public class Level extends JPanel{
     this.keyPosition = new int[2];
     this.exitPosition = new int[2];
     this.ifLocked = true;
+  }
+
+
+  // construct the level example
+  public Level() {
+    this.initDefult();
     this.init();
   }
 
@@ -146,8 +155,8 @@ public class Level extends JPanel{
   public void moveAds(int adversary, int[] pos) {
     Adversary ad = this.ads.get(adversary);
     Room r = inWhichRoom(pos);
-    if (r.layout[pos[0] - r.position.getKey()][pos[1] - r.position.getValue()] == 'A') {
-      r.layout[pos[0] - r.position.getKey()][pos[1] - r.position.getValue()] = '.';
+    if (r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] == 'A') {
+      r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] = '.';
     }
   }
 
@@ -188,16 +197,16 @@ public class Level extends JPanel{
   // draw Hallways
   public void drawHallways(Graphics g) {
     for (Hallway hw: hallways) {
-      for (Pair<Integer, Integer> p : hw.layout) {
-        int xx = p.getKey() * rectWidth;
-        int yy = p.getValue() * rectWidth;
+      for (int[] p : hw.layout) {
+        int xx = p[0] * rectWidth;
+        int yy = p[1] * rectWidth;
         if (!hw.ifPlayerInside) {
           g.setColor((Color.GRAY));
           g.fillRect(yy, xx, rectWidth, rectWidth);
           g.setColor((Color.blue));
           g.drawRect(yy, xx, rectWidth, rectWidth);
         } else {
-          if (p.getKey() == hw.playerPosition[0] && p.getValue() == hw.playerPosition[1]) {
+          if (p[0] == hw.playerPosition[0] && p[1] == hw.playerPosition[1]) {
             System.out.println("in hw");
             try {
               URL url = new URL(PlayerUrl);
@@ -223,8 +232,8 @@ public class Level extends JPanel{
   // Draw rooms
   public void drawRooms(Graphics g) {
     for (Room r: rooms) {
-      int x = r.position.getKey();
-      int y = r.position.getValue();
+      int x = r.position[0];
+      int y = r.position[1];
       int width = r.layout[0].length;
       int height = r.layout.length;
       for (int ii = x; ii < height+x; ++ii) {
@@ -279,12 +288,12 @@ public class Level extends JPanel{
   }
 
   // get the position of the room
-  public Pair<Integer, Integer> getRoomPosition(int[] point) {
+  public int[] getRoomPosition(int[] point) {
     for (Room room: rooms) {
       int rows = room.layout.length;
       int cols = room.layout[0].length;
-      int positionX = room.position.getKey();
-      int positionY = room.position.getValue();
+      int positionX = room.position[0];
+      int positionY = room.position[1];
 
       if (positionY <= point[1] && point[1] < positionY + rows) {
         if (positionX <= point[0] && point[0] < positionX + cols) {
@@ -292,7 +301,8 @@ public class Level extends JPanel{
         }
       }
     }
-    return new Pair<>(-1,-1);
+    int[] none = new int[2]; none[0] = -1; none[1] = -1;
+    return none;
   }
 
   //for test
@@ -301,23 +311,23 @@ public class Level extends JPanel{
     int type = checkTailType(point);
     if (type == -1) {
       if (checkIfInHallways(point) != -1) {
-        Pair<Integer, Integer> from = hallways.get(checkIfInHallways(point)).connection.getKey();
-        Pair<Integer, Integer> to = hallways.get(checkIfInHallways(point)).connection.getValue();
+        int[] from = hallways.get(checkIfInHallways(point)).connection.get(0);
+        int[] to = hallways.get(checkIfInHallways(point)).connection.get(1);
         JSONArray ja = new JSONArray();
         int[] reachable = new int[2];
         int[] reachable2 = new int[2];
-        reachable[0] = from.getKey();
-        reachable[1] = from.getValue();
-        Pair<Integer, Integer> position1 = getRoomPosition(reachable);
-        reachable[0] = position1.getKey();
-        reachable[1] = position1.getValue();
+        reachable[0] = from[0];
+        reachable[1] = from[1];
+        int[] position1 = getRoomPosition(reachable);
+        reachable[0] = position1[0];
+        reachable[1] = position1[1];
         ja.put(reachable);
 
-        reachable2[0] = to.getKey();
-        reachable2[1] = to.getValue();
-        Pair<Integer, Integer> position2 = getRoomPosition(reachable2);
-        reachable2[0] = position2.getKey();
-        reachable2[1] = position2.getValue();
+        reachable2[0] = to[0];
+        reachable2[1] = to[1];
+        int[] position2 = getRoomPosition(reachable2);
+        reachable2[0] = position2[0];
+        reachable2[1] = position2[1];
         ja.put(reachable2);
         output.put("traversable", true);
         output.put("object", JSONObject.NULL);
@@ -332,7 +342,7 @@ public class Level extends JPanel{
       }
     }
     else {
-      Pair<Integer, Integer> roomPosition = getRoomPosition(point);
+      int[] roomPosition = getRoomPosition(point);
       Room r = new Room(0,0);
       for (Room room: rooms) {
         if (roomPosition == room.position) {
@@ -367,7 +377,7 @@ public class Level extends JPanel{
       for (int jj = 0; jj < room.layout[0].length; ++jj) {
         if (room.layout[ii][jj] == '|' || room.layout[ii][jj] == '-') {
           int[] p = new int[2];
-          p[0] = ii + room.position.getKey(); p[1] = jj + room.position.getValue();
+          p[0] = ii + room.position[0]; p[1] = jj + room.position[1];
           doorsPosition.add(p);
         }
       }
@@ -378,14 +388,14 @@ public class Level extends JPanel{
       Hallway hw = hallways.get(hwNum);
       int[] d = new int[2];
       int[] rPosition = new int[2];
-      if (position[0] != hw.connection.getKey().getKey() ||
-              position[1] != hw.connection.getKey().getValue()) {
-        d[0] = hw.connection.getKey().getKey(); d[1] = hw.connection.getKey().getValue();
+      if (position[0] != hw.connection.get(0)[0] ||
+              position[1] != hw.connection.get(0)[1]) {
+        d[0] = hw.connection.get(0)[0]; d[1] = hw.connection.get(0)[1];
       }
       else {
-        d[0] = hw.connection.getValue().getKey(); d[1] = hw.connection.getValue().getValue();
+        d[0] = hw.connection.get(1)[0]; d[1] = hw.connection.get(1)[1];
       }
-      rPosition[0] = getRoomPosition(d).getKey(); rPosition[1] = getRoomPosition(d).getValue();
+      rPosition[0] = getRoomPosition(d)[0]; rPosition[1] = getRoomPosition(d)[1];
       neighbors.add(rPosition);
     }
     return neighbors;
@@ -405,7 +415,7 @@ public class Level extends JPanel{
 
   public boolean checkIfOnAd(int[] point) {
     for (Adversary ad: this.ads) {
-      if (ad.getPosition().getKey() == point[0] && ad.getPosition().getValue() == point[1]) {
+      if (ad.getPosition()[0] == point[0] && ad.getPosition()[1] == point[1]) {
         return true;
       }
     }
@@ -414,7 +424,7 @@ public class Level extends JPanel{
 
   public boolean checkIfOnPlayer(List<Player> players, int[] point) {
     for (Player p : players) {
-      if (p.getPosition().getKey() == point[0] && p.getPosition().getValue() == point[1]) {
+      if (p.getPosition()[0] == point[0] && p.getPosition()[1] == point[1]) {
         return true;
       }
     }
@@ -426,8 +436,8 @@ public class Level extends JPanel{
     for (Room room: this.rooms) {
       int rows = room.layout.length;
       int cols = room.layout[0].length;
-      int positionX = room.position.getKey();
-      int positionY = room.position.getValue();
+      int positionX = room.position[0];
+      int positionY = room.position[1];
 
       if (positionY <= position[1] && position[1] < positionY + rows) {
         if (positionX <= position[0] && position[0] < positionX + cols) {
@@ -440,17 +450,17 @@ public class Level extends JPanel{
 
   public int checkIfInHallways(int[] point) {
     for (int ii = 0; ii < hallways.size(); ++ii) {
-      for (Pair p: hallways.get(ii).layout) {
-        if ((int)p.getKey() == point[0] && (int)p.getValue() == point[1]) {
+      for (int[] p: hallways.get(ii).layout) {
+        if (p[0] == point[0] && p[1] == point[1]) {
           //which hallway
           return ii;
         }
       }
-      if (hallways.get(ii).connection.getKey().getKey() == point[0]
-              && hallways.get(ii).connection.getKey().getValue() == point[1]) {
+      if (hallways.get(ii).connection.get(0)[0] == point[0]
+              && hallways.get(ii).connection.get(0)[1] == point[1]) {
         return ii;
-      } else if (hallways.get(ii).connection.getValue().getKey() == point[0]
-              && hallways.get(ii).connection.getValue().getValue() == point[1]) {
+      } else if (hallways.get(ii).connection.get(1)[0] == point[0]
+              && hallways.get(ii).connection.get(1)[0] == point[1]) {
         return ii;
       }
     }
@@ -461,8 +471,8 @@ public class Level extends JPanel{
     for (Room room: rooms) {
       int rows = room.layout.length;
       int cols = room.layout[0].length;
-      int positionX = room.position.getKey();
-      int positionY = room.position.getValue();
+      int positionX = room.position[0];
+      int positionY = room.position[1];
 
 
       if (positionY <= point[1] && point[1] <= positionY + rows) {
@@ -491,44 +501,46 @@ public class Level extends JPanel{
 
 
 
-  public Pair<Integer, Integer> setPlayer() {
+  public int[] setPlayer() {
 //    for (int ii = 0; ii < players.size(); ++ii) {
 //      int x = players.get(ii).getPosition().getKey();
 //      int y = players.get(ii).getPosition().getValue();
 //      this.rooms.get(0).layout[y][x] = 'P';
 //    }
     Room r = this.rooms.get(0);
+    int[] res = new int[2];
     for (int ii = 0; ii < r.layout.length; ++ii) {
       for (int jj = 0; jj < r.layout[0].length; ++jj) {
         if (r.layout[ii][jj] == '.') {
           r.layout[ii][jj] = 'P';
-          return new Pair<>(ii,jj);
+          res[0] = ii; res[1] = jj;
+          return res;
         }
       }
     }
-    return new Pair<>(0,0);
+    return res;
   }
 
-  public void movePlayer(Player player, Pair<Integer, Integer> newPosition) {
-    Pair<Integer, Integer> oldPosition = player.getPosition();
+  public void movePlayer(Player player, int[] newPosition) {
+    int[] oldPosition = player.getPosition();
     int[] old = new int[2];
-    old[0] = oldPosition.getKey(); old[1] = oldPosition.getValue();
+    old[0] = oldPosition[0]; old[1] = oldPosition[1];
     Room oldRoom = inWhichRoom(old);
 
     int[] dst = new int[2];
-    dst[0] = newPosition.getKey(); dst[1] = newPosition.getValue();
+    dst[0] = newPosition[0]; dst[1] = newPosition[1];
     Room dstRoom = inWhichRoom(dst);
 
     //handle old position
     for (Room r: this.rooms) {
       if (oldRoom != null) {
         if (r.position.equals(oldRoom.position)) {
-          r.layout[old[0] - r.position.getKey()][old[1] - r.position.getValue()] = '.';
+          r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '.';
         }
       }
       else {
         for (Hallway hw: hallways) {
-          for (Pair<Integer, Integer> point: hw.layout) {
+          for (int[] point: hw.layout) {
             if (oldPosition.equals(point)) {
               hw.ifPlayerInside = false;
               hw.playerPosition = new int[2];;
@@ -543,16 +555,16 @@ public class Level extends JPanel{
       if (dstRoom != null) {
         if (r.position.equals(dstRoom.position)) {
           System.out.println("to new room: " + r.position);
-          r.layout[dst[0] - r.position.getKey()][dst[1] - r.position.getValue()] = 'P';
+          r.layout[dst[0] - r.position[0]][dst[1] - r.position[1]] = 'P';
         }
       }
       else {
         for (Hallway hw: hallways) {
-          for (Pair<Integer, Integer> point: hw.layout) {
+          for (int[] point: hw.layout) {
             if (newPosition.equals(point)) {
               hw.ifPlayerInside = true;
               int [] playerPos = new int[2];
-              playerPos[0] = point.getKey(); playerPos[1] = point.getValue();
+              playerPos[0] = point[0]; playerPos[1] = point[1];
               hw.playerPosition = playerPos;
             }
           }

@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import javafx.util.Pair;
 
 // represents the GameManager
 public class GameManager {
@@ -93,7 +92,7 @@ public class GameManager {
 
   public void adversaryMove() {
     for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
-      int[] dst = RuleChecker.getAdNextMove(curLevel.ads.get(ii), curLevel);
+      int[] dst = RuleChecker.getAdNextMove(curLevel.ads.get(ii), curLevel, players);
 
       if (dst != null) {
         this.curLevel.moveAds(ii, dst);
@@ -105,7 +104,7 @@ public class GameManager {
   public int[][] getViewOfPlayer(Player p, int[] pos) {
     int[][] view = new int[5][5];
     boolean ifInHW = true;
-    Pair<Integer, Integer> position = curLevel.getRoomPosition(pos);
+    int[] position = curLevel.getRoomPosition(pos);
     for (Room r: curLevel.rooms) {
       if (position == r.position) {
         ifInHW = false;
@@ -169,7 +168,7 @@ public class GameManager {
     System.out.println("move to:" + pos[0] + ":" + pos[1]);
     if (RuleChecker.isValidMove(p, curLevel, pos)) {
       this.interact(p, pos);
-      curLevel.movePlayer(p,new Pair<>(pos[0], pos[1]));
+      curLevel.movePlayer(p, pos);
     }
     else {
       System.out.println("Invalid move, move again!");
@@ -224,8 +223,8 @@ public class GameManager {
     JSONArray actors = new JSONArray();
     for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
       int[] adPos = new int[2];
-      adPos[0] = curLevel.ads.get(ii).getPosition().getKey();
-      adPos[1] = curLevel.ads.get(ii).getPosition().getValue();
+      adPos[0] = curLevel.ads.get(ii).getPosition()[0];
+      adPos[1] = curLevel.ads.get(ii).getPosition()[1];
       if (pos[0] + 2 >= adPos[0] && adPos[0] >= pos[0] - 2
               && pos[1] + 2 >= adPos[1] && adPos[1] >= pos[1] - 2) {
         JSONObject actor = new JSONObject();
@@ -283,8 +282,8 @@ public class GameManager {
       firstUpdate.put(players.get(i).name);
       playerUpdate.put("type", "player-update");
       int[] playerPos = new int[2];
-      playerPos[0] = players.get(i).position.getKey();
-      playerPos[1] = players.get(i).position.getValue();
+      playerPos[0] = players.get(i).position[0];
+      playerPos[1] = players.get(i).position[1];
       int[][] view = getViewOfPlayer(players.get(i), playerPos);
       playerUpdate.put("layout", view);
       playerUpdate.put("position", playerPos);
@@ -329,7 +328,7 @@ public class GameManager {
 //        System.out.println("dst: " + Arrays.toString(dst));
 //        System.out.println(players.get(ii).name + ": " + result);
         if (!result.equals("Invalid")) {
-          Pair<Integer, Integer> newPos = new Pair<>(dst[0], dst[1]);
+          int[] newPos = dst;
           players.get(ii).position = newPos;
           break;
         }
@@ -346,8 +345,8 @@ public class GameManager {
           JSONObject playerUpdate = new JSONObject();
           playerUpdate.put("type", "player-update");
           int[] playerPos = new int[2];
-          playerPos[0] = players.get(amount).position.getKey();
-          playerPos[1] = players.get(amount).position.getValue();
+          playerPos[0] = players.get(amount).position[0];
+          playerPos[1] = players.get(amount).position[1];
           int[][] view = getViewOfPlayer(players.get(amount), playerPos);
           playerUpdate.put("layout", view);
           playerUpdate.put("position", playerPos);
@@ -373,7 +372,7 @@ public class GameManager {
   public void drawPlayerView(Graphics g) {
     Player p = players.get(curPlayer);
     int[] pos = new int[2];
-    pos[0] = p.position.getKey(); pos[1] = p.position.getValue();
+    pos[0] = p.position[0]; pos[1] = p.position[1];
     int[][] view = this.getViewOfPlayer(p, pos);
 
     int row = 0;

@@ -2,7 +2,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
-import javafx.util.Pair;
 
 public class GameState {
   List<Level> levels;
@@ -42,14 +41,15 @@ public class GameState {
   //This Game state will first creat a default game state with 2 players on top-left,
   //1 ad on bottom-right. Then one player will be moved from (1,1) to (3,3) then render the whole
   //game state
-  public GameState(Pair<Integer, Integer> newPosition) {
+  public GameState(int[] newPosition) {
     Level level = new Level();
     this.levels = new ArrayList<>();
     this.players = new ArrayList<>();
     this.curLevel = 0;
     this.gameStatus = 1;
     initGame(2, level, 1);
-    this.levels.get(curLevel).movePlayer(this.players.get(0), new Pair<>(3,3));
+    int[] newPos = new int[2]; newPos[0] = 3; newPos[1] = 3;
+    this.levels.get(curLevel).movePlayer(this.players.get(0), newPos);
 //    this.render(this.levels.get(levelStatus));
   }
 
@@ -59,7 +59,7 @@ public class GameState {
 
   public void initGame(int playerAmount, Level level, int ads) {
     for (int ii = 0; ii < playerAmount; ++ii) {
-      Pair<Integer, Integer> position = level.setPlayer();
+      int[] position = level.setPlayer();
       Player player = new Player(position);
       this.players.add(player);
     }
@@ -229,7 +229,6 @@ public class GameState {
 
 
     GameState game = new GameState(2, level, 2);
-//    level.movePlayer(game.players.get(0), new Pair<>(3,3));
 //    level.renderLevel(level);
   }
 }

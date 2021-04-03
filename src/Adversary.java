@@ -1,11 +1,12 @@
-import javafx.util.Pair;
 
 public interface Adversary {
 
   public String type = null;
 
-  public Pair<Integer, Integer> position = null;
+  public int[] position = null;
 
   // return the position of the Adversary
-  public Pair<Integer, Integer> getPosition();
+  public int[] getPosition();
+
+  public String getType();
 }
