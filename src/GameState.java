@@ -64,14 +64,10 @@ public class GameState {
       this.players.add(player);
     }
     this.levels.add(level);
-    this.levels.get(curLevel).setAds(ads);
-
-//    this.render(level);
+//    this.levels.get(curLevel).setZombiesInLevel(ads);
   }
 
-//  public void render(Level level) {
-//    level.renderLevel(level);
-//  }
+
 
   public JSONArray checkForPoint(String pName, int[] point, JSONObject jo) {
     boolean exitLocked = (boolean) jo.get("exit-locked");
@@ -219,7 +215,7 @@ public class GameState {
     pos[0] = 1; pos[1] = 8;
     int [][] view = RuleChecker.getPlayerView(pos, level.rooms.get(1),
             RuleChecker.findHallwayPoints(level.hallways), level.rooms);
-    System.out.println(level.rooms.get(1).position);
+//    System.out.println(level.rooms.get(1).position);
 
     for (int ii = 0; ii < 5; ++ii) {
       System.out.println(Arrays.toString(view[ii]));

@@ -55,35 +55,48 @@ public class LocalSnarl {
     }
     System.out.println(usernames);
 
-    // render user mode
-    if (!isObserverMode) {
-      StringBuilder jsonFile = new StringBuilder();
-      try {
-        File myObj = new File(fileName);
-        Scanner myReader = new Scanner(myObj);
-        naturalNum = myReader.nextInt();
-        while (myReader.hasNextLine()) {
-          String data = myReader.nextLine();
-          jsonFile.append(data);
+
+    StringBuilder jsonFile = new StringBuilder();
+    List<Level> levels = new ArrayList<>();
+    try {
+      File myObj = new File(fileName);
+      Scanner myReader = new Scanner(myObj);
+      naturalNum = myReader.nextInt();
+
+      int index = 0;
+      while (myReader.hasNextLine()) {
+        String data = myReader.nextLine();
+        if (data.contains("level")) {
+          if (index != 0) {
+            String jsonString = jsonFile.toString();
+            JSONObject jo = new JSONObject(jsonString);
+            Level l = TestLevel.levelBuilder(jo);
+            levels.add(l);
+
+            jsonFile = new StringBuilder();
+          }
+          ++index;
         }
-        myReader.close();
-      } catch (FileNotFoundException e) {
-        System.out.println("An error occurred.");
-        e.printStackTrace();
+        jsonFile.append(data);
       }
       String jsonString = jsonFile.toString();
       JSONObject jo = new JSONObject(jsonString);
       Level l = TestLevel.levelBuilder(jo);
-      List<Level> levels = new ArrayList<>();
       levels.add(l);
 
-      User user1 = new User(1, levels, usernames);
-      System.out.println(user1.gm.players.get(0).position[0] + ":" + user1.gm.players.get(0).position[1]);
+      myReader.close();
+    } catch (FileNotFoundException e) {
+      System.out.println("An error occurred.");
+      e.printStackTrace();
+    }
+    // render user mode
+    if (!isObserverMode) {
+      User user1 = new User(naturalNum, levels, usernames);
       user1.render();
 
     } else {
-      Observer observer = new Observer(usernames);
-
+      Observer observer = new Observer(naturalNum, levels, usernames);
+      observer.render();
     }
 
   }

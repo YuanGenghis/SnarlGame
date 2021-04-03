@@ -140,8 +140,9 @@ public class TestLevel {
 
     //build level depend on previous transfer
     Level level = new Level(rooms, hallways);
-    level.keyPosition = keyPosition;
-    level.exitPosition = exitPosition;
+    System.out.println("K:" + keyPosition[0] + ":" + keyPosition[1]);
+    level.setKey(keyPosition);
+    level.setExit(exitPosition);
     return level;
   }
 

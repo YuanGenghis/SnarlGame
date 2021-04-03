@@ -11,6 +11,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 // represents a Level of the game
 public class Level extends JPanel{
@@ -28,6 +29,8 @@ public class Level extends JPanel{
           "https://images-na.ssl-images-amazon.com/images/I/71vj4KrX%2BvL._AC_SL1500_.jpg";
   private static String PlayerUrl =
           "https://avatars.githubusercontent.com/u/46980128?s=400&u=abab5bff473ece8159ceb6f29ebf7cf3fc132e2b&v=4";
+  static String Ghost =
+          "https://avatars.githubusercontent.com/u/60799921?s=400&u=4d68d8d6c5acd9a4b48ef35dc7d3a0b9a8164d04&v=4";
 
 
   public void initDefult() {
@@ -112,7 +115,7 @@ public class Level extends JPanel{
   // construct the level example
   public Level() {
     this.initDefult();
-    this.init();
+    this.ads = new ArrayList<>();
   }
 
   // constructs the level with Given rooms and hallways
@@ -123,55 +126,32 @@ public class Level extends JPanel{
     this.ifLocked = true;
   }
 
-  // init the level
-  public void init() {
-//    this.setAds();
-    this.setExit();
-    this.setKey();
-  }
-
   public void addAd(Zombie ad) {
     this.ads.add(ad);
   }
 
-  // set Adversary by amount
-  public void setAds(int amount) {
-    Room r = this.rooms.get(2);
-    int length = r.layout[0].length;
-    for (int ii = r.layout.length; ii > 0; --ii) {
-      for (int jj = length; jj > 0; --jj) {
-        if (r.layout[ii-1][jj-1] == '.') {
-          if (amount > 0) {
-            r.layout[ii-1][jj-1] = 'A';
-            amount--;
-          } else {
-            break;
-          }
-        }
-      }
-    }
-  }
 
   public void moveAds(int adversary, int[] pos) {
     Adversary ad = this.ads.get(adversary);
     Room r = inWhichRoom(pos);
-    if (r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] == 'A') {
+    if (r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] == 'G'
+    || r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] == 'Z') {
       r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] = '.';
     }
   }
 
   // set Exit position
-  public void setExit() {
-    this.rooms.get(1).layout[2][3] = 'E';
-    this.exitPosition[0] = 2;
-    this.exitPosition[1] = 11;
+  public void setExit(int[] pos) {
+    Room r = inWhichRoom(pos);
+    r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] = 'E';
+    exitPosition = pos;
   }
 
   // set Exit position
-  public void setKey() {
-    this.rooms.get(2).layout[3][2] = 'K';
-    this.exitPosition[0] = 11;
-    this.exitPosition[1] = 1;
+  public void setKey(int[] pos) {
+    Room r = inWhichRoom(pos);
+    r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] = 'K';
+    keyPosition = pos;
   }
 
   // add a Room to current Level
@@ -186,12 +166,12 @@ public class Level extends JPanel{
 
   public int rectWidth = 25;
 
-  // Add a list of Adversary to the current Level
-  public void addAds(List<Zombie> ads) {
-    for (int ii = 0; ii < ads.size(); ++ii) {
-      this.ads.add(ads.get(ii));
-    }
-  }
+//  // Add a list of Adversary to the current Level
+//  public void addAds(List<Zombie> ads) {
+//    for (int ii = 0; ii < ads.size(); ++ii) {
+//      this.ads.add(ads.get(ii));
+//    }
+//  }
 
 
   // draw Hallways
@@ -207,7 +187,7 @@ public class Level extends JPanel{
           g.drawRect(yy, xx, rectWidth, rectWidth);
         } else {
           if (p[0] == hw.playerPosition[0] && p[1] == hw.playerPosition[1]) {
-            System.out.println("in hw");
+//            System.out.println("in hw");
             try {
               URL url = new URL(PlayerUrl);
               PlayerImage = ImageIO.read(url);
@@ -265,9 +245,20 @@ public class Level extends JPanel{
             g.drawImage(PlayerImage, xx, yy,
                     rectWidth -1, rectWidth -1, null);
           }
-          else if (r.layout[ii-x][j-y] == 'A') {
+          else if (r.layout[ii-x][j-y] == 'Z') {
             try {
               URL url = new URL(ADUrl);
+              ADImage = ImageIO.read(url);
+            }
+            catch(IOException e) {
+              System.out.println("Image not found");
+            }
+            g.drawImage(ADImage,  xx,yy,
+                    rectWidth -1, rectWidth - 1, null);
+          }
+          else if (r.layout[ii-x][j-y] == 'G') {
+            try {
+              URL url = new URL(Ghost);
               ADImage = ImageIO.read(url);
             }
             catch(IOException e) {
@@ -500,21 +491,74 @@ public class Level extends JPanel{
   }
 
 
-
   public int[] setPlayer() {
-    Room r = this.rooms.get(0);
-    int[] res = new int[2];
-    for (int ii = 0; ii < r.layout.length; ++ii) {
-      for (int jj = 0; jj < r.layout[0].length; ++jj) {
-        if (r.layout[ii][jj] == '.') {
-          r.layout[ii][jj] = 'P';
-          res[0] = ii + r.position[0]; res[1] = jj + r.position[1];
-          return res;
-        }
-      }
+    Random rand = new Random();
+    int intRandomRoom = rand.nextInt(this.rooms.size());
+    Room r = this.rooms.get(intRandomRoom);
+
+    int rows = r.layout.length;
+    int cols = r.layout[0].length;
+
+    int ranRandomRow = rand.nextInt(rows);
+    int ranRandomCol = rand.nextInt(cols);
+
+    while (r.layout[ranRandomRow][ranRandomCol] != '.') {
+      ranRandomRow = rand.nextInt(rows);
+      ranRandomCol = rand.nextInt(cols);
     }
-    return res;
+    r.layout[ranRandomRow][ranRandomCol] = 'P';
+
+    return new int[]{ranRandomRow + r.position[0], ranRandomCol + r.position[1]};
   }
+
+  public void setZombiesInLevel(int amount) {
+    for (int ii = 0; ii < amount; ++ii) {
+      Random rand = new Random();
+      int intRandomRoom = rand.nextInt(this.rooms.size());
+      Room r = this.rooms.get(intRandomRoom);
+
+      int rows = r.layout.length;
+      int cols = r.layout[0].length;
+
+      int ranRandomRow = rand.nextInt(rows);
+      int ranRandomCol = rand.nextInt(cols);
+
+      while (r.layout[ranRandomRow][ranRandomCol] != '.') {
+
+        ranRandomRow = rand.nextInt(rows);
+        ranRandomCol = rand.nextInt(cols);
+      }
+      r.layout[ranRandomRow][ranRandomCol] = 'Z';
+
+      Zombie z = new Zombie(new int[]{ranRandomRow+r.position[0], ranRandomCol+r.position[1]} );
+      this.ads.add(z);
+    }
+  }
+
+  public void setGhostInLevel(int amount) {
+    for (int ii = 0; ii < amount; ++ii) {
+      Random rand = new Random();
+      int intRandomRoom = rand.nextInt(this.rooms.size());
+      Room r = this.rooms.get(intRandomRoom);
+
+      int rows = r.layout.length;
+      int cols = r.layout[0].length;
+
+      int ranRandomRow = rand.nextInt(rows);
+      int ranRandomCol = rand.nextInt(cols);
+
+      while (r.layout[ranRandomRow][ranRandomCol] != '.') {
+
+        ranRandomRow = rand.nextInt(rows);
+        ranRandomCol = rand.nextInt(cols);
+      }
+      r.layout[ranRandomRow][ranRandomCol] = 'G';
+
+      Ghost g = new Ghost(new int[]{ranRandomRow+r.position[0], ranRandomCol+r.position[1]} );
+      this.ads.add(g);
+    }
+  }
+
 
   public void movePlayer(Player player, int[] newPosition) {
     int[] oldPosition = player.getPosition();
@@ -549,7 +593,7 @@ public class Level extends JPanel{
     for (Room r: this.rooms) {
       if (dstRoom != null) {
         if (r.position.equals(dstRoom.position)) {
-          System.out.println("to new room: " + r.position);
+//          System.out.println("to new room: " + r.position);
           r.layout[dst[0] - r.position[0]][dst[1] - r.position[1]] = 'P';
         }
       }
@@ -570,7 +614,7 @@ public class Level extends JPanel{
 
     player.position = newPosition;
 
-    System.out.println(player.name + "move from:" + oldPosition + " to: " + newPosition);
+//    System.out.println(player.name + "move from:" + oldPosition + " to: " + newPosition);
   }
 
 
