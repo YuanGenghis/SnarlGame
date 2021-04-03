@@ -48,6 +48,14 @@ public class GameManager {
     this.curLevel = this.gameState.levels.get(this.gameState.curLevel);
   }
 
+  public GameManager(List<Level> levels, List<String> names) {
+    this.players = new ArrayList<>();
+    this.register(names);
+    this.curPlayer = 0;
+    this.gameState = new GameState(this.players, levels);
+    this.curLevel = this.gameState.levels.get(0);
+  }
+
   //Start a simple one level game
   public GameManager(List<String> names) {
     this.players = new ArrayList<>();
@@ -126,7 +134,6 @@ public class GameManager {
       case "Invalid Move":
         System.out.println(result);
       case "Adversary":
-        System.out.println("adadadadad");
         p.status = -1;
         this.checkAllPlayerStatus();
         this.nextPlayer();
@@ -165,7 +172,7 @@ public class GameManager {
 
   // move a player to a position
   public void movePlayer(Player p, int[] pos) {
-    System.out.println("move to:" + pos[0] + ":" + pos[1]);
+//    System.out.println("move to:" + pos[0] + ":" + pos[1]);
     if (RuleChecker.isValidMove(p, curLevel, pos)) {
       this.interact(p, pos);
       curLevel.movePlayer(p, pos);
