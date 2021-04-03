@@ -16,11 +16,9 @@ public class GameManager {
   List<Player> players;
   int curPlayer;
   GameState gameState;
-
   Level curLevel;
 
   public int rectWidth = 25;
-
   public static BufferedImage PlayerImage;
   public static BufferedImage ADImage;
   private static String ADUrl =
@@ -30,6 +28,7 @@ public class GameManager {
 //          "https://avatars.githubusercontent.com/u/46980128?s=400&u=abab5bff473ece8159ceb6f29ebf7cf3fc132e2b&v=4";
 //          "https://avatars.githubusercontent.com/u/60799921?s=400&u=4d68d8d6c5acd9a4b48ef35dc7d3a0b9a8164d04&v=4";
   "https://media-exp1.licdn.com/dms/image/C4E03AQFk3SizfWyASg/profile-displayphoto-shrink_800_800/0/1581017250813?e=1622678400&v=beta&t=Lw93auRr4x3oh9HvykxpqGsGVTjnrf547ApLp9NB3TA";
+
   // construct the GameManager with given parameters
   public GameManager(List<Player> players, GameState gameState, int curPlayer) {
     this.players = players;
