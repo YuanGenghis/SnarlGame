@@ -48,8 +48,15 @@ public class LocalSnarl {
       System.out.println("Player" + (i + 1) + "'s name is " + name);
     }
     System.out.println(usernames);
-    User user1 = new User(usernames);
-    user1.render();
+
+    // render user mode
+    if (!isObserverMode) {
+      User user1 = new User(usernames);
+      user1.render();
+    } else {
+      Observer observer = new Observer(usernames);
+
+    }
 
   }
 }

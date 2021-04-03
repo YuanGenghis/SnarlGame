@@ -4,6 +4,8 @@ public class Player{
   String name;
   int[] position;
   int status;
+  int timesExited = 0;
+  int numOfKeys = 0;
 
   // construct the Player
   public Player(String name, int[] position, int status) {

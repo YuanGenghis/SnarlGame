@@ -215,8 +215,6 @@ public class GameState {
   public static void main(String[] args) {
     Level level = new Level();
 
-
-
     int[] pos = new int[2];
     pos[0] = 1; pos[1] = 8;
     int [][] view = RuleChecker.getPlayerView(pos, level.rooms.get(1),
