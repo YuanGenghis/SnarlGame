@@ -49,6 +49,7 @@ public class LocalSnarl {
     }
     System.out.println(usernames);
     User user1 = new User(usernames);
+    user1.render();
 
   }
 }
