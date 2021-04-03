@@ -24,6 +24,14 @@ public class User extends JPanel implements KeyListener, UserInterface {
         refreshScreen();
     }
 
+    public User(int natural, List<Level> levels, List<String> names) {
+        this.gm = new GameManager(levels, names);
+        gm.init();
+        setBackground(Color.BLACK);
+        setForeground(Color.WHITE);
+        refreshScreen();
+    }
+
     @Override
     public void update(int[] position, GameState state) {
         gm.movePlayer(state.players.get(gm.curPlayer), position);
