@@ -109,20 +109,20 @@ public class RuleChecker {
 
         int[] closestPlayerPos = closestPoint(playerPos, adPos);
 
-        List<int[]> surrunding = surrundings(adPos);
+        List<int[]> surroundings = surroundings(adPos);
         if (ad.getType().equals("Ghost")) {
 
         }
         else {
-            dst = closestPoint(surrunding, closestPlayerPos);
+            dst = closestPoint(surroundings, closestPlayerPos);
             while (true) {
                 if (dst != null && checkIfAdMoveValid(dst, curLevel))
                 {
                     return dst;
                 }
                 else if (dst != null) {
-                    surrunding.remove(dst);
-                    dst = closestPoint(surrunding, closestPlayerPos);
+                    surroundings.remove(dst);
+                    dst = closestPoint(surroundings, closestPlayerPos);
                 }
                 else {
                     return null;
@@ -159,7 +159,7 @@ public class RuleChecker {
         return points.get(index);
     }
 
-    public static List<int[]> surrundings(int[] pos) {
+    public static List<int[]> surroundings(int[] pos) {
         List<int[]> output = new ArrayList<>();
         int[] up = new int[2];
         up[0] = pos[0] + 1;

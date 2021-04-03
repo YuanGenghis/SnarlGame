@@ -131,8 +131,9 @@ public class Level extends JPanel{
   }
 
 
-  public void moveAds(int adversary, int[] pos) {
-    Adversary ad = this.ads.get(adversary);
+  //
+  public void moveAds(int index, int[] pos) {
+    Adversary ad = this.ads.get(index);
     Room r = inWhichRoom(pos);
     if (r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] == 'G'
     || r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] == 'Z') {
@@ -535,6 +536,7 @@ public class Level extends JPanel{
     }
   }
 
+  // move player to the given position
   public void setGhostInLevel(int amount) {
     for (int ii = 0; ii < amount; ++ii) {
       Random rand = new Random();
@@ -558,7 +560,6 @@ public class Level extends JPanel{
       this.ads.add(g);
     }
   }
-
 
   public void movePlayer(Player player, int[] newPosition) {
     int[] oldPosition = player.getPosition();
@@ -610,12 +611,9 @@ public class Level extends JPanel{
         }
       }
     }
-
-
+    
     player.position = newPosition;
 
 //    System.out.println(player.name + "move from:" + oldPosition + " to: " + newPosition);
   }
-
-
 }
