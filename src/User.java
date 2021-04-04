@@ -32,6 +32,12 @@ public class User extends JPanel implements KeyListener, UserInterface {
         refreshScreen();
     }
 
+    public void pickLevel(int index) {
+        for (int ii = 0; ii < index - 1; ++ii) {
+            ++this.gm.gameState.curLevel;
+        }
+    }
+
     @Override
     public void update(int[] position, GameState state) {
         gm.movePlayer(state.players.get(gm.curPlayer), position);

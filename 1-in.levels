@@ -25,7 +25,7 @@
         [ 0, 1, 1, 1, 0 ],
         [ 0, 0, 0, 0, 0 ] ] } ],
   "objects": [ { "type": "key", "position": [ 4, 2 ] },
-    { "type": "exit", "position": [ 7, 17 ] } ],
+    { "type": "exit", "position": [ 4, 3 ] } ],
   "hallways": [ { "type": "hallway",
     "from": [ 3, 3 ],
     "to": [ 4, 16 ],

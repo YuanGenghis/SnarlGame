@@ -15,8 +15,6 @@ public class LocalSnarl {
     int levelToStart = 1;
     boolean isObserverMode = false;
     List<String> usernames = new ArrayList<>();
-    int numberOfZombies = 1;
-    int numberOfGhosts = 1;
     int naturalNum = 0;
 
     // read the arguments
@@ -53,7 +51,6 @@ public class LocalSnarl {
       usernames.add(name);
       System.out.println("Player" + (i + 1) + "'s name is " + name);
     }
-    System.out.println(usernames);
 
 
     StringBuilder jsonFile = new StringBuilder();
@@ -92,8 +89,8 @@ public class LocalSnarl {
     // render user mode
     if (!isObserverMode) {
       User user1 = new User(naturalNum, levels, usernames);
+      user1.pickLevel(levelToStart);
       user1.render();
-
     } else {
       Observer observer = new Observer(naturalNum, levels, usernames);
       observer.render();

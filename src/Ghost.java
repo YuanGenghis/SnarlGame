@@ -17,4 +17,9 @@ public class Ghost implements Adversary {
   public String getType() {
     return type;
   }
+
+  @Override
+  public void setPosition(int[] pos) {
+    this.position = pos;
+  }
 }
