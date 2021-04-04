@@ -132,12 +132,20 @@ public class Level extends JPanel{
 
 
   //
-  public void moveAds(int index, int[] pos) {
+  public void moveAds(int index, int[] dst) {
     Adversary ad = this.ads.get(index);
+    ad.setPosition(dst);
+
+    int[] pos = ad.getPosition();
     Room r = inWhichRoom(pos);
-    if (r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] == 'G'
-    || r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] == 'Z') {
-      r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]] = '.';
+    r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = '.';
+
+    Room newRoom = inWhichRoom(dst);
+    if (ad.getType().equals("Ghost")) {
+      newRoom.layout[dst[0] - newRoom.position[0]][dst[1]-newRoom.position[1]] = 'G';
+    }
+    else {
+      newRoom.layout[dst[0] - newRoom.position[0]][dst[1]-newRoom.position[1]] = 'Z';
     }
   }
 

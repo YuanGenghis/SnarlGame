@@ -17,4 +17,9 @@ public class Zombie implements Adversary{
 
   public String getType() {return this.type;}
 
+  @Override
+  public void setPosition(int[] pos) {
+    this.position = pos;
+  }
+
 }

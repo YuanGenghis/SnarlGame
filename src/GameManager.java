@@ -11,6 +11,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 
+
 // represents the GameManager
 public class GameManager {
   List<Player> players;
@@ -21,13 +22,16 @@ public class GameManager {
   public static BufferedImage PlayerImage;
   public static BufferedImage ADImage;
   private static String ADUrl =
-          "https://avatars.githubusercontent.com/u/60799921?s=400&u=4d68d8d6c5acd9a4b48ef35dc7d3a0b9a8164d04&v=4";
-//          "https://images-na.ssl-images-amazon.com/images/I/71vj4KrX%2BvL._AC_SL1500_.jpg";
+//          "https://avatars.githubusercontent.com/u/60799921?s=400&u=4d68d8d6c5acd9a4b48ef35dc7d3a0b9a8164d04&v=4";
+          "https://images-na.ssl-images-amazon.com/images/I/71vj4KrX%2BvL._AC_SL1500_.jpg";
   private static String PlayerUrl =
 //          "https://avatars.githubusercontent.com/u/46980128?s=400&u=abab5bff473ece8159ceb6f29ebf7cf3fc132e2b&v=4";
 //          "https://avatars.githubusercontent.com/u/60799921?s=400&u=4d68d8d6c5acd9a4b48ef35dc7d3a0b9a8164d04&v=4";
-  "https://media-exp1.licdn.com/dms/image/C4E03AQFk3SizfWyASg/profile-displayphoto-shrink_800_800/0/1581017250813?e=1622678400&v=beta&t=Lw93auRr4x3oh9HvykxpqGsGVTjnrf547ApLp9NB3TA";
+//  "https://media-exp1.licdn.com/dms/image/C4E03AQFk3SizfWyASg/profile-displayphoto-shrink_800_800/0/1581017250813?e=1622678400&v=beta&t=Lw93auRr4x3oh9HvykxpqGsGVTjnrf547ApLp9NB3TA";
+        "https://avatars.githubusercontent.com/u/46980128?s=400&u=abab5bff473ece8159ceb6f29ebf7cf3fc132e2b&v=4";
 
+  private static String Ghost =
+          "https://image.shutterstock.com/image-photo/zombie-ghost-isolated-on-black-260nw-646738963.jpg";
   // construct the GameManager with given parameters
   public GameManager(List<Player> players, GameState gameState, int curPlayer) {
     this.players = players;
@@ -103,9 +107,12 @@ public class GameManager {
 
   // move each adversary
   public void adversaryMove() {
-    for (int ii = 0; ii < gameState.levels.get(gameState.curLevel).ads.size(); ++ii) {
-      int[] dst = RuleChecker.getAdNextMove(gameState.levels.get(gameState.curLevel).ads.get(ii),
-              gameState.levels.get(gameState.curLevel), players);
+    Level curLevel = gameState.levels.get(gameState.curLevel);
+    for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
+      Adversary ad = curLevel.ads.get(ii);
+      int[] dst = RuleChecker.getAdNextMove(ad, curLevel, players);
+
+      curLevel.moveAds(ii, dst);
 
       if (dst != null) {
         this.gameState.levels.get(gameState.curLevel).moveAds(ii, dst);
@@ -138,21 +145,23 @@ public class GameManager {
   // interact with different object, change the status of player (to dead or got key or cross the exit)
   public void interact(Player p, int[] pos) {
     String result = RuleChecker.hasInteractionPlayer(p, gameState.levels.get(gameState.curLevel), pos);
-    System.out.println(result);
     switch (result) {
-      case "Invalid Move":
-        System.out.println(result);
-        break;
       case "Adversary":
+        System.out.println("Player " + p.name + " was expelled");
         p.status = -1;
+        playerExpelled(p);
         this.checkAllPlayerStatus();
         this.nextPlayer();
         break;
       case "Key":
+        ++p.numOfKeys;
+        System.out.println("Player " + p.name + " found the key");
         gameState.levels.get(gameState.curLevel).isLocked = false;
         break;
       case "Exit":
         if (!gameState.levels.get(gameState.curLevel).isLocked) {
+          ++p.timesExited;
+          System.out.println("Player " + p.name + " exited");
           this.win();
         }
         break;
@@ -161,6 +170,15 @@ public class GameManager {
       default: break;
 
     }
+  }
+
+  public void playerExpelled(Player p) {
+    Level level = gameState.levels.get(gameState.curLevel);
+    Room r = level.inWhichRoom(p.position);
+    if (r != null) {
+      r.layout[p.position[0]-r.position[0]][p.position[1]-r.position[1]] = 'A';
+    }
+
   }
 
   // move to the next Player's round
@@ -172,6 +190,9 @@ public class GameManager {
     }
     else {
       curPlayer++;
+      if (players.get(curPlayer).status == -1) {
+        nextPlayer();
+      }
     }
   }
 
@@ -193,9 +214,9 @@ public class GameManager {
       this.interact(p, pos);
       gameState.levels.get(gameState.curLevel).movePlayer(p, pos);
     }
-    else {
-      System.out.println("Invalid move, move again!");
-    }
+//    else {
+//      System.out.println("Invalid move, move again!");
+//    }
   }
 
   // change the status of the player
@@ -207,6 +228,7 @@ public class GameManager {
   public void win() {
     if (gameState.curLevel == gameState.levels.size() - 1) {
       System.out.println("YOU WIN!!!");
+      finalPrint();
       System.exit(1);
     } else {
       System.out.println("next level");
@@ -220,9 +242,42 @@ public class GameManager {
 
   }
 
+  public void finalPrint() {
+    for (Player p: players) {
+      System.out.println(p.name + " have picked " + p.numOfKeys + " keys");
+      System.out.println(p.name + " have exited " + p.timesExited + " times");
+    }
+
+    Collections.sort(players, new Comparator<Player>() {
+      @Override
+      public int compare(Player o1, Player o2) {
+        return o2.numOfKeys - o1.numOfKeys;
+      }
+    });
+
+    System.out.println("Rank by keys: ");
+    for (Player p: players) {
+      System.out.println(p.name);
+    }
+
+    Collections.sort(players, new Comparator<Player>() {
+      @Override
+      public int compare(Player o1, Player o2) {
+        return o2.timesExited - o1.timesExited;
+      }
+    });
+
+    System.out.println("Rank by exit times: ");
+    for (Player p: players) {
+      System.out.println(p.name);
+    }
+
+  }
+
   // run lost scene
   public void lost() {
-    System.out.println("YOU LOST!");
+    System.out.println("YOU LOST! ALl players are expelled in level: " + (gameState.curLevel + 1));
+    finalPrint();
     System.exit(1);
   }
 
@@ -453,7 +508,17 @@ public class GameManager {
           catch(IOException e) {
             System.out.println("Image not found");
           }
-
+          g.drawImage(ADImage, xx, yy,
+                  rectWidth -1, rectWidth -1, null);
+        }
+        else if (view[row][col] == -2) {
+          try {
+            URL url = new URL(Ghost);
+            ADImage = ImageIO.read(url);
+          }
+          catch(IOException e) {
+            System.out.println("Image not found");
+          }
           g.drawImage(ADImage, xx, yy,
                   rectWidth -1, rectWidth -1, null);
         }

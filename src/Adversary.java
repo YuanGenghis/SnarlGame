@@ -9,4 +9,6 @@ public interface Adversary {
   public int[] getPosition();
 
   public String getType();
+
+  public void setPosition(int[] pos);
 }

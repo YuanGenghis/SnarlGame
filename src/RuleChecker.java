@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class RuleChecker {
     boolean isLevelEnd = false;
@@ -101,8 +102,6 @@ public class RuleChecker {
             pos[1] = players.get(ii).position[1];
             playerPos.add(pos);
         }
-
-
         int[] adPos = new int[2];
         adPos[0] = ad.getPosition()[0];
         adPos[1] = ad.getPosition()[1];
@@ -111,7 +110,8 @@ public class RuleChecker {
 
         List<int[]> surroundings = surroundings(adPos);
         if (ad.getType().equals("Ghost")) {
-
+            dst = closestPoint(surroundings, closestPlayerPos);
+            return ghostMove(dst, curLevel);
         }
         else {
             dst = closestPoint(surroundings, closestPlayerPos);
@@ -129,17 +129,48 @@ public class RuleChecker {
                 }
             }
         }
-
-        return null;
     }
 
     public static boolean checkIfAdMoveValid(int[] pos, Level level) {
         Room r = inWhichRoom(pos, level);
-        char tile = r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]];
-        if (tile == 'x' || tile == '|' || tile == '-') {
+        if (r == null) {
             return false;
         }
-        return true;
+        else {
+            char tile = r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]];
+            if (tile == 'x' || tile == '|' || tile == '-') {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    public static int[] ghostMove(int[] pos, Level level) {
+        Room r = inWhichRoom(pos, level);
+        char tile = r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]];
+        if (tile == 'x' || tile == '|' || tile == '-') {
+            Random rand = new Random();
+            int intRandomRoom = rand.nextInt(level.rooms.size());
+            Room room = level.rooms.get(intRandomRoom);
+
+            int rows = r.layout.length;
+            int cols = r.layout[0].length;
+
+            int ranRandomRow = rand.nextInt(rows);
+            int ranRandomCol = rand.nextInt(cols);
+
+            while (room.layout[ranRandomRow][ranRandomCol] != '.') {
+
+                ranRandomRow = rand.nextInt(rows);
+                ranRandomCol = rand.nextInt(cols);
+            }
+            room.layout[ranRandomRow][ranRandomCol] = 'G';
+            return new int[]{ranRandomRow + room.position[0], ranRandomCol + room.position[1]};
+        }
+        else {
+            return pos;
+        }
     }
 
     public static int[] closestPoint(List<int[]> points, int[] pos) {
