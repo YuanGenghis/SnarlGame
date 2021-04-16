@@ -50,13 +50,16 @@ public class Client {
 
     //get server-welcome message
     JSONObject welcomeMSG = receiveJSONResponse();
+    System.out.println(welcomeMSG);
 
     //get "name" message
     String welcomeName = receiveStringResponse();
+    System.out.println(welcomeName);
 
     //send name message
     String name = scanner.next();
     sendStringMessage(name);
+
 
 
 
