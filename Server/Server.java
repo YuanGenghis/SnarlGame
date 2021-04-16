@@ -12,7 +12,7 @@ public class Server {
   private static Socket socket;
   private static PrintWriter out;
   private static BufferedReader in;
-  private static int maxPlayers = 4;
+  private static int maxPlayers = 1;
   private static int minPlayers = 1;
   private static List<String> names = new ArrayList<>();
 
@@ -47,6 +47,10 @@ public class Server {
     out.println(jo);
   }
 
+  public static void sendStringMessage(String msg) {
+    out.println(msg);
+  }
+
   public static String receiveStringMessage() throws IOException {
     return in.readLine();
   }
@@ -65,8 +69,12 @@ public class Server {
       JSONObject welcomeMsg = new JSONObject();
       welcomeMsg.put("type", "welcome");
       welcomeMsg.put("info", "Snarl Game");
+      //send server-welcome json
       sendJSONMessage(welcomeMsg);
+      //send "name"
+      sendStringMessage("name");
       String playerName = receiveStringMessage();
+      System.out.println(playerName);
       names.add(playerName);
       playerSockets.add(socket);
     }
@@ -87,7 +95,7 @@ public class Server {
 
 
   private static void runGame(List<String> names) {
-    String fileName = "snarl.levels";
+    String fileName = "1-in.levels";
     int naturalNum = 0;
     StringBuilder jsonFile = new StringBuilder();
     List<Level> levels = new ArrayList<>();
