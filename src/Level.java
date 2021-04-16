@@ -21,6 +21,7 @@ public class Level extends JPanel{
   int[] keyPosition;
   int[] exitPosition;
   boolean isLocked = true;
+  boolean isEnd = false;
 
   public static BufferedImage PlayerImage;
   public static BufferedImage ADImage;

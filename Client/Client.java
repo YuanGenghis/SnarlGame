@@ -58,10 +58,14 @@ public class Client {
     String name = scanner.next();
     sendStringMessage(name);
 
+
+
     ////Starting a level
     //get level-start msg
 
     //get init updates
+
+
 
 
     ////Playing a round
@@ -74,7 +78,11 @@ public class Client {
     //get update msg
 
 
+
+
     ////Ending a level
+
+
 
 
 

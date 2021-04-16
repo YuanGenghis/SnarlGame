@@ -23,6 +23,8 @@ public class RuleChecker {
         return false;
     }
 
+
+
     public static List<int[]> findHallwayPoints(List<Hallway> hws) {
         List<int[]> hwps = new ArrayList<>();
         for (Hallway hw: hws) {

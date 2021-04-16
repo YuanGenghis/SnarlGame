@@ -232,6 +232,8 @@ public class GameManager {
       System.exit(1);
     } else {
       System.out.println("next level");
+      gameState.levels.get(gameState.curLevel).isEnd = true;
+
       ++gameState.curLevel;
 
       Level level = this.gameState.levels.get(this.gameState.curLevel);
@@ -279,6 +281,26 @@ public class GameManager {
     System.out.println("YOU LOST! ALl players are expelled in level: " + (gameState.curLevel + 1));
     finalPrint();
     System.exit(1);
+  }
+
+  public boolean isGameEnd() {
+    boolean ifAllDie = true;
+    for (Player p: this.players) {
+      if (p.status != -1) {
+        ifAllDie = false;
+        break;
+      }
+    }
+    if (ifAllDie) {
+      return true;
+    }
+
+    if (gameState.curLevel == gameState.levels.size() - 1) {
+      if (gameState.levels.get(gameState.curLevel).isEnd) {
+        return true;
+      }
+    }
+    return false;
   }
 
 
