@@ -1,3 +1,4 @@
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -14,13 +15,13 @@ public class Server {
   private static BufferedReader in;
   private static PrintWriter out = null;
 
-  private static int minPlayers = 1;
+  private static int minPlayers = 2;
   private static int maxPlayers = 4;
 
   private static List<String> names = new ArrayList<>();
   private static List<Socket> playerSockets = new ArrayList<>();
   private static GameManager gm = null;
-  private static User user;
+//  private static User user;
 
   public Server(int port) {
     try {
@@ -46,6 +47,7 @@ public class Server {
         System.out.println("timeout for more players");
       }
       gm = new GameManager(names);
+      sendInitialUpdate();
       startGame();
 
 //      runGame(names);
@@ -55,27 +57,81 @@ public class Server {
       //            in.close();
   }
 
+  private static void sendInitialUpdate() {
+    for (int ii = 0; ii < playerSockets.size(); ++ii) {
+      JSONObject playerUpdate = makePlayerUpdateMessage(gm.players.get(ii));
+      sendJSONMessage(playerUpdate);
+    }
+
+  }
+
+  private static JSONObject makePlayerUpdateMessage(Player p) {
+    JSONObject msg = new JSONObject();
+    //type
+    msg.put("type", "player-update");
+
+    //tile layout
+    int[][] tiles = gm.getViewOfPlayer(p, p.getPosition());
+    JSONArray tileLayout = new JSONArray();
+    for (int[] tile : tiles) {
+      JSONArray row = new JSONArray();
+      for (int i : tile) {
+        row.put(i);
+      }
+      tileLayout.put(row);
+    }
+    msg.put("layout", tileLayout);
+
+    //position
+    msg.put("position", p.position);
+
+    //objects
+    JSONArray objectList = new JSONArray();
+    JSONObject keyObj = new JSONObject();
+    keyObj.put("type", "key");
+    keyObj.put("position", gm.gameState.levels.get(gm.gameState.curLevel).keyPosition);
+    objectList.put(keyObj);
+    JSONObject exitObj = new JSONObject();
+    exitObj.put("type", "exit");
+    exitObj.put("position", gm.gameState.levels.get(gm.gameState.curLevel).exitPosition);
+    objectList.put(exitObj);
+    msg.put("objects", objectList);
+
+    //actors
+    JSONArray actorList = new JSONArray();
+    for (int ii = 0; ii < gm.players.size(); ++ii) {
+      JSONObject playerObj = new JSONObject();
+      playerObj.put("type", "player");
+      playerObj.put("name", gm.players.get(ii).name);
+      playerObj.put("position", gm.players.get(ii).getPosition());
+      actorList.put(playerObj);
+    }
+    List<Adversary> ads = gm.gameState.levels.get(gm.gameState.curLevel).ads;
+    for (int ii = 0; ii < ads.size(); ++ii) {
+      JSONObject adObj = new JSONObject();
+      adObj.put("type", ads.get(ii).getType());
+      adObj.put("name", ads.get(ii).getType() + ii);
+      adObj.put("position", ads.get(ii).getPosition());
+      actorList.put(adObj);
+    }
+    msg.put("actors",actorList);
+
+    return msg;
+  }
+
   private static void startGame() throws IOException {
-    for (Socket s : playerSockets) {
-      out = new PrintWriter(s.getOutputStream(), true);
+    for (int ii = 0; ii < playerSockets.size(); ++ii) {
+//      out = new PrintWriter(s.getOutputStream(), true);
       // get the output stream from the socket.
-      OutputStream outputStream = s.getOutputStream();
-      // create an object output stream from the output stream so we can send an object through it
-      ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-      objectOutputStream.writeObject(gm);
+//      OutputStream outputStream = s.getOutputStream();
+//      // create an object output stream from the output stream so we can send an object through it
+//      ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+//      objectOutputStream.writeObject(gm);
+
+
+
       System.out.println("I'm so tired :(");
     }
-//    while (true) {
-//      for (Socket s : playerSockets) {
-//        out = new PrintWriter(s.getOutputStream(), true);
-//        // get the output stream from the socket.
-//        OutputStream outputStream = s.getOutputStream();
-//        // create an object output stream from the output stream so we can send an object through it
-//        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-//        objectOutputStream.writeObject(gm);
-//        System.out.println("I'm so tired :(");
-//      }
-//    }
   }
 
   // wait for min players to register
