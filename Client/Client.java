@@ -10,7 +10,6 @@ public class Client {
   private static Socket clientSocket;
   private static PrintWriter out;
   private static BufferedReader in;
-  private static RemoteUser user;
 
 
 
@@ -41,7 +40,7 @@ public class Client {
     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
   }
 
-  public static void main(String[] args) throws IOException, ClassNotFoundException {
+  public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
     // update ip address / port according to arguments
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("--address")) {
@@ -75,7 +74,7 @@ public class Client {
     JSONObject updateMsg = receiveJSONResponse();
     System.out.println(updateMsg);
 
-    user = new RemoteUser(updateMsg);
+    RemoteUser user = new RemoteUser(updateMsg);
     user.render();
 
 
@@ -85,20 +84,27 @@ public class Client {
     System.out.println(moveMsg);
 
     if (moveMsg.equals("move")) {
-      while (true) {
-        if (user.getMove() != null) {
-          System.out.println("d");
+      System.out.println(updateMsg.get("position"));
+      while (user.getMoveAmount() <= 2) {
+        int[] dst = user.getMove();
+        if (dst != null) {
+          System.out.println(dst[0] + ":" + dst[1]);
           JSONObject playerMove = new JSONObject();
           playerMove.put("type", "move");
-          playerMove.put("to", user.getMove());
+          playerMove.put("to", dst);
           sendJSONMessage(playerMove);
-          break;
+          user.setMoveToNull();
+          String result = receiveStringResponse();
+          System.out.println(result);
+          JSONObject update = receiveJSONResponse();
+          System.out.println(update.get("position"));
+          user.setPlayerUpdateMessage(update);
         }
+        Thread.sleep(1000);
       }
-      System.out.println("out");
     }
-    String result = receiveStringResponse();
-    System.out.println(result);
+
+
 
 
 

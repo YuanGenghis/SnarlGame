@@ -16,7 +16,8 @@ import javax.swing.*;
 public class RemoteUser extends JPanel implements KeyListener {
     public static JSONObject playerUpdateMessage;
     public static int moveAmount = 0;
-    public static int[] playerDst;
+    public int[] playerDst;
+    public int[] position;
 
     public static BufferedImage PlayerImage;
     public static BufferedImage ADImage;
@@ -44,6 +45,11 @@ public class RemoteUser extends JPanel implements KeyListener {
     public RemoteUser(JSONObject msg) {
         playerUpdateMessage = msg;
         playerDst = null;
+        JSONArray pos = playerUpdateMessage.getJSONArray("position");
+        position = new int[]{pos.getInt(0), pos.getInt(1)};
+        setBackground(Color.BLACK);
+        setForeground(Color.WHITE);
+        refreshScreen();
     }
 
 
@@ -54,7 +60,6 @@ public class RemoteUser extends JPanel implements KeyListener {
         super.paintComponent(g);
         g.clearRect(0, 0, getWidth(), getHeight());
         drawPlayerView(g);
-
     }
     public void refreshScreen() {
         timer = new Timer(0, new ActionListener() {
@@ -83,32 +88,25 @@ public class RemoteUser extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
 //    Player p = gm.players.get(gm.curPlayer);
-        JSONArray pos = playerUpdateMessage.getJSONArray("position");
-        int[] position = new int[]{pos.getInt(0), pos.getInt(1)};
-        int[] dst = new int[2];
         switch( keyCode ) {
             case KeyEvent.VK_UP:
                 // handle up
-                dst[0] = position[0] -1;
-                dst[1] = position[1];
+                position[0]--;
                 ++moveAmount;
                 break;
             case KeyEvent.VK_DOWN:
                 // handle down
-                dst[0] = position[0] + 1;
-                dst[1] = position[1];
+                position[0] ++;
                 ++moveAmount;
                 break;
             case KeyEvent.VK_LEFT:
                 // handle left
-                dst[0] = position[0];
-                dst[1] = position[1] -1;
+                position[1] --;
                 ++moveAmount;
                 break;
             case KeyEvent.VK_RIGHT :
                 // handle right
-                dst[0] = position[0];
-                dst[1] = position[1] + 1;
+                position[1] ++;
                 ++moveAmount;
                 break;
         }
@@ -116,13 +114,20 @@ public class RemoteUser extends JPanel implements KeyListener {
 //      gm.nextPlayer();
 //      moveAmount = 0;
 //    }
-        playerDst = dst;
+        playerDst = position;
     }
 
-    public static int[] getMove() {
+    public int getMoveAmount() {
+        return moveAmount;
+    }
+
+    public int[] getMove() {
         return playerDst;
     }
 
+    public void setMoveToNull() {
+        playerDst = null;
+    }
 
     /**
      * Invoked when a key has been released. See the class description for {@link KeyEvent} for a
@@ -228,5 +233,9 @@ public class RemoteUser extends JPanel implements KeyListener {
             }
             ++row;
         }
+    }
+
+    public void setPlayerUpdateMessage(JSONObject playerUpdateMessage) {
+        this.playerUpdateMessage = playerUpdateMessage;
     }
 }
