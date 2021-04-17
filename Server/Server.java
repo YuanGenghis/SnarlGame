@@ -138,21 +138,35 @@ public class Server {
                 out = new PrintWriter(s.getOutputStream(), true);
                 sendStringMessage("move");
                 JSONObject playerMove = null;
-                while ((playerMove = receiveJSONMessage()) != null) {
-                    System.out.println(playerMove);
-                    int[] dst = new int[]{playerMove.getJSONArray("to").getInt(0),
-                            playerMove.getJSONArray("to").getInt(1)};
-                    sendStringMessage(gm.checkMoveResult(player, dst));
-                    gm.movePlayer(player, dst);
-                    JSONObject updateMsg = makePlayerUpdateMessage(player);
-                    sendJSONMessage(updateMsg);
+                int move = 0;
+                while (move < 2) {
+                    if ((playerMove = receiveJSONMessage()) != null) {
+                        System.out.println(playerMove);
+                        int[] dst = new int[]{playerMove.getJSONArray("to").getInt(0),
+                                playerMove.getJSONArray("to").getInt(1)};
+                        sendStringMessage(gm.checkMoveResult(player, dst));
+                        gm.movePlayer(player, dst);
+                        sendUpdateToAllUsers();
+                        in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                        out = new PrintWriter(s.getOutputStream(), true);
+                        ++move;
+                    }
                 }
-
-
-
-                System.out.println("I'm so tired :(");
+                move = 0;
+                System.out.println("next Player");
             }
 //        }
+    }
+
+    private static void sendUpdateToAllUsers() throws IOException {
+        for (int ii = 0; ii < playerSockets.size(); ++ii) {
+            Socket s = playerSockets.get(ii);
+            Player player = gm.players.get(ii);
+            JSONObject updateMsg = makePlayerUpdateMessage(player);
+            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out = new PrintWriter(s.getOutputStream(), true);
+            sendJSONMessage(updateMsg);
+        }
     }
 
     // wait for min players to register
