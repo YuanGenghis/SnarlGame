@@ -5,7 +5,7 @@ import java.net.*;
 
 public class Client {
   private static String address = "127.0.0.1";
-  private static String port = "8000";
+  private static int port = 45678;
 
   private static Socket clientSocket;
   private static PrintWriter out;
@@ -42,17 +42,26 @@ public class Client {
   }
 
   public static void main(String[] args) throws IOException, ClassNotFoundException {
+    // update ip address / port according to arguments
+    for (int i = 0; i < args.length; i++) {
+      if (args[i].equals("--address")) {
+        address = args[++i];
+        System.out.println("address: " + address);
+      } else if (args[i].equals("--port")) {
+        port = Integer.parseInt(args[++i]);
+      }
+    }
+
     Scanner scanner = new Scanner(System.in);
 
     ////Registration of players
     //tcp-connect
-    int portNum = Integer.parseInt(port);
-    connect(address, portNum);
+    connect(address, port);
 
 
     //get server-welcome message
-    JSONObject welcomeMSG = receiveJSONResponse();
-    System.out.println(welcomeMSG);
+    JSONObject welcomeMsg = receiveJSONResponse();
+    System.out.println(welcomeMsg);
 
     //get "name" message
     String welcomeName = receiveStringResponse();
@@ -62,15 +71,32 @@ public class Client {
     String name = scanner.next();
     sendStringMessage(name);
 
+    //get updated message
+    JSONObject updateMsg = receiveJSONResponse();
+    System.out.println(updateMsg);
 
-    // get the input stream from the connected socket
-    InputStream inputStream = clientSocket.getInputStream();
-    // create a DataInputStream so we can read data from it.
-    ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 
-    GameManager gm = (GameManager) objectInputStream.readObject();
-    user = new User(gm);
-    user.render();
+    // while (true)
+      //get "move" message
+    String moveMsg = receiveStringResponse();
+    System.out.println(moveMsg);
+
+    if (moveMsg.equals("move")) {
+
+
+    }
+
+
+
+//
+//    // get the input stream from the connected socket
+//    InputStream inputStream = clientSocket.getInputStream();
+//    // create a DataInputStream so we can read data from it.
+//    ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+//
+//    GameManager gm = (GameManager) objectInputStream.readObject();
+//    user = new User(gm);
+//    user.render();
 
 
 

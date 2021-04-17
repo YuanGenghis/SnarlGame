@@ -41,6 +41,9 @@ public class Player implements Serializable {
     return this.position;
   }
 
+  public String getName() {
+    return name;
+  }
 
   public void update(int[] position, Level level) {
     this.position = position;
