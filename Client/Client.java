@@ -10,7 +10,7 @@ public class Client {
   private static Socket clientSocket;
   private static PrintWriter out;
   private static BufferedReader in;
-  private static User user = null;
+  private static RemoteUser user;
 
 
 
@@ -71,20 +71,35 @@ public class Client {
     String name = scanner.next();
     sendStringMessage(name);
 
-    //get updated message
+    //start a level and get updated message
     JSONObject updateMsg = receiveJSONResponse();
     System.out.println(updateMsg);
 
+    user = new RemoteUser(updateMsg);
+    user.render();
+
 
     // while (true)
-      //get "move" message
+    //get "move" message
     String moveMsg = receiveStringResponse();
     System.out.println(moveMsg);
 
     if (moveMsg.equals("move")) {
-
-
+      while (true) {
+        if (user.getMove() != null) {
+          System.out.println("d");
+          JSONObject playerMove = new JSONObject();
+          playerMove.put("type", "move");
+          playerMove.put("to", user.getMove());
+          sendJSONMessage(playerMove);
+          break;
+        }
+      }
+      System.out.println("out");
     }
+    String result = receiveStringResponse();
+    System.out.println(result);
+
 
 
 

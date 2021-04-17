@@ -17,7 +17,7 @@ public class Server {
 
 
     private static String fileName = "snarl.levels";
-    private static int timeOfWaiting = 60;
+    private static int timeOfWaiting = 6;
     private static boolean isObserverMode = false;
     private static int port = 45678;
 
@@ -130,14 +130,26 @@ public class Server {
     }
 
     private static void startGame() throws IOException {
-        for (int ii = 0; ii < playerSockets.size(); ++ii) {
-            Socket s = playerSockets.get(ii);
-            out = new PrintWriter(s.getOutputStream(), true);
-            sendStringMessage("move");
+//        while (gm.isGameEnd()) {
+            for (int ii = 0; ii < playerSockets.size(); ++ii) {
+                Socket s = playerSockets.get(ii);
+                in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                out = new PrintWriter(s.getOutputStream(), true);
+                sendStringMessage("move");
+
+                while (in.readLine() != null) {
+                    JSONObject playerMove = receiveJSONMessage();
+                    System.out.println(playerMove);
+                    int[] dst = new int[]{playerMove.getJSONArray("to").getInt(0),
+                            playerMove.getJSONArray("to").getInt(1)};
+                    sendStringMessage(gm.checkMoveResult(gm.players.get(gm.curPlayer), dst));
+                }
 
 
-            System.out.println("I'm so tired :(");
-        }
+
+                System.out.println("I'm so tired :(");
+            }
+//        }
     }
 
     // wait for min players to register
@@ -147,7 +159,7 @@ public class Server {
             System.out.println("new Client connected to " + s);
             playerSockets.add(s);
 
-            System.out.println("input a username");
+            System.out.println("wait for a username");
             out = new PrintWriter(s.getOutputStream(), true);
             // takes input from the client socket
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
@@ -221,7 +233,7 @@ public class Server {
             return in.readLine();
         }
 
-        public static JSONObject readJSONMessage () throws IOException {
+        public static JSONObject receiveJSONMessage () throws IOException {
             return new JSONObject(in.readLine());
         }
 
