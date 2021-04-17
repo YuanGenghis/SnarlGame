@@ -20,6 +20,7 @@ public class Client {
 
   //send a JSONObject to server
   public static void sendJSONMessage(JSONObject jo) throws IOException {
+    System.out.println("send json");
     out.println(jo);
   }
 
@@ -31,6 +32,10 @@ public class Client {
   public static String receiveStringResponse() throws IOException {
     String resp = in.readLine();
     return resp;
+  }
+
+  public static Object receiveMsg() throws IOException {
+    return in.readLine();
   }
 
   //build connection
@@ -77,31 +82,34 @@ public class Client {
     RemoteUser user = new RemoteUser(updateMsg);
     user.render();
 
-
-    // while (true)
-    //get "move" message
-    String moveMsg = receiveStringResponse();
-    System.out.println(moveMsg);
-
-    if (moveMsg.equals("move")) {
-      System.out.println(updateMsg.get("position"));
-      while (user.getMoveAmount() <= 2) {
-        int[] dst = user.getMove();
-        if (dst != null) {
-          System.out.println(dst[0] + ":" + dst[1]);
-          JSONObject playerMove = new JSONObject();
-          playerMove.put("type", "move");
-          playerMove.put("to", dst);
-          sendJSONMessage(playerMove);
-          user.setMoveToNull();
-          String result = receiveStringResponse();
-          System.out.println(result);
-          JSONObject update = receiveJSONResponse();
-          System.out.println(update.get("position"));
-          user.setPlayerUpdateMessage(update);
+    //keep updating
+    Object msg = null;
+    while ((msg = receiveMsg()) != null) {
+      System.out.println(msg);
+      if (msg.equals("move")) {
+        System.out.println(updateMsg.get("position"));
+        while (user.getMoveAmount() <= 2) {
+          int[] dst = user.getMove();
+          if (dst != null) {
+            System.out.println(dst[0] + ":" + dst[1]);
+            JSONObject playerMove = new JSONObject();
+            playerMove.put("type", "move");
+            playerMove.put("to", dst);
+            sendJSONMessage(playerMove);
+            user.setMoveToNull();
+            String result = receiveStringResponse();
+            System.out.println(result);
+            JSONObject update = receiveJSONResponse();
+            System.out.println(update.get("position"));
+            user.setPlayerUpdateMessage(update);
+          }
+          Thread.sleep(1000);
         }
-        Thread.sleep(1000);
       }
+      else {
+        user.setPlayerUpdateMessage((JSONObject)msg);
+      }
+      Thread.sleep(1000);
     }
 
 
