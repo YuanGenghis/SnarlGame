@@ -40,7 +40,7 @@ public class Server {
     }
 
     // run the game
-    public static void run() throws IOException {
+    public static void run() throws IOException, InterruptedException {
         waitForPlayers(minPlayers);
         System.out.println("Client accepted");
         System.out.println("Closing connection");
@@ -129,20 +129,23 @@ public class Server {
         return msg;
     }
 
-    private static void startGame() throws IOException {
+    private static void startGame() throws IOException, InterruptedException {
 //        while (gm.isGameEnd()) {
             for (int ii = 0; ii < playerSockets.size(); ++ii) {
                 Socket s = playerSockets.get(ii);
+                Player player = gm.players.get(gm.curPlayer);
                 in = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 out = new PrintWriter(s.getOutputStream(), true);
                 sendStringMessage("move");
-
-                while (in.readLine() != null) {
-                    JSONObject playerMove = receiveJSONMessage();
+                JSONObject playerMove = null;
+                while ((playerMove = receiveJSONMessage()) != null) {
                     System.out.println(playerMove);
                     int[] dst = new int[]{playerMove.getJSONArray("to").getInt(0),
                             playerMove.getJSONArray("to").getInt(1)};
-                    sendStringMessage(gm.checkMoveResult(gm.players.get(gm.curPlayer), dst));
+                    sendStringMessage(gm.checkMoveResult(player, dst));
+                    gm.movePlayer(player, dst);
+                    JSONObject updateMsg = makePlayerUpdateMessage(player);
+                    sendJSONMessage(updateMsg);
                 }
 
 
@@ -172,7 +175,7 @@ public class Server {
             //send "name"
             sendStringMessage("name");
 
-            String line = in.readLine();
+            String line = receiveStringMessage();
             names.add(line);
             System.out.println(names);
         }
@@ -188,7 +191,7 @@ public class Server {
     }
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--levels")) {
                 fileName = args[++i];
