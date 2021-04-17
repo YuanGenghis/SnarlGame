@@ -1,9 +1,10 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class GameState {
+public class GameState implements Serializable {
   List<Level> levels;
   int curLevel;
   int gameStatus;

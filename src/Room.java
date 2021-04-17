@@ -1,9 +1,10 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javafx.util.Pair;
 
 // represents a Room
-public class Room {
+public class Room implements Serializable {
   char[][] layout;
   int[] position;
 

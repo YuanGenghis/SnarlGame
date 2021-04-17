@@ -10,6 +10,8 @@ public class Client {
   private static Socket clientSocket;
   private static PrintWriter out;
   private static BufferedReader in;
+  private static User user = null;
+
 
 
   //send a string to server
@@ -39,7 +41,7 @@ public class Client {
     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
   }
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, ClassNotFoundException {
     Scanner scanner = new Scanner(System.in);
 
     ////Registration of players
@@ -59,6 +61,16 @@ public class Client {
     //send name message
     String name = scanner.next();
     sendStringMessage(name);
+
+
+    // get the input stream from the connected socket
+    InputStream inputStream = clientSocket.getInputStream();
+    // create a DataInputStream so we can read data from it.
+    ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+
+    GameManager gm = (GameManager) objectInputStream.readObject();
+    user = new User(gm);
+    user.render();
 
 
 
