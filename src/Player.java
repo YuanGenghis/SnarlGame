@@ -1,6 +1,7 @@
+import java.io.Serializable;
 
 // represents a Player
-public class Player{
+public class Player implements Serializable {
   String name;
   int[] position;
   int status;

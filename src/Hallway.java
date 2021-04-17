@@ -1,10 +1,11 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.util.Pair;
 
 // represents a Hallway
-public class Hallway {
+public class Hallway implements Serializable {
   List<int[]> layout;
   List<int[]> waypoints;
   List<int[]> connection;

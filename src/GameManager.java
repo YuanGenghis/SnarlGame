@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -13,7 +14,7 @@ import javax.imageio.ImageIO;
 
 
 // represents the GameManager
-public class GameManager {
+public class GameManager implements Serializable {
   List<Player> players;
   int curPlayer;
   GameState gameState;
@@ -37,6 +38,13 @@ public class GameManager {
     this.players = players;
     this.gameState = gameState;
     this.curPlayer = curPlayer;
+  }
+
+  public GameManager(List<Player> players, int curPlayer, GameState gameState, int rectWidth) {
+    this.players = players;
+    this.curPlayer = curPlayer;
+    this.gameState = gameState;
+    this.rectWidth = rectWidth;
   }
 
   //constructor for test task

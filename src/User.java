@@ -24,6 +24,15 @@ public class User extends JPanel implements KeyListener, UserInterface {
         refreshScreen();
     }
 
+    // init User with given gameManager
+    public User(GameManager gm) {
+        this.gm = gm;
+        gm.init();
+        setBackground(Color.BLACK);
+        setForeground(Color.WHITE);
+        refreshScreen();
+    }
+
     public User(int natural, List<Level> levels, List<String> names) {
         this.gm = new GameManager(levels, names);
         gm.init();
