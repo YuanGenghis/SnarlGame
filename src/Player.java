@@ -7,6 +7,7 @@ public class Player implements Serializable {
   int status;
   int timesExited = 0;
   int numOfKeys = 0;
+  int numOfEjects = 0;
 
   // construct the Player
   public Player(String name, int[] position, int status) {
