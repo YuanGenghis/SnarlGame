@@ -51,6 +51,16 @@ public class RemoteUser extends JPanel implements KeyListener {
         setForeground(Color.WHITE);
         refreshScreen();
     }
+    public void setPlayerUpdateMessage(JSONObject playerUpdateMessage) {
+
+        RemoteUser.playerUpdateMessage = playerUpdateMessage;
+//        playerDst = null;
+//        JSONArray pos = playerUpdateMessage.getJSONArray("position");
+//        position = new int[]{pos.getInt(0), pos.getInt(1)};
+//        setBackground(Color.BLACK);
+//        setForeground(Color.WHITE);
+//        refreshScreen();
+    }
 
 
     Timer timer;
@@ -235,7 +245,5 @@ public class RemoteUser extends JPanel implements KeyListener {
         }
     }
 
-    public void setPlayerUpdateMessage(JSONObject playerUpdateMessage) {
-        this.playerUpdateMessage = playerUpdateMessage;
-    }
+
 }
