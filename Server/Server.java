@@ -130,7 +130,7 @@ public class Server {
     }
 
     private static void startGame() throws IOException, InterruptedException {
-//        while (gm.isGameEnd()) {
+        while (!gm.isGameEnd()) {
             for (int ii = 0; ii < playerSockets.size(); ++ii) {
                 Socket s = playerSockets.get(ii);
                 Player player = gm.players.get(gm.curPlayer);
@@ -152,10 +152,10 @@ public class Server {
                         ++move;
                     }
                 }
-                move = 0;
+                gm.nextPlayer();
                 System.out.println("next Player");
             }
-//        }
+        }
     }
 
     private static void sendUpdateToAllUsers() throws IOException {

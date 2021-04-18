@@ -84,9 +84,10 @@ public class Client {
 
     //keep updating
     Object msg = null;
-    while ((msg = receiveMsg()) != null) {
-      System.out.println(msg);
-      if (msg.equals("move")) {
+    while ((msg = in.readLine()) != null) {
+      msg = new JSONTokener(msg.toString()).nextValue();
+      System.out.println("msg:" + msg);
+      if (msg instanceof String && msg.equals("move")) {
         System.out.println(updateMsg.get("position"));
         while (user.getMoveAmount() <= 2) {
           int[] dst = user.getMove();
@@ -107,7 +108,8 @@ public class Client {
         }
       }
       else {
-        user.setPlayerUpdateMessage((JSONObject)msg);
+        System.out.println("update message");
+        user.setPlayerUpdateMessage((JSONObject) msg);
       }
       Thread.sleep(1000);
     }
