@@ -106,10 +106,19 @@ public class Client {
           }
           Thread.sleep(1000);
         }
+        user.setMoveAmount();
+      }
+      else if (msg instanceof String) {
+        System.out.println("unknownMsg:" + msg);
       }
       else {
-        System.out.println("update message");
-        user.setPlayerUpdateMessage((JSONObject) msg);
+        if (((JSONObject)msg).get("type").equals("player-update")) {
+          System.out.println("update message");
+          user.setPlayerUpdateMessage((JSONObject) msg);
+        } else {
+          System.out.println(msg);
+        }
+
       }
       Thread.sleep(1000);
     }

@@ -131,6 +131,10 @@ public class RemoteUser extends JPanel implements KeyListener {
         return moveAmount;
     }
 
+    public void setMoveAmount() {
+        moveAmount = 0;
+    }
+
     public int[] getMove() {
         return playerDst;
     }

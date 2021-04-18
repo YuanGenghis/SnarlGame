@@ -16,7 +16,7 @@ public class Server {
     private static PrintWriter out = null;
 
 
-    private static String fileName = "snarl.levels";
+    private static String fileName = "1-in.levels";
     private static int timeOfWaiting = 6;
     private static boolean isObserverMode = false;
     private static int port = 45678;
@@ -27,6 +27,8 @@ public class Server {
     private static List<String> names = new ArrayList<>();
     private static List<Socket> playerSockets = new ArrayList<>();
     private static GameManager gm = null;
+    private static String whoFindTheFuckingKey = "";
+    private static String whoFindTheExit = "";
 //  private static User user;
 
     public Server(int port) {
@@ -51,7 +53,45 @@ public class Server {
         } catch (SocketTimeoutException s) {
             System.out.println("timeout for more players");
         }
-        gm = new GameManager(names);
+
+        int naturalNum = 0;
+        StringBuilder jsonFile = new StringBuilder();
+        List<Level> levels = new ArrayList<>();
+        try {
+            File myObj = new File(fileName);
+            Scanner myReader = new Scanner(myObj);
+            naturalNum = myReader.nextInt();
+
+            int index = 0;
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                if (data.contains("level")) {
+                    if (index != 0) {
+                        String jsonString = jsonFile.toString();
+                        JSONObject jo = new JSONObject(jsonString);
+                        Level l = TestLevel.levelBuilder(jo);
+                        levels.add(l);
+
+                        jsonFile = new StringBuilder();
+                    }
+                    ++index;
+                }
+                jsonFile.append(data);
+            }
+            String jsonString = jsonFile.toString();
+            JSONObject jo = new JSONObject(jsonString);
+            Level l = TestLevel.levelBuilder(jo);
+            levels.add(l);
+
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+
+
+        gm = new GameManager(levels, names);
         gm.init();
         sendInitialUpdate();
         startGame();
@@ -130,8 +170,19 @@ public class Server {
     }
 
     private static void startGame() throws IOException, InterruptedException {
+        int index = -1;
         while (!gm.isGameEnd()) {
+            if (index == -1){
+                sendStartLevel();
+                index = gm.gameState.curLevel;
+            }
+            else if (gm.gameState.curLevel != index) {
+                sendEndLevel();
+                index = gm.gameState.curLevel;
+                sendStartLevel();
+            }
             for (int ii = 0; ii < playerSockets.size(); ++ii) {
+                System.out.println("player" + ii);
                 Socket s = playerSockets.get(ii);
                 Player player = gm.players.get(gm.curPlayer);
                 in = new BufferedReader(new InputStreamReader(s.getInputStream()));
@@ -144,7 +195,14 @@ public class Server {
                         System.out.println(playerMove);
                         int[] dst = new int[]{playerMove.getJSONArray("to").getInt(0),
                                 playerMove.getJSONArray("to").getInt(1)};
-                        sendStringMessage(gm.checkMoveResult(player, dst));
+                        String result = gm.checkMoveResult(player, dst);
+                        sendStringMessage(result);
+                        if (result.equals("key")) {
+                            whoFindTheFuckingKey = player.getName();
+                        } else if (result.equals("exit")) {
+                            whoFindTheExit = player.getName();
+                        }
+
                         gm.movePlayer(player, dst);
                         sendUpdateToAllUsers();
                         in = new BufferedReader(new InputStreamReader(s.getInputStream()));
@@ -156,6 +214,7 @@ public class Server {
                 System.out.println("next Player");
             }
         }
+        sendEndgame();
     }
 
     private static void sendUpdateToAllUsers() throws IOException {
@@ -195,6 +254,62 @@ public class Server {
         }
     }
 
+    public static void sendStartLevel() throws IOException {
+        JSONObject startLevel = new JSONObject();
+        startLevel.put("type", "start-level");
+        startLevel.put("level", gm.gameState.levels.size());
+
+        JSONArray nameList = new JSONArray();
+        for (Player p: gm.players) {
+            nameList.put(p.name);
+        }
+        startLevel.put("players", nameList);
+
+        sendJsonToAllUsers(startLevel);
+    }
+
+    public static void sendEndLevel() throws IOException {
+        JSONObject endLevel = new JSONObject();
+        endLevel.put("type", "end-level");
+        endLevel.put("key", whoFindTheFuckingKey);
+        endLevel.put("exit", whoFindTheExit);
+        JSONArray ejects = new JSONArray();
+        for(Player p: gm.players) {
+            if (p.status == -1) {
+                ejects.put(p.name);
+            }
+        }
+        endLevel.put("ejects", ejects);
+        sendJsonToAllUsers(endLevel);
+    }
+
+    public static void sendEndgame() throws IOException {
+        JSONObject endGame = new JSONObject();
+        endGame.put("type", "end-game");
+        JSONArray scores = new JSONArray();
+        for (Player p : gm.players) {
+            JSONObject playerScore = new JSONObject();
+            playerScore.put("type", "player-score");
+            playerScore.put("name", p.getName());
+            playerScore.put("exits", p.timesExited);
+            playerScore.put("ejects", p.numOfEjects);
+            playerScore.put("keys", p.numOfKeys);
+            scores.put(playerScore);
+        }
+        endGame.put("scores", scores);
+        sendJsonToAllUsers(endGame);
+    }
+
+    public static void sendJsonToAllUsers(JSONObject jo) throws IOException {
+        for (int ii = 0; ii < playerSockets.size(); ++ii) {
+            Socket s = playerSockets.get(ii);
+            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out = new PrintWriter(s.getOutputStream(), true);
+            sendJSONMessage(jo);
+        }
+    }
+
+
 
     // stop the connection and close socket, and input & output streams
     public static void stop() throws IOException {
@@ -232,9 +347,8 @@ public class Server {
 
             Server server = new Server(port);
             run();
-//        for (Socket s : playerSockets) {
-//            stop();
-//        }
+
+            stop();
         }
 
 
@@ -254,49 +368,11 @@ public class Server {
             return new JSONObject(in.readLine());
         }
 
-        private static void runGame (List < String > names) {
 
-            User user1 = new User(gm);
-            user1.render();
-        }
     }
 
 //  private static void runGame(List<String> names) {
-//    String fileName = "1-in.levels";
-//    int naturalNum = 0;
-//    StringBuilder jsonFile = new StringBuilder();
-//    List<Level> levels = new ArrayList<>();
-//    try {
-//      File myObj = new File(fileName);
-//      Scanner myReader = new Scanner(myObj);
-//      naturalNum = myReader.nextInt();
-//
-//      int index = 0;
-//      while (myReader.hasNextLine()) {
-//        String data = myReader.nextLine();
-//        if (data.contains("level")) {
-//          if (index != 0) {
-//            String jsonString = jsonFile.toString();
-//            JSONObject jo = new JSONObject(jsonString);
-//            Level l = TestLevel.levelBuilder(jo);
-//            levels.add(l);
-//
-//            jsonFile = new StringBuilder();
-//          }
-//          ++index;
-//        }
-//        jsonFile.append(data);
-//      }
-//      String jsonString = jsonFile.toString();
-//      JSONObject jo = new JSONObject(jsonString);
-//      Level l = TestLevel.levelBuilder(jo);
-//      levels.add(l);
-//
-//      myReader.close();
-//    } catch (FileNotFoundException e) {
-//      System.out.println("An error occurred.");
-//      e.printStackTrace();
-//    }
+
 //    User user1 = new User(naturalNum, levels, names);
 //    user1.render();
 //  }

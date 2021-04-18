@@ -157,6 +157,7 @@ public class GameManager implements Serializable {
       case "Adversary":
         System.out.println("Player " + p.name + " was expelled");
         p.status = -1;
+        p.numOfEjects++;
         playerExpelled(p);
         this.checkAllPlayerStatus();
         this.nextPlayer();
