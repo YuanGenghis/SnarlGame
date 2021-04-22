@@ -132,10 +132,9 @@ public class Level extends JPanel{
   }
 
 
-  //
+  //Move a Ad by index
   public void moveAds(int index, int[] dst) {
     Adversary ad = this.ads.get(index);
-    ad.setPosition(dst);
 
     int[] pos = ad.getPosition();
     Room r = inWhichRoom(pos);
@@ -148,6 +147,8 @@ public class Level extends JPanel{
     else {
       newRoom.layout[dst[0] - newRoom.position[0]][dst[1]-newRoom.position[1]] = 'Z';
     }
+
+    ad.setPosition(dst);
   }
 
   // set Exit position
