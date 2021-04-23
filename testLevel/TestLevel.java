@@ -147,7 +147,7 @@ public class TestLevel {
 
 
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws CloneNotSupportedException {
     // read input
     Scanner sc = new Scanner(System.in);
     StringBuilder sb = new StringBuilder();

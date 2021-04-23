@@ -14,7 +14,7 @@ import java.awt.*;
 import java.util.Random;
 
 // represents a Level of the game
-public class Level extends JPanel{
+public class Level extends JPanel implements Cloneable {
   List<Room> rooms;
   List<Hallway> hallways;
   List<Adversary> ads;
@@ -22,6 +22,7 @@ public class Level extends JPanel{
   int[] exitPosition;
   boolean isLocked = true;
   boolean isEnd = false;
+  Level levelCpy;
 
   public static BufferedImage PlayerImage;
   public static BufferedImage ADImage;
@@ -119,16 +120,51 @@ public class Level extends JPanel{
     this.ads = new ArrayList<>();
   }
 
+
   // constructs the level with Given rooms and hallways
   public Level(List<Room> rooms, List<Hallway> hallways) {
     this.rooms = rooms;
     this.hallways = hallways;
     this.ads = new ArrayList<>();
     this.isLocked = true;
+
+    levelCpy = new Level(rooms, hallways, true);
   }
+
+  public Level(List<Room> rooms, List<Hallway> hallways, boolean isCpy) {
+    this.rooms = rooms;
+    this.hallways = hallways;
+  }
+
 
   public void addAd(Zombie ad) {
     this.ads.add(ad);
+  }
+
+
+  public Object clone() throws CloneNotSupportedException {
+    // Assign the shallow copy to
+    // new reference variable level
+    Level level = (Level)super.clone();
+
+    // Creating a deep copy for c
+    level.levelCpy = new Level();
+    level.levelCpy.rooms = levelCpy.rooms;
+    level.levelCpy.hallways = levelCpy.hallways;
+
+    // Create a new object for the field c
+    // and assign it to shallow copy obtained,
+    // to make it a deep copy
+    return level;
+  }
+
+
+  public List<Room> getRooms() {
+    return this.rooms;
+  }
+
+  public List<Hallway> getHallways() {
+    return this.hallways;
   }
 
 
@@ -138,7 +174,19 @@ public class Level extends JPanel{
 
     int[] pos = ad.getPosition();
     Room r = inWhichRoom(pos);
-    r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = '.';
+
+    Room originalRoom = inWhichRoomInCpy(pos);
+    char originalTile =
+            originalRoom.layout[pos[0]-originalRoom.position[0]][pos[1]-originalRoom.position[1]];
+    switch (originalTile) {
+      case '.':
+      case 'Z':
+      case 'G':
+        r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = '.'; break;
+      case '-': r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = '-'; break;
+      case '|': r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = '|'; break;
+      case 'x': r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = 'x'; break;
+    }
 
     Room newRoom = inWhichRoom(dst);
     if (ad.getType().equals("Ghost")) {
@@ -450,6 +498,24 @@ public class Level extends JPanel{
     return null;
   }
 
+
+  // find which room in cpy level the given position in
+  public Room inWhichRoomInCpy(int[] position) {
+    for (Room room: this.levelCpy.rooms) {
+      int rows = room.layout.length;
+      int cols = room.layout[0].length;
+      int positionX = room.position[0];
+      int positionY = room.position[1];
+
+      if (positionY <= position[1] && position[1] < positionY + rows) {
+        if (positionX <= position[0] && position[0] < positionX + cols) {
+          return room;
+        }
+      }
+    }
+    return null;
+  }
+
   public int checkIfInHallways(int[] point) {
     for (int ii = 0; ii < hallways.size(); ++ii) {
       for (int[] p: hallways.get(ii).layout) {
@@ -581,11 +647,32 @@ public class Level extends JPanel{
     dst[0] = newPosition[0]; dst[1] = newPosition[1];
     Room dstRoom = inWhichRoom(dst);
 
+
+    Room oldRoomInCpy = inWhichRoomInCpy(oldPosition);
+
+    char originalTile;
+    if (oldRoomInCpy != null) {
+      originalTile =
+              oldRoomInCpy.layout[old[0]-oldRoomInCpy.position[0]][old[1]-oldRoomInCpy.position[1]];
+    } else {
+      originalTile = '.';
+    }
+
+
     //handle old position
     for (Room r: this.rooms) {
       if (oldRoom != null) {
-        if (r.position.equals(oldRoom.position)) {
-          r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '.';
+        if (Arrays.equals(r.position, oldRoom.position)) {
+          System.out.println("here: " + originalTile);
+          switch (originalTile) {
+            case '.':
+            case 'P':
+              r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '.';break;
+            case '-': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '-'; break;
+            case '|': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '|'; break;
+            case 'x': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = 'x'; break;
+          }
+//          r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '.';
         }
       }
       else {
@@ -603,7 +690,7 @@ public class Level extends JPanel{
     //handle dst position
     for (Room r: this.rooms) {
       if (dstRoom != null) {
-        if (r.position.equals(dstRoom.position)) {
+        if (Arrays.equals(r.position, dstRoom.position)) {
 //          System.out.println("to new room: " + r.position);
           r.layout[dst[0] - r.position[0]][dst[1] - r.position[1]] = 'P';
         }
