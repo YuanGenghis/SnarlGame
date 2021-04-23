@@ -89,7 +89,7 @@ public class Client {
       System.out.println("msg:" + msg);
       if (msg instanceof String && msg.equals("move")) {
         System.out.println(updateMsg.get("position"));
-        while (user.getMoveAmount() <= 2) {
+        while (user.getMoveAmount() < 2) {
           int[] dst = user.getMove();
           if (dst != null) {
             System.out.println(dst[0] + ":" + dst[1]);
@@ -103,8 +103,9 @@ public class Client {
             JSONObject update = receiveJSONResponse();
             System.out.println(update.get("position"));
             user.setPlayerUpdateMessage(update);
+            user.addMoveAmount();
           }
-          Thread.sleep(1000);
+          Thread.sleep(100);
         }
         user.setMoveAmount();
       }
@@ -120,7 +121,7 @@ public class Client {
         }
 
       }
-      Thread.sleep(1000);
+      Thread.sleep(100);
     }
 
 
