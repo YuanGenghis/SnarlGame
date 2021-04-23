@@ -349,27 +349,22 @@ public class Server {
             run();
 
             stop();
-        }
-
-
-        public static void sendJSONMessage (JSONObject jo){
-            out.println(jo);
-        }
-
-        public static void sendStringMessage (String msg){
-            out.println(msg);
-        }
-
-        public static String receiveStringMessage () throws IOException {
-            return in.readLine();
-        }
-
-        public static JSONObject receiveJSONMessage () throws IOException {
-            return new JSONObject(in.readLine());
-        }
-
-
     }
+
+
+    public static void sendJSONMessage (JSONObject jo) {
+        out.println(jo);
+    }
+    public static void sendStringMessage (String msg){ out.println(msg);}
+    public static String receiveStringMessage () throws IOException {
+        return in.readLine();
+    }
+    public static JSONObject receiveJSONMessage () throws IOException {
+        return new JSONObject(in.readLine());
+    }
+
+
+}
 
 //  private static void runGame(List<String> names) {
 

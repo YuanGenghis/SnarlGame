@@ -102,22 +102,18 @@ public class RemoteUser extends JPanel implements KeyListener {
             case KeyEvent.VK_UP:
                 // handle up
                 position[0]--;
-                ++moveAmount;
                 break;
             case KeyEvent.VK_DOWN:
                 // handle down
                 position[0] ++;
-                ++moveAmount;
                 break;
             case KeyEvent.VK_LEFT:
                 // handle left
                 position[1] --;
-                ++moveAmount;
                 break;
             case KeyEvent.VK_RIGHT :
                 // handle right
                 position[1] ++;
-                ++moveAmount;
                 break;
         }
 //    if (keyCode == KeyEvent.VK_ENTER) {
@@ -130,6 +126,8 @@ public class RemoteUser extends JPanel implements KeyListener {
     public int getMoveAmount() {
         return moveAmount;
     }
+
+    public void addMoveAmount() {moveAmount++;}
 
     public void setMoveAmount() {
         moveAmount = 0;
