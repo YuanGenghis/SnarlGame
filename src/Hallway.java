@@ -37,6 +37,18 @@ public class Hallway implements Serializable {
     playerPosition = new int[2];
   }
 
+  public Hallway(Hallway hw) {
+    this.connection = hw.layout;
+    this.waypoints = hw.waypoints;
+    this.connection = hw.connection;
+    this.ifPlayerInside = hw.ifPlayerInside;
+    this.playerPosition = hw.playerPosition;
+  }
+
+  public Object clone(){
+    return new Hallway( this );
+  }
+
   // set the connection of the Hallway
   public void setConnection(int x1, int y1, int x2, int y2) {
     List<int[]> lists = new ArrayList<>();

@@ -20,6 +20,16 @@ public class Room implements Serializable {
     this.position = new int[2];
   }
 
+  //copy
+  public Room(Room r) {
+    this.layout = r.layout;
+    this.position = r.position;
+  }
+
+  public Object clone() {
+    return new Room( this );
+  }
+
   // add tiles to empty Room
   public void addTile(int x, int y, char tile) {
     for (int ii = 0; ii < layout.length; ++ii) {

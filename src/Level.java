@@ -14,7 +14,7 @@ import java.awt.*;
 import java.util.Random;
 
 // represents a Level of the game
-public class Level extends JPanel implements Cloneable {
+public class Level extends JPanel {
   List<Room> rooms;
   List<Hallway> hallways;
   List<Adversary> ads;
@@ -23,7 +23,7 @@ public class Level extends JPanel implements Cloneable {
   boolean isLocked = true;
   boolean isEnd = false;
 
-  Level levelCpy;
+//  Level levelCpy;
   List<Room> roomsCpy;
   List<Hallway> hallwaysCpy;
 
@@ -122,6 +122,15 @@ public class Level extends JPanel implements Cloneable {
   public Level() {
     this.initDefult();
     this.ads = new ArrayList<>();
+    this.roomsCpy = new ArrayList<>();
+    for (Room r: this.rooms) {
+      this.roomsCpy.add(new Room(r));
+    }
+
+    this.hallwaysCpy = new ArrayList<>();
+    for (Hallway hw: this.hallways) {
+      this.hallwaysCpy.add(new Hallway(hw));
+    }
   }
 
 
@@ -132,34 +141,22 @@ public class Level extends JPanel implements Cloneable {
     this.ads = new ArrayList<>();
     this.isLocked = true;
 
-//    levelCpy = new Level(rooms, hallways, true);
     this.roomsCpy = new ArrayList<>();
-    this.roomsCpy.addAll(rooms);
-    this.hallwaysCpy = new ArrayList<>();
-    this.hallwaysCpy.addAll(hallways);
-  }
+    for (Room r: this.rooms) {
+      this.roomsCpy.add((Room)r.clone());
+    }
 
+    this.hallwaysCpy = new ArrayList<>();
+    for (Hallway hw: this.hallways) {
+      this.hallwaysCpy.add((Hallway) hw.clone());
+    }
+  }
 
 
   public void addAd(Zombie ad) {
     this.ads.add(ad);
   }
 
-
-//  public Object clone() throws CloneNotSupportedException {
-//    // Assign the shallow copy to
-//    // new reference variable level
-//    Level level = (Level)super.clone();
-//
-//    // Creating a deep copy for c
-//    level.levelCpy.rooms = levelCpy.rooms;
-//    level.levelCpy.hallways = levelCpy.hallways;
-//
-//    // Create a new object for the field c
-//    // and assign it to shallow copy obtained,
-//    // to make it a deep copy
-//    return level;
-//  }
 
 
   public List<Room> getRooms() {
@@ -504,6 +501,13 @@ public class Level extends JPanel implements Cloneable {
 
   // find which room in cpy level the given position in
   public Room inWhichRoomInCpy(int[] position) {
+
+    for (Room room: this.roomsCpy) {
+      for (char[] rows: room.layout) {
+        System.out.println(rows);
+      }
+    }
+
     for (Room room: this.roomsCpy) {
       int rows = room.layout.length;
       int cols = room.layout[0].length;
