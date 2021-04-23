@@ -1,7 +1,4 @@
 import java.io.Serializable;
-import java.util.ArrayList;
-
-import javafx.util.Pair;
 
 // represents a Room
 public class Room implements Serializable {
@@ -22,8 +19,8 @@ public class Room implements Serializable {
 
   //copy
   public Room(Room r) {
-    this.layout = r.layout;
-    this.position = r.position;
+    this.layout = r.layout.clone();
+    this.position = r.position.clone();
   }
 
   public Object clone() {

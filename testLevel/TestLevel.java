@@ -139,9 +139,9 @@ public class TestLevel {
     }
 
     //build level depend on previous transfer
-    Level level = new Level(rooms, hallways);
-    level.setKey(keyPosition);
-    level.setExit(exitPosition);
+    Level level = new Level(rooms, hallways, keyPosition, exitPosition);
+//    level.setKey(keyPosition);
+//    level.setExit(exitPosition);
     return level;
   }
 

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -26,6 +27,8 @@ public class Level extends JPanel {
 //  Level levelCpy;
   List<Room> roomsCpy;
   List<Hallway> hallwaysCpy;
+
+  public HashMap<int[], Character> originalTiles = new HashMap<>();
 
 
   public static BufferedImage PlayerImage;
@@ -135,21 +138,33 @@ public class Level extends JPanel {
 
 
   // constructs the level with Given rooms and hallways
-  public Level(List<Room> rooms, List<Hallway> hallways) {
+  public Level(List<Room> rooms, List<Hallway> hallways, int[] keyPosition, int[] exitPosition) {
     this.rooms = rooms;
     this.hallways = hallways;
     this.ads = new ArrayList<>();
     this.isLocked = true;
+    this.setKey(keyPosition);
+    this.setExit(exitPosition);
 
-    this.roomsCpy = new ArrayList<>();
-    for (Room r: this.rooms) {
-      this.roomsCpy.add((Room)r.clone());
+    this.setOriginalTiles(rooms, hallways);
+  }
+
+  public void setOriginalTiles(List<Room> rooms, List<Hallway> hws) {
+    for (Room r: rooms) {
+      for (int ii = 0; ii < r.layout.length; ++ii) {
+        for (int yy = 0; yy < r.layout[ii].length; ++yy) {
+          int[] pos = new int[]{r.position[0]+ii, r.position[1]+yy};
+          originalTiles.put(pos, r.layout[ii][yy]);
+        }
+      }
     }
 
-    this.hallwaysCpy = new ArrayList<>();
-    for (Hallway hw: this.hallways) {
-      this.hallwaysCpy.add((Hallway) hw.clone());
+    for (Hallway hw: hws) {
+      for (int ii = 0; ii < hw.layout.size(); ++ii) {
+        originalTiles.put(hw.layout.get(ii), '.');
+      }
     }
+
   }
 
 
@@ -175,9 +190,11 @@ public class Level extends JPanel {
     int[] pos = ad.getPosition();
     Room r = inWhichRoom(pos);
 
-    Room originalRoom = inWhichRoomInCpy(pos);
-    char originalTile =
-            originalRoom.layout[pos[0]-originalRoom.position[0]][pos[1]-originalRoom.position[1]];
+//    Room originalRoom = inWhichRoomInCpy(pos);
+//    char originalTile =
+//            originalRoom.layout[pos[0]-originalRoom.position[0]][pos[1]-originalRoom.position[1]];
+
+    char originalTile = findOriginalTile(pos);
     switch (originalTile) {
       case '.':
       case 'Z':
@@ -186,6 +203,8 @@ public class Level extends JPanel {
       case '-': r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = '-'; break;
       case '|': r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = '|'; break;
       case 'x': r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = 'x'; break;
+      case 'K': r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = 'K'; break;
+      case 'E': r.layout[pos[0]-r.position[0]][pos[1]-r.position[1]] = 'E'; break;
     }
 
     Room newRoom = inWhichRoom(dst);
@@ -499,28 +518,48 @@ public class Level extends JPanel {
   }
 
 
-  // find which room in cpy level the given position in
-  public Room inWhichRoomInCpy(int[] position) {
+//  // find which room in cpy level the given position in
+//  public Room inWhichRoomInCpy(int[] position) {
+//
+//    for (Room room: this.roomsCpy) {
+//      for (char[] rows: room.layout) {
+//        System.out.println(rows);
+//      }
+//    }
+//
+//    for (Room room: this.roomsCpy) {
+//      int rows = room.layout.length;
+//      int cols = room.layout[0].length;
+//      int positionX = room.position[0];
+//      int positionY = room.position[1];
+//
+//      if (positionY <= position[1] && position[1] < positionY + rows) {
+//        if (positionX <= position[0] && position[0] < positionX + cols) {
+//          return room;
+//        }
+//      }
+//    }
+//    return null;
+//  }
+  public char findOriginalTile(int[] position) {
+//    for(int ii = 0; ii < originalTiles.size(); ++ii) {
+//      System.out.println(originalTiles.toString());
+//    }
+//    System.out.println(originalTiles.toString());
 
-    for (Room room: this.roomsCpy) {
-      for (char[] rows: room.layout) {
-        System.out.println(rows);
+//    System.out.println("pos: " + Arrays.toString(position));
+//    originalTiles.entrySet().forEach(entry -> {
+//      System.out.println(Arrays.toString(entry.getKey()) + " " + entry.getValue());
+//    });
+
+    for (Object key: originalTiles.keySet()) {
+      if (Arrays.equals(((int[]) key), position)) {
+        return originalTiles.get(key);
       }
     }
 
-    for (Room room: this.roomsCpy) {
-      int rows = room.layout.length;
-      int cols = room.layout[0].length;
-      int positionX = room.position[0];
-      int positionY = room.position[1];
+    return '.';
 
-      if (positionY <= position[1] && position[1] < positionY + rows) {
-        if (positionX <= position[0] && position[0] < positionX + cols) {
-          return room;
-        }
-      }
-    }
-    return null;
   }
 
   public int checkIfInHallways(int[] point) {
@@ -655,22 +694,12 @@ public class Level extends JPanel {
     Room dstRoom = inWhichRoom(dst);
 
 
-    Room oldRoomInCpy = inWhichRoomInCpy(oldPosition);
-
-    char originalTile;
-    if (oldRoomInCpy != null) {
-      originalTile =
-              oldRoomInCpy.layout[old[0]-oldRoomInCpy.position[0]][old[1]-oldRoomInCpy.position[1]];
-    } else {
-      originalTile = '.';
-    }
-
+    char originalTile = findOriginalTile(oldPosition);
 
     //handle old position
     for (Room r: this.rooms) {
       if (oldRoom != null) {
         if (Arrays.equals(r.position, oldRoom.position)) {
-          System.out.println("here: " + originalTile);
           switch (originalTile) {
             case '.':
             case 'P':
@@ -678,14 +707,15 @@ public class Level extends JPanel {
             case '-': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '-'; break;
             case '|': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '|'; break;
             case 'x': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = 'x'; break;
+            case 'K': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = 'K'; break;
+            case 'E': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = 'E'; break;
           }
-//          r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '.';
         }
       }
       else {
         for (Hallway hw: hallways) {
           for (int[] point: hw.layout) {
-            if (oldPosition.equals(point)) {
+            if (Arrays.equals(oldPosition, point)) {
               hw.ifPlayerInside = false;
               hw.playerPosition = new int[2];;
             }
