@@ -125,14 +125,33 @@ public class Server3 {
 
     private static void sendInitialAdversaryUpdate() throws IOException {
         for (int ii = 0; ii < adversarySockets.size(); ++ii) {
+            int remoteAdIndex = 0;
+            Level curLevel = gm.gameState.levels.get(gm.gameState.curLevel);
+            Adversary ad = curLevel.ads.get(remoteAdIndex);
+            while (!ad.isRemote()) {
+                remoteAdIndex++;
+                ad = gm.gameState.levels.get(gm.gameState.curLevel).ads.get(remoteAdIndex);
+            }
+
             out = new PrintWriter(adversarySockets.get(ii).getOutputStream(), true);
-            sendJSONMessage(makeAdversaryUpdateMessage(gm));
+            sendJSONMessage(makeAdversaryUpdateMessage(gm, ad.getPosition(), ad.getType()));
         }
     }
 
-    private static JSONObject makeAdversaryUpdateMessage(GameManager gm) {
+    private static JSONObject makeAdversaryUpdateMessage(GameManager gm, int[] adPos, String type) {
         JSONObject msg = new JSONObject();
         msg.put("type", "ad-update");
+        msg.put("adType", type);
+
+        //actors
+        JSONArray actorList = new JSONArray();
+        for (int ii = 0; ii < gm.players.size(); ++ii) {
+            JSONObject playerObj = new JSONObject();
+            playerObj.put("position", gm.players.get(ii).getPosition());
+            actorList.put(playerObj);
+        }
+        msg.put("players", actorList);
+        msg.put("position", adPos);
         JSONArray rooms = new JSONArray();
         JSONArray hws = new JSONArray();
         Level level = gm.gameState.levels.get(gm.gameState.curLevel);
@@ -292,13 +311,13 @@ public class Server3 {
                 System.out.println("next Player");
             }
 
-            sendUpdateToADs();
+//            sendUpdateToADs();
 
              // remote adversary
             int remoteAdIndex = 0;
             for (int ii = 0; ii < adversarySockets.size(); ++ii) {
                 System.out.println("adversary" + ii);
-                Socket s = playerSockets.get(ii);
+                Socket s = adversarySockets.get(ii);
                 Level curLevel = gm.gameState.levels.get(gm.gameState.curLevel);
                 Adversary ad = curLevel.ads.get(remoteAdIndex);
                 while (!ad.isRemote()) {
@@ -309,6 +328,7 @@ public class Server3 {
                 in = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 out = new PrintWriter(s.getOutputStream(), true);
                 sendStringMessage("move");
+                sendUpdateToADs(ad.getPosition(), ad.getType());
                 JSONObject adversaryMove = null;
 
                 while (true) {
@@ -318,16 +338,9 @@ public class Server3 {
                                 adversaryMove.getJSONArray("to").getInt(1)};
                         curLevel.moveAds(remoteAdIndex, dst);
                         //TODO: double check move ads logic here
-//                    sendStringMessage(result);
-//                    if (result.equals("key")) {
-//                        whoFindTheFuckingKey = ad.getName();
-//                    } else if (result.equals("exit")) {
-//                        whoFindTheExit = ad.getName();
-//                    }
-//
-//                    gm.movePlayer(ad, dst);
+
                         sendUpdateToAllUsers();
-                        sendUpdateToADs();
+                        sendUpdateToADs(ad.getPosition(), ad.getType());
                         break;
                     }
                 }
@@ -350,10 +363,10 @@ public class Server3 {
         }
     }
 
-    private static void sendUpdateToADs() throws IOException {
+    private static void sendUpdateToADs(int[] adPos, String type) throws IOException {
         for (int ii = 0; ii < adversarySockets.size(); ++ii) {
             Socket s = adversarySockets.get(ii);
-            JSONObject updateMsg = makeAdversaryUpdateMessage(gm);
+            JSONObject updateMsg = makeAdversaryUpdateMessage(gm, adPos, type);
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(s.getOutputStream(), true);
             sendJSONMessage(updateMsg);

@@ -149,6 +149,18 @@ public class Level extends JPanel {
     this.setOriginalTiles(rooms, hallways);
   }
 
+  // constructs the level with Given rooms and hallways
+  public Level(List<Room> rooms, List<Hallway> hallways) {
+    this.rooms = rooms;
+    this.hallways = hallways;
+    this.ads = new ArrayList<>();
+//    this.isLocked = true;
+//    this.setKey(keyPosition);
+//    this.setExit(exitPosition);
+
+    this.setOriginalTiles(rooms, hallways);
+  }
+
   public void setOriginalTiles(List<Room> rooms, List<Hallway> hws) {
     for (Room r: rooms) {
       for (int ii = 0; ii < r.layout.length; ++ii) {

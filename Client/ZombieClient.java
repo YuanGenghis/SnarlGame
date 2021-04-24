@@ -88,29 +88,22 @@ public class ZombieClient {
             msg = new JSONTokener(msg.toString()).nextValue();
             System.out.println("msg:" + msg);
             // TODO: solve the update logic
-//            if (msg instanceof String && msg.equals("move")) {
-//                System.out.println(updateMsg.get("position"));
-//
-//                int[] dst = user.getMove();
-//                if (dst != null) {
-//                    System.out.println(dst[0] + ":" + dst[1]);
-//                    JSONObject playerMove = new JSONObject();
-//                    playerMove.put("type", "move");
-//                    playerMove.put("to", dst);
-//                    sendJSONMessage(playerMove);
-//                    user.setMoveToNull();
-//                    String result = receiveStringResponse();
-//                    System.out.println(result);
-//                    JSONObject update = receiveJSONResponse();
-//                    System.out.println(update.get("position"));
-//                    user.setPlayerUpdateMessage(update);
-//                    user.addMoveAmount();
-//
-//                    Thread.sleep(100);
-//                }
-//                user.setMoveAmount();
-//            } else
-                if (((JSONObject)msg).get("type").equals("ad-update")) {
+            if (msg instanceof String && msg.equals("move")) {
+                System.out.println(msg);
+                msg = receiveJSONResponse();
+                System.out.println(msg);
+                user.setAdversaryUpdateMessage((JSONObject) msg);
+
+                int[] dst = user.getAdMove();
+                if (dst != null) {
+                    JSONObject dstObj = new JSONObject();
+                    dstObj.put("to", dst);
+
+                    sendJSONMessage(dstObj);
+                    Thread.sleep(100);
+                }
+                user.setMoveAmount();
+            } else if (((JSONObject)msg).get("type").equals("ad-update")) {
                 System.out.println("update message");
                 user.setAdversaryUpdateMessage((JSONObject) msg);
             } else {

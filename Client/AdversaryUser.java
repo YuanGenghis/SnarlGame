@@ -154,6 +154,34 @@ public class AdversaryUser extends JPanel implements KeyListener {
         frame.setVisible(true);
     }
 
+    public int[] getAdMove() {
+        int[] adPos = new int[]{
+                adversaryUpdateMessage.getJSONArray("position").getInt(0)
+                , adversaryUpdateMessage.getJSONArray("position").getInt(1)};
+        List<Room> rooms = getRoomsFromJSON();
+        List<Hallway> hallways = getHWsFromJSON();
+        Level level = new Level(rooms, hallways);
+        String type = (String)adversaryUpdateMessage.get("adType");
+        Adversary ad;
+        if (type.equals("Zombie")) {
+            ad = new Zombie(adPos);
+        } else {
+            ad = new Ghost(adPos);
+        }
+
+        JSONArray actors = adversaryUpdateMessage.getJSONArray("players");
+        List<Player> players = new ArrayList<>();
+        for (Object obj: actors) {
+            int[] pos = new int[]{
+                    ((JSONArray) ((JSONObject)obj).get("position")).getInt(0)
+                    ,((JSONArray) ((JSONObject)obj).get("position")).getInt(1)};
+            Player p = new Player(pos);
+            players.add(p);
+        }
+
+        return RuleChecker.getAdNextMove(ad,level, players);
+    }
+
 
     public void drawWholeView(Graphics g) {
         List<Room> rooms = getRoomsFromJSON();
