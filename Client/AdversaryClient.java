@@ -6,6 +6,7 @@ import java.net.*;
 public class AdversaryClient {
     private static String address = "127.0.0.1";
     private static int port = 45678;
+    private static String type = "zombie";
 
     private static Socket clientSocket;
     private static PrintWriter out;
@@ -53,6 +54,8 @@ public class AdversaryClient {
                 System.out.println("address: " + address);
             } else if (args[i].equals("--port")) {
                 port = Integer.parseInt(args[++i]);
+            } else if (args[i].equals("--ghost")) {
+                type = "ghost";
             }
         }
 
@@ -73,7 +76,7 @@ public class AdversaryClient {
 
         //send name message
         String name = scanner.next();
-        sendStringMessage(name);
+        sendStringMessage("zombie" + name);
 
         //start a level and get updated message
         JSONObject updateMsg = receiveJSONResponse();
