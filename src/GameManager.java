@@ -257,10 +257,11 @@ public class GameManager implements Serializable {
 
   // run win scene
   public void win() {
+    gameState.levels.get(gameState.curLevel).isEnd = true;
     if (gameState.curLevel == gameState.levels.size() - 1) {
       System.out.println("YOU WIN!!!");
       finalPrint();
-      System.exit(1);
+//      System.exit(1);
     } else {
       System.out.println("next level");
       gameState.levels.get(gameState.curLevel).isEnd = true;
@@ -272,7 +273,6 @@ public class GameManager implements Serializable {
         player.position = level.setPlayer();
       }
     }
-
   }
 
   public void finalPrint() {
@@ -311,7 +311,7 @@ public class GameManager implements Serializable {
   public void lost() {
     System.out.println("YOU LOST! ALl players are expelled in level: " + (gameState.curLevel + 1));
     finalPrint();
-    System.exit(1);
+//    System.exit(1);
   }
 
   public boolean isGameEnd() {
