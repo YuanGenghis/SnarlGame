@@ -2,10 +2,13 @@
 public class Ghost implements Adversary {
   String type = "Ghost";
   String name;
+  boolean isRemote = false;
   int[] position;
 
-  public Ghost(String name) {
+  public Ghost(String name, boolean isRemote, int[] position) {
     this.name = name;
+    this.isRemote = isRemote;
+    this.position = position;
   }
 
   // init the Adversary with type, name, and position

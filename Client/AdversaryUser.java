@@ -18,7 +18,7 @@ import javax.swing.*;
 import jdk.nashorn.internal.ir.LiteralNode;
 
 public class AdversaryUser extends JPanel implements KeyListener {
-    public JSONObject playerUpdateMessage;
+    public JSONObject adversaryUpdateMessage;
     public static int moveAmount = 0;
     public int[] playerDst;
 
@@ -38,24 +38,24 @@ public class AdversaryUser extends JPanel implements KeyListener {
 
 
     public void messageUpdate(JSONObject newMessage) {
-        playerUpdateMessage = newMessage;
+        adversaryUpdateMessage = newMessage;
     }
 
     public AdversaryUser() {
-        playerUpdateMessage = null;
+        adversaryUpdateMessage = null;
     }
 
     public AdversaryUser(JSONObject msg) {
-        playerUpdateMessage = msg;
+        adversaryUpdateMessage = msg;
         playerDst = null;
         setBackground(Color.BLACK);
         setForeground(Color.WHITE);
         refreshScreen();
     }
 
-    public void setPlayerUpdateMessage(JSONObject playerUpdateMessage) {
+    public void setAdversaryUpdateMessage(JSONObject adversaryUpdateMessage) {
 
-        RemoteUser.playerUpdateMessage = playerUpdateMessage;
+        this.adversaryUpdateMessage = adversaryUpdateMessage;
     }
 
 
@@ -93,13 +93,13 @@ public class AdversaryUser extends JPanel implements KeyListener {
 
     // deal with arrow movement of user
     public void keyPressed(KeyEvent e) {
-//        int keyCode = e.getKeyCode();
-////    Player p = gm.players.get(gm.curPlayer);
-//        switch( keyCode ) {
-//            case KeyEvent.VK_UP:
-//                // handle up
+        int keyCode = e.getKeyCode();
+//    Player p = gm.players.get(gm.curPlayer);
+        switch( keyCode ) {
+            case KeyEvent.VK_UP:
+                // handle up
 //                position[0]--;
-//                break;
+                break;
 //            case KeyEvent.VK_DOWN:
 //                // handle down
 //                position[0] ++;
@@ -112,7 +112,7 @@ public class AdversaryUser extends JPanel implements KeyListener {
 //                // handle right
 //                position[1] ++;
 //                break;
-//        }
+        }
 ////    if (keyCode == KeyEvent.VK_ENTER) {
 ////      gm.nextPlayer();
 ////      moveAmount = 0;
@@ -168,7 +168,7 @@ public class AdversaryUser extends JPanel implements KeyListener {
     public List<Room> getRoomsFromJSON() {
         List<Room> rooms = new ArrayList<>();
 
-        JSONArray roomObjects = this.playerUpdateMessage.getJSONArray("rooms");
+        JSONArray roomObjects = this.adversaryUpdateMessage.getJSONArray("rooms");
         for (int ii = 0; ii < roomObjects.length(); ++ii) {
             JSONObject roomObj = roomObjects.getJSONObject(ii);
             int x = roomObj.getJSONArray("origin").getInt(0);
@@ -188,7 +188,7 @@ public class AdversaryUser extends JPanel implements KeyListener {
         }
 
 
-        JSONArray objects = this.playerUpdateMessage.getJSONArray("objects");
+        JSONArray objects = this.adversaryUpdateMessage.getJSONArray("objects");
         for (Object jo: objects) {
             int[] keyPos = new int[]{
                     ((JSONObject)jo).getJSONArray("position").getInt(0),
@@ -218,7 +218,7 @@ public class AdversaryUser extends JPanel implements KeyListener {
     public List<Hallway> getHWsFromJSON() {
         List<Hallway> hws = new ArrayList<>();
 
-        JSONArray hwObjects = this.playerUpdateMessage.getJSONArray("hallways");
+        JSONArray hwObjects = this.adversaryUpdateMessage.getJSONArray("hallways");
         for (int ii = 0; ii < hwObjects.length(); ++ii) {
             JSONObject hwObj = hwObjects.getJSONObject(ii);
             JSONArray layout = hwObj.getJSONArray("layout");
@@ -234,96 +234,4 @@ public class AdversaryUser extends JPanel implements KeyListener {
         }
         return hws;
     }
-
-    public void drawPlayerView(Graphics g) {
-        int rectWidth = 25;
-
-        JSONArray position = playerUpdateMessage.getJSONArray("position");
-        int[] pos = new int[2];
-        pos[0] = position.getInt(0); pos[1] = position.getInt(0);
-
-        int[][] view = new int[5][5];
-        JSONArray layouts = playerUpdateMessage.getJSONArray("layout");
-        for (int ii = 0; ii < 5; ++ii) {
-            for (int yy = 0; yy < 5; ++yy) {
-                view[ii][yy] = layouts.getJSONArray(ii).getInt(yy);
-            }
-        }
-
-        int row = 0;
-        for (int ii = 2; ii > -3; --ii) {
-            int col = 0;
-            for (int zz = 2; zz > -3; --zz) {
-                int xx = (2 + (pos[1] - zz)) * rectWidth;
-                int yy = (2 + (pos[0] - ii)) * rectWidth;
-
-                if (view[row][col] == 0) {
-                    g.setColor(Color.DARK_GRAY);
-                } else if (view[row][col] == 1) {
-                    g.setColor(Color.GRAY);
-                }  else if (view[row][col] == 2) {
-                    g.setColor(Color.CYAN);
-                }
-                g.fillRect(xx, yy, rectWidth, rectWidth);
-                g.setColor(Color.black);
-                g.drawRect(xx, yy, rectWidth, rectWidth);
-
-                if (view[row][col] == 5) {
-                    g.setColor(Color.GRAY);
-                    g.drawRect(xx, yy, rectWidth, rectWidth);
-                    g.setColor(Color.RED);
-                    Font tr = new Font("TimesRoman", Font.PLAIN, 12);
-                    g.setFont(tr);
-                    g.drawString("E", xx + 10, yy + 15);
-                }
-                else if (view[row][col] == 4) {
-                    g.setColor(Color.GRAY);
-                    g.drawRect(xx, yy, rectWidth, rectWidth);
-                    g.setColor(Color.blue);
-                    Font tr = new Font("TimesRoman", Font.PLAIN, 12);
-                    g.setFont(tr);
-                    g.drawString("K", xx + 10, yy + 15);
-                }
-                else if (view[row][col] == -1) {
-                    try {
-                        URL url = new URL(ADUrl);
-                        ADImage = ImageIO.read(url);
-                    }
-                    catch(IOException e) {
-                        System.out.println("Image not found");
-                    }
-                    g.drawImage(ADImage, xx, yy,
-                            rectWidth -1, rectWidth -1, null);
-                }
-                else if (view[row][col] == -2) {
-                    try {
-                        URL url = new URL(Ghost);
-                        ADImage = ImageIO.read(url);
-                    }
-                    catch(IOException e) {
-                        System.out.println("Image not found");
-                    }
-                    g.drawImage(ADImage, xx, yy,
-                            rectWidth -1, rectWidth -1, null);
-                }
-
-                if ((ii == 0 && zz == 0) || view[row][col] == 3) {
-                    try {
-                        URL url = new URL(PlayerUrl);
-                        PlayerImage = ImageIO.read(url);
-                    }
-                    catch(IOException e) {
-                        System.out.println("Image not found");
-                    }
-
-                    g.drawImage(PlayerImage, xx, yy,
-                            rectWidth -1, rectWidth -1, null);
-                }
-                ++col;
-            }
-            ++row;
-        }
-    }
-
-
 }

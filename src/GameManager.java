@@ -95,17 +95,16 @@ public class GameManager implements Serializable {
   }
 
   // register players
-  public void registerAdversary(List<String> adNames) {
-    for (String name: adNames) {
-      if (name.contains("Ghost")) {
-        Adversary ghost = new Ghost(name);
-        ads.add(ghost);
-      } else {
-        Adversary zombie = new Zombie(name);
-        ads.add(zombie);
-      }
-    }
-  }
+//  public void registerAdversary(List<String> adNames) {
+//    for (String name: adNames) {
+//      if (name.contains("Ghost")) {
+//        List<>
+//      } else {
+//        Adversary zombie = new Zombie(name);
+//        ads.add(zombie);
+//      }
+//    }
+//  }
 
   // init the GameManager
   public void init() {
@@ -217,6 +216,21 @@ public class GameManager implements Serializable {
     // after all players' rounds, the adversaries move
     if (curPlayer == this.players.size() - 1) {
       this.adversaryMove();
+      curPlayer = 0;
+    }
+    else {
+      curPlayer++;
+      if (players.get(curPlayer).status == -1) {
+        nextPlayer();
+      }
+    }
+  }
+
+  // move to the next Player's round
+  public void nextPlayerWithRemoteAdversary() {
+    // after all players' rounds, the adversaries move
+    if (curPlayer == this.players.size() - 1) {
+//      this.adversaryMove();
       curPlayer = 0;
     }
     else {

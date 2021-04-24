@@ -89,7 +89,7 @@ public class ZombieClient {
             System.out.println("msg:" + msg);
             if (((JSONObject)msg).get("type").equals("ad-update")) {
                 System.out.println("update message");
-                user.setPlayerUpdateMessage((JSONObject) msg);
+                user.setAdversaryUpdateMessage((JSONObject) msg);
             } else {
                 System.out.println(msg);
             }

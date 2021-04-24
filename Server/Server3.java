@@ -288,7 +288,7 @@ public class Server3 {
                         ++move;
                     }
                 }
-                gm.nextPlayer();
+                gm.nextPlayerWithRemoteAdversary();
                 System.out.println("next Player");
             }
 
