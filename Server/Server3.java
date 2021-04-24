@@ -63,8 +63,8 @@ public class Server3 {
 
         try {
             System.out.println("Time to add Adversary");
-            server.setSoTimeout(10 * 1000);
-            waitForAdversary(maxPlayers - minPlayers);
+            server.setSoTimeout(5 * 1000);
+            waitForAdversary(maxAdversary);
         } catch (SocketTimeoutException s) {
             System.out.println("timeout for more Adversary");
         }
@@ -125,14 +125,33 @@ public class Server3 {
 
     private static void sendInitialAdversaryUpdate() throws IOException {
         for (int ii = 0; ii < adversarySockets.size(); ++ii) {
+            int remoteAdIndex = 0;
+            Level curLevel = gm.gameState.levels.get(gm.gameState.curLevel);
+            Adversary ad = curLevel.ads.get(remoteAdIndex);
+            while (!ad.isRemote()) {
+                remoteAdIndex++;
+                ad = gm.gameState.levels.get(gm.gameState.curLevel).ads.get(remoteAdIndex);
+            }
+
             out = new PrintWriter(adversarySockets.get(ii).getOutputStream(), true);
-            sendJSONMessage(makeAdversaryUpdateMessage(gm));
+            sendJSONMessage(makeAdversaryUpdateMessage(gm, ad.getPosition(), ad.getType()));
         }
     }
 
-    private static JSONObject makeAdversaryUpdateMessage(GameManager gm) {
+    private static JSONObject makeAdversaryUpdateMessage(GameManager gm, int[] adPos, String type) {
         JSONObject msg = new JSONObject();
         msg.put("type", "ad-update");
+        msg.put("adType", type);
+
+        //actors
+        JSONArray actorList = new JSONArray();
+        for (int ii = 0; ii < gm.players.size(); ++ii) {
+            JSONObject playerObj = new JSONObject();
+            playerObj.put("position", gm.players.get(ii).getPosition());
+            actorList.put(playerObj);
+        }
+        msg.put("players", actorList);
+        msg.put("position", adPos);
         JSONArray rooms = new JSONArray();
         JSONArray hws = new JSONArray();
         Level level = gm.gameState.levels.get(gm.gameState.curLevel);
@@ -283,18 +302,53 @@ public class Server3 {
 
                         gm.movePlayer(player, dst);
                         sendUpdateToAllUsers();
-                        in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                        out = new PrintWriter(s.getOutputStream(), true);
+//                        in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+//                        out = new PrintWriter(s.getOutputStream(), true);
                         ++move;
                     }
                 }
-                gm.nextPlayerWithRemoteAdversary();
+                gm.nextPlayer();
                 System.out.println("next Player");
             }
 
-            sendUpdateToADs();
+//            sendUpdateToADs();
 
+             // remote adversary
+            int remoteAdIndex = 0;
+            for (int ii = 0; ii < adversarySockets.size(); ++ii) {
+                System.out.println("adversary" + ii);
+                Socket s = adversarySockets.get(ii);
+                Level curLevel = gm.gameState.levels.get(gm.gameState.curLevel);
+                Adversary ad = curLevel.ads.get(remoteAdIndex);
+                while (!ad.isRemote()) {
+                    remoteAdIndex++;
+                    ad = gm.gameState.levels.get(gm.gameState.curLevel).ads.get(remoteAdIndex);
+                }
+
+                in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                out = new PrintWriter(s.getOutputStream(), true);
+                sendStringMessage("move");
+                sendUpdateToADs(ad.getPosition(), ad.getType());
+                JSONObject adversaryMove = null;
+
+                while (true) {
+                    if ((adversaryMove = receiveJSONMessage()) != null) {
+                        System.out.println(adversaryMove);
+                        int[] dst = new int[]{adversaryMove.getJSONArray("to").getInt(0),
+                                adversaryMove.getJSONArray("to").getInt(1)};
+                        curLevel.moveAds(remoteAdIndex, dst);
+                        //TODO: double check move ads logic here
+
+                        sendUpdateToAllUsers();
+                        sendUpdateToADs(ad.getPosition(), ad.getType());
+                        break;
+                    }
+                }
+
+                System.out.println("remote ad finished");
+            }
         }
+
         sendEndgame();
     }
 
@@ -309,10 +363,10 @@ public class Server3 {
         }
     }
 
-    private static void sendUpdateToADs() throws IOException {
+    private static void sendUpdateToADs(int[] adPos, String type) throws IOException {
         for (int ii = 0; ii < adversarySockets.size(); ++ii) {
             Socket s = adversarySockets.get(ii);
-            JSONObject updateMsg = makeAdversaryUpdateMessage(gm);
+            JSONObject updateMsg = makeAdversaryUpdateMessage(gm, adPos, type);
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(s.getOutputStream(), true);
             sendJSONMessage(updateMsg);
@@ -478,7 +532,9 @@ public class Server3 {
         return in.readLine();
     }
     public static JSONObject receiveJSONMessage () throws IOException {
-        return new JSONObject(in.readLine());
+        String temp = in.readLine();
+        if (temp == null) return null;
+        return new JSONObject(temp);
     }
 
 

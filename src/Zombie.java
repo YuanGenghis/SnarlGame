@@ -12,6 +12,7 @@ public class Zombie implements Adversary{
     this.position = position;
   }
 
+
   // init the Adversary with given position
   public Zombie(int[] position) {
     this.position = position;
@@ -27,6 +28,11 @@ public class Zombie implements Adversary{
   @Override
   public void setPosition(int[] pos) {
     this.position = pos;
+  }
+
+  @Override
+  public boolean isRemote() {
+    return isRemote;
   }
 
 }

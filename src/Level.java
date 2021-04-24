@@ -149,6 +149,18 @@ public class Level extends JPanel {
     this.setOriginalTiles(rooms, hallways);
   }
 
+  // constructs the level with Given rooms and hallways
+  public Level(List<Room> rooms, List<Hallway> hallways) {
+    this.rooms = rooms;
+    this.hallways = hallways;
+    this.ads = new ArrayList<>();
+//    this.isLocked = true;
+//    this.setKey(keyPosition);
+//    this.setExit(exitPosition);
+
+    this.setOriginalTiles(rooms, hallways);
+  }
+
   public void setOriginalTiles(List<Room> rooms, List<Hallway> hws) {
     for (Room r: rooms) {
       for (int ii = 0; ii < r.layout.length; ++ii) {
@@ -634,8 +646,10 @@ public class Level extends JPanel {
     return new int[]{ranRandomRow + r.position[0], ranRandomCol + r.position[1]};
   }
 
-  public void setZombiesInLevel(int amount) {
+  public void setZombiesInLevel(int amount, List<String> names) {
+    int remoteCount = 0;
     for (int ii = 0; ii < amount; ++ii) {
+      Zombie z;
       Random rand = new Random();
       int intRandomRoom = rand.nextInt(this.rooms.size());
       Room r = this.rooms.get(intRandomRoom);
@@ -652,15 +666,24 @@ public class Level extends JPanel {
         ranRandomCol = rand.nextInt(cols);
       }
       r.layout[ranRandomRow][ranRandomCol] = 'Z';
-
-      Zombie z = new Zombie(new int[]{ranRandomRow+r.position[0], ranRandomCol+r.position[1]} );
+      if (remoteCount < names.size()) {
+        z = new Zombie(names.get(remoteCount), true,
+                new int[]{ranRandomRow+r.position[0], ranRandomCol+r.position[1]});
+        System.out.println("new remote zombie created");
+      } else {
+        z = new Zombie(new int[]{ranRandomRow+r.position[0], ranRandomCol+r.position[1]});
+        System.out.println("new local zombie created");
+      }
+      remoteCount++;
       this.ads.add(z);
     }
   }
 
   // move player to the given position
-  public void setGhostInLevel(int amount) {
+  public void setGhostInLevel(int amount, List<String> names) {
+    int remoteCount = 0;
     for (int ii = 0; ii < amount; ++ii) {
+      Ghost g;
       Random rand = new Random();
       int intRandomRoom = rand.nextInt(this.rooms.size());
       Room r = this.rooms.get(intRandomRoom);
@@ -678,7 +701,14 @@ public class Level extends JPanel {
       }
       r.layout[ranRandomRow][ranRandomCol] = 'G';
 
-      Ghost g = new Ghost(new int[]{ranRandomRow+r.position[0], ranRandomCol+r.position[1]} );
+      if (remoteCount++ < names.size()) {
+        g = new Ghost(names.get(remoteCount), true,
+                new int[]{ranRandomRow+r.position[0], ranRandomCol+r.position[1]});
+        System.out.println("new remote ghost created");
+      } else {
+        g = new Ghost(new int[]{ranRandomRow+r.position[0], ranRandomCol+r.position[1]});
+        System.out.println("new local zombie created");
+      }
       this.ads.add(g);
     }
   }
