@@ -30,4 +30,9 @@ public class Ghost implements Adversary {
   public void setPosition(int[] pos) {
     this.position = pos;
   }
+
+  @Override
+  public boolean isRemote() {
+    return isRemote;
+  }
 }

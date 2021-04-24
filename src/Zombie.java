@@ -29,4 +29,9 @@ public class Zombie implements Adversary{
     this.position = pos;
   }
 
+  @Override
+  public boolean isRemote() {
+    return isRemote;
+  }
+
 }

@@ -16,7 +16,10 @@ import javax.imageio.ImageIO;
 // represents the GameManager
 public class GameManager implements Serializable {
   List<Player> players;
-  List<Adversary> ads = new ArrayList<>();
+  List<String> ghostNames = new ArrayList<>();
+  List<String> zombieNames = new ArrayList<>();
+
+
   int curPlayer;
   GameState gameState;
 
@@ -69,6 +72,7 @@ public class GameManager implements Serializable {
   public GameManager(List<Level> levels, List<String> names, List<String> adNames) {
     this.players = new ArrayList<>();
     this.register(names);
+    this.registerAdversary(adNames);
     this.curPlayer = 0;
     this.gameState = new GameState(this.players, levels, adNames);
   }
@@ -95,16 +99,15 @@ public class GameManager implements Serializable {
   }
 
   // register players
-//  public void registerAdversary(List<String> adNames) {
-//    for (String name: adNames) {
-//      if (name.contains("Ghost")) {
-//        List<>
-//      } else {
-//        Adversary zombie = new Zombie(name);
-//        ads.add(zombie);
-//      }
-//    }
-//  }
+  public void registerAdversary(List<String> adNames) {
+    for (String name: adNames) {
+      if (name.contains("Ghost")) {
+        ghostNames.add(name);
+      } else {
+        zombieNames.add(name);
+      }
+    }
+  }
 
   // init the GameManager
   public void init() {
@@ -115,12 +118,12 @@ public class GameManager implements Serializable {
 
     int zombieAmount = ((gameState.curLevel + 1)/ 2) + 1;
     for (int ii = 0; ii < gameState.levels.size(); ++ii) {
-      gameState.levels.get(ii).setZombiesInLevel(zombieAmount);
+      gameState.levels.get(ii).setZombiesInLevel(zombieAmount, zombieNames);
     }
 
     int ghostAmount = gameState.curLevel/ 2;
     for (int ii = 0; ii < gameState.levels.size(); ++ii) {
-      gameState.levels.get(ii).setGhostInLevel(ghostAmount);
+      gameState.levels.get(ii).setGhostInLevel(ghostAmount, ghostNames);
     }
   }
 
@@ -139,12 +142,15 @@ public class GameManager implements Serializable {
     Level curLevel = gameState.levels.get(gameState.curLevel);
     for (int ii = 0; ii < curLevel.ads.size(); ++ii) {
       Adversary ad = curLevel.ads.get(ii);
-      int[] dst = RuleChecker.getAdNextMove(ad, curLevel, players);
+      System.out.println("ad is remote? " + ad.isRemote());
+      if (!ad.isRemote()) {
+        int[] dst = RuleChecker.getAdNextMove(ad, curLevel, players);
 
-      curLevel.moveAds(ii, dst);
+        curLevel.moveAds(ii, dst);
 
-      if (dst != null) {
-        this.gameState.levels.get(gameState.curLevel).moveAds(ii, dst);
+        if (dst != null) {
+          this.gameState.levels.get(gameState.curLevel).moveAds(ii, dst);
+        }
       }
     }
   }
@@ -226,20 +232,6 @@ public class GameManager implements Serializable {
     }
   }
 
-  // move to the next Player's round
-  public void nextPlayerWithRemoteAdversary() {
-    // after all players' rounds, the adversaries move
-    if (curPlayer == this.players.size() - 1) {
-//      this.adversaryMove();
-      curPlayer = 0;
-    }
-    else {
-      curPlayer++;
-      if (players.get(curPlayer).status == -1) {
-        nextPlayer();
-      }
-    }
-  }
 
   public void checkAllPlayerStatus() {
     boolean ifAllDie = true;

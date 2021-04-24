@@ -31,7 +31,7 @@ public class TestState {
       Zombie ad = new Zombie(p);
       ads.add(ad);
     }
-    level.setZombiesInLevel(ads.size());
+    level.setZombiesInLevel(ads.size(), new ArrayList<>());
     List<Level> levels = new ArrayList<>();
     levels.add(level);
 

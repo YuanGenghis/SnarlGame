@@ -87,7 +87,30 @@ public class ZombieClient {
         while ((msg = in.readLine()) != null) {
             msg = new JSONTokener(msg.toString()).nextValue();
             System.out.println("msg:" + msg);
-            if (((JSONObject)msg).get("type").equals("ad-update")) {
+            // TODO: solve the update logic
+//            if (msg instanceof String && msg.equals("move")) {
+//                System.out.println(updateMsg.get("position"));
+//
+//                int[] dst = user.getMove();
+//                if (dst != null) {
+//                    System.out.println(dst[0] + ":" + dst[1]);
+//                    JSONObject playerMove = new JSONObject();
+//                    playerMove.put("type", "move");
+//                    playerMove.put("to", dst);
+//                    sendJSONMessage(playerMove);
+//                    user.setMoveToNull();
+//                    String result = receiveStringResponse();
+//                    System.out.println(result);
+//                    JSONObject update = receiveJSONResponse();
+//                    System.out.println(update.get("position"));
+//                    user.setPlayerUpdateMessage(update);
+//                    user.addMoveAmount();
+//
+//                    Thread.sleep(100);
+//                }
+//                user.setMoveAmount();
+//            } else
+                if (((JSONObject)msg).get("type").equals("ad-update")) {
                 System.out.println("update message");
                 user.setAdversaryUpdateMessage((JSONObject) msg);
             } else {
@@ -97,5 +120,4 @@ public class ZombieClient {
             Thread.sleep(100);
         }
     }
-
 }
