@@ -20,6 +20,13 @@ public class Hallway implements Serializable {
     playerPosition = new int[2];
   }
 
+  public Hallway(List<int[]> tiles) {
+    this.layout = tiles;
+    this.waypoints = new ArrayList<>();
+    ifPlayerInside = false;
+    playerPosition = new int[2];
+  }
+
   // construct the Hallway
   public Hallway(List<int[]> tilesPosition, List<int[]> connection, List<int[]> waypoints) {
     this.layout = tilesPosition;

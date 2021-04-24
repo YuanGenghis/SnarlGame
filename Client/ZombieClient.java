@@ -87,40 +87,13 @@ public class ZombieClient {
         while ((msg = in.readLine()) != null) {
             msg = new JSONTokener(msg.toString()).nextValue();
             System.out.println("msg:" + msg);
-            if (msg instanceof String && msg.equals("move")) {
-                System.out.println(updateMsg.get("position"));
-                while (user.getMoveAmount() < 2) {
-                    int[] dst = user.getMove();
-                    if (dst != null) {
-                        System.out.println(dst[0] + ":" + dst[1]);
-                        JSONObject playerMove = new JSONObject();
-                        playerMove.put("type", "move");
-                        playerMove.put("to", dst);
-                        sendJSONMessage(playerMove);
-                        user.setMoveToNull();
-                        String result = receiveStringResponse();
-                        System.out.println(result);
-                        JSONObject update = receiveJSONResponse();
-                        System.out.println(update.get("position"));
-                        user.setPlayerUpdateMessage(update);
-                        user.addMoveAmount();
-                    }
-                    Thread.sleep(100);
-                }
-                user.setMoveAmount();
+            if (((JSONObject)msg).get("type").equals("ad-update")) {
+                System.out.println("update message");
+                user.setPlayerUpdateMessage((JSONObject) msg);
+            } else {
+                System.out.println(msg);
             }
-            else if (msg instanceof String) {
-                System.out.println("unknownMsg:" + msg);
-            }
-            else {
-                if (((JSONObject)msg).get("type").equals("player-update")) {
-                    System.out.println("update message");
-                    user.setPlayerUpdateMessage((JSONObject) msg);
-                } else {
-                    System.out.println(msg);
-                }
 
-            }
             Thread.sleep(100);
         }
     }

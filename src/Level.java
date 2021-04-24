@@ -242,7 +242,7 @@ public class Level extends JPanel {
     this.hallways.add(hw);
   }
 
-  public int rectWidth = 25;
+  public static int rectWidth = 25;
 
 //  // Add a list of Adversary to the current Level
 //  public void addAds(List<Zombie> ads) {
@@ -253,8 +253,8 @@ public class Level extends JPanel {
 
 
   // draw Hallways
-  public void drawHallways(Graphics g) {
-    for (Hallway hw: hallways) {
+  public static void drawHallways(List<Hallway> hws, Graphics g) {
+    for (Hallway hw: hws) {
       for (int[] p : hw.layout) {
         int xx = p[0] * rectWidth;
         int yy = p[1] * rectWidth;
@@ -288,7 +288,7 @@ public class Level extends JPanel {
   }
 
   // Draw rooms
-  public void drawRooms(Graphics g) {
+  public static void drawRooms(List<Room> rooms, Graphics g) {
     for (Room r: rooms) {
       int x = r.position[0];
       int y = r.position[1];
