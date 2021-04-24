@@ -132,12 +132,15 @@ public class Server {
         //objects
         JSONArray objectList = new JSONArray();
         JSONObject keyObj = new JSONObject();
-        keyObj.put("type", "key");
-        keyObj.put("position", gm.gameState.levels.get(gm.gameState.curLevel).keyPosition);
-        objectList.put(keyObj);
+        Level curLev =  gm.gameState.levels.get(gm.gameState.curLevel);
+        if (curLev.isLocked) {
+            keyObj.put("type", "key");
+            keyObj.put("position", curLev.keyPosition);
+            objectList.put(keyObj);
+        }
         JSONObject exitObj = new JSONObject();
         exitObj.put("type", "exit");
-        exitObj.put("position", gm.gameState.levels.get(gm.gameState.curLevel).exitPosition);
+        exitObj.put("position", curLev.exitPosition);
         objectList.put(exitObj);
         msg.put("objects", objectList);
 
@@ -196,18 +199,26 @@ public class Server {
                         int[] dst = new int[]{playerMove.getJSONArray("to").getInt(0),
                                 playerMove.getJSONArray("to").getInt(1)};
                         String result = gm.checkMoveResult(player, dst);
-                        sendStringMessage(result);
                         if (result.equals("key")) {
                             whoFindTheFuckingKey = player.getName();
                         } else if (result.equals("exit")) {
                             whoFindTheExit = player.getName();
                         }
+                        sendStringMessage(result);
 
-                        gm.movePlayer(player, dst);
-                        sendUpdateToAllUsers();
-                        in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                        out = new PrintWriter(s.getOutputStream(), true);
-                        ++move;
+                        if (!result.equals("Invalid")) {
+                            gm.movePlayer(player, dst);
+                            sendUpdateToAllUsers();
+//                            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+//                            out = new PrintWriter(s.getOutputStream(), true);
+                            ++move;
+                            System.out.println("move: " + move);
+                        } else {
+                            System.out.println("invalid move");
+                            sendUpdateToAllUsers();
+//                            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+//                            out = new PrintWriter(s.getOutputStream(), true);
+                        }
                     }
                 }
                 gm.nextPlayer();
@@ -365,38 +376,3 @@ public class Server {
 
 
 }
-
-//  private static void runGame(List<String> names) {
-
-//    User user1 = new User(naturalNum, levels, names);
-//    user1.render();
-//  }
-//}
-
-
-//Registration of players
-//    private static void registration(int port, int playerAmount) throws IOException {
-//        for (int ii = 0; ii < playerAmount; ++ii) {
-//            socket = server.accept();
-//            out = new PrintWriter(socket.getOutputStream(), true);
-//            in = new DataInputStream(new InputStreamReader(socket.getInputStream()));
-//
-//            JSONObject welcomeMsg = new JSONObject();
-//            welcomeMsg.put("type", "welcome");
-//            welcomeMsg.put("info", "Snarl Game");
-//            //send server-welcome json
-//            sendJSONMessage(welcomeMsg);
-//            //send "name"
-//            sendStringMessage("name");
-//            String playerName = receiveStringMessage();
-//            System.out.println(playerName);
-//            names.add(playerName);
-//            playerSockets.add(socket);
-//        }
-//    }
-
-// get the output stream from the socket.
-//      OutputStream outputStream = s.getOutputStream();
-//      // create an object output stream from the output stream so we can send an object through it
-//      ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-//      objectOutputStream.writeObject(gm);

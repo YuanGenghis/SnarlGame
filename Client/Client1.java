@@ -107,6 +107,10 @@ public class Client1 {
             user.setMoveToNull();
             String result = receiveStringResponse();
             System.out.println(result);
+            if (result.equals("Invalid")) {
+              System.out.println("move again!");
+              user.minusMoveAmount();
+            }
             JSONObject update = receiveJSONResponse();
             System.out.println(update.get("position"));
             user.setPlayerUpdateMessage(update);

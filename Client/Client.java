@@ -100,8 +100,12 @@ public class Client {
             user.setMoveToNull();
             String result = receiveStringResponse();
             System.out.println(result);
+            if (result.equals("Invalid")) {
+              System.out.println("move again!");
+              user.minusMoveAmount();
+            }
             JSONObject update = receiveJSONResponse();
-            System.out.println(update.get("position"));
+            System.out.println(update);
             user.setPlayerUpdateMessage(update);
             user.addMoveAmount();
           }
@@ -119,7 +123,6 @@ public class Client {
         } else {
           System.out.println(msg);
         }
-
       }
       Thread.sleep(100);
     }
