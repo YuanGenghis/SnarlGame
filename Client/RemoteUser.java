@@ -53,6 +53,10 @@ public class RemoteUser extends JPanel implements KeyListener {
     }
     public void setPlayerUpdateMessage(JSONObject playerUpdateMessage) {
 
+        int[] pos = new int[]{
+                playerUpdateMessage.getJSONArray("position").getInt(0)
+                ,playerUpdateMessage.getJSONArray("position").getInt(1)};
+        this.position = pos;
         RemoteUser.playerUpdateMessage = playerUpdateMessage;
 //        playerDst = null;
 //        JSONArray pos = playerUpdateMessage.getJSONArray("position");
@@ -129,6 +133,8 @@ public class RemoteUser extends JPanel implements KeyListener {
 
     public void addMoveAmount() {moveAmount++;}
 
+    public void minusMoveAmount() {moveAmount--;}
+
     public void setMoveAmount() {
         moveAmount = 0;
     }
@@ -162,7 +168,7 @@ public class RemoteUser extends JPanel implements KeyListener {
 
         JSONArray position = playerUpdateMessage.getJSONArray("position");
         int[] pos = new int[2];
-        pos[0] = position.getInt(0); pos[1] = position.getInt(0);
+        pos[0] = position.getInt(0); pos[1] = position.getInt(1);
 
         int[][] view = new int[5][5];
         JSONArray layouts = playerUpdateMessage.getJSONArray("layout");

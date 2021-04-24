@@ -703,11 +703,11 @@ public class Level extends JPanel {
           switch (originalTile) {
             case '.':
             case 'P':
+            case 'K':
               r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '.';break;
             case '-': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '-'; break;
             case '|': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = '|'; break;
             case 'x': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = 'x'; break;
-            case 'K': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = 'K'; break;
             case 'E': r.layout[old[0] - r.position[0]][old[1] - r.position[1]] = 'E'; break;
           }
         }

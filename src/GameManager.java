@@ -187,6 +187,7 @@ public class GameManager implements Serializable {
         ++p.numOfKeys;
         System.out.println("Player " + p.name + " found the key");
         gameState.levels.get(gameState.curLevel).isLocked = false;
+        this.getKey();
         break;
       case "Exit":
         if (!gameState.levels.get(gameState.curLevel).isLocked) {
@@ -391,6 +392,17 @@ public class GameManager implements Serializable {
       }
     }
     return actors;
+  }
+
+  public void getKey() {
+    Level level = gameState.levels.get(gameState.curLevel);
+    int[] keyPos = level.keyPosition;
+    Room room = level.inWhichRoom(keyPos);
+    if (room.layout[keyPos[0]-room.position[0]][keyPos[1]-room.position[1]] == 'K') {
+      System.out.println("get KEY!!!");
+      room.layout[keyPos[0]-room.position[0]][keyPos[1]-room.position[1]] = '.';
+    }
+    level.keyPosition = new int[]{-1,-1};
   }
 
   //for M7 Test task

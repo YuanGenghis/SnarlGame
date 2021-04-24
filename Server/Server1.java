@@ -139,12 +139,15 @@ public class Server1 {
     //objects
     JSONArray objectList = new JSONArray();
     JSONObject keyObj = new JSONObject();
-    keyObj.put("type", "key");
-    keyObj.put("position", gm.gameState.levels.get(gm.gameState.curLevel).keyPosition);
-    objectList.put(keyObj);
+    Level curLev =  gm.gameState.levels.get(gm.gameState.curLevel);
+    if (curLev.isLocked) {
+      keyObj.put("type", "key");
+      keyObj.put("position", curLev.keyPosition);
+      objectList.put(keyObj);
+    }
     JSONObject exitObj = new JSONObject();
     exitObj.put("type", "exit");
-    exitObj.put("position", gm.gameState.levels.get(gm.gameState.curLevel).exitPosition);
+    exitObj.put("position", curLev.exitPosition);
     objectList.put(exitObj);
     msg.put("objects", objectList);
 
@@ -203,21 +206,26 @@ public class Server1 {
             int[] dst = new int[]{playerMove.getJSONArray("to").getInt(0),
                     playerMove.getJSONArray("to").getInt(1)};
             String result = gm.checkMoveResult(player, dst);
-
-            System.out.println("result:" + result);
-            sendStringMessage(result);
-
             if (result.equals("key")) {
               whoFindTheFuckingKey = player.getName();
             } else if (result.equals("exit")) {
               whoFindTheExit = player.getName();
             }
+            sendStringMessage(result);
 
-            gm.movePlayer(player, dst);
-            sendUpdateToAllUsers();
-            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            out = new PrintWriter(s.getOutputStream(), true);
-            ++move;
+            if (!result.equals("Invalid")) {
+              gm.movePlayer(player, dst);
+              sendUpdateToAllUsers();
+//                            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+//                            out = new PrintWriter(s.getOutputStream(), true);
+              ++move;
+              System.out.println("move: " + move);
+            } else {
+              System.out.println("invalid move");
+              sendUpdateToAllUsers();
+//                            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+//                            out = new PrintWriter(s.getOutputStream(), true);
+            }
           }
         }
         gm.nextPlayer();
