@@ -16,7 +16,7 @@ import javax.imageio.ImageIO;
 // represents the GameManager
 public class GameManager implements Serializable {
   List<Player> players;
-  List<Player> ads = new ArrayList<>();
+  List<Adversary> ads = new ArrayList<>();
   int curPlayer;
   GameState gameState;
 
@@ -99,6 +99,10 @@ public class GameManager implements Serializable {
     for (String name: adNames) {
       if (name.contains("Ghost")) {
         Adversary ghost = new Ghost(name);
+        ads.add(ghost);
+      } else {
+        Adversary zombie = new Zombie(name);
+        ads.add(zombie);
       }
     }
   }
