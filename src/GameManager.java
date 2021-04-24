@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 // represents the GameManager
 public class GameManager implements Serializable {
   List<Player> players;
+  List<Adversary> ads = new ArrayList<>();
   int curPlayer;
   GameState gameState;
 
@@ -64,6 +65,14 @@ public class GameManager implements Serializable {
     this.gameState = new GameState(this.players, levels);
   }
 
+  // init with given remote Adversary
+  public GameManager(List<Level> levels, List<String> names, List<String> adNames) {
+    this.players = new ArrayList<>();
+    this.register(names);
+    this.curPlayer = 0;
+    this.gameState = new GameState(this.players, levels, adNames);
+  }
+
   //Start a simple one level game
   public GameManager(List<String> names) {
     this.players = new ArrayList<>();
@@ -81,6 +90,19 @@ public class GameManager implements Serializable {
       }
       else {
         System.out.println("Player already exist or not valid: " + name);
+      }
+    }
+  }
+
+  // register players
+  public void registerAdversary(List<String> adNames) {
+    for (String name: adNames) {
+      if (name.contains("Ghost")) {
+        Adversary ghost = new Ghost(name);
+        ads.add(ghost);
+      } else {
+        Adversary zombie = new Zombie(name);
+        ads.add(zombie);
       }
     }
   }

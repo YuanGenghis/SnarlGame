@@ -2,8 +2,12 @@
 // represents Adversary
 public class Zombie implements Adversary{
   String type = "Zombie";
+  String name;
   int[] position;
 
+  public Zombie(String name) {
+    this.name = name;
+  }
 
   // init the Adversary with given position
   public Zombie(int[] position) {

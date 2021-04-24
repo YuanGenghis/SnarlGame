@@ -39,6 +39,13 @@ public class GameState implements Serializable {
     this.gameStatus = 1;
   }
 
+  public GameState(List<Player> players, List<Level> levels, List<String> adNames) {
+    this.players = players;
+    this.levels = levels;
+    this.curLevel = 0;
+    this.gameStatus = 1;
+  }
+
   //This Game state will first creat a default game state with 2 players on top-left,
   //1 ad on bottom-right. Then one player will be moved from (1,1) to (3,3) then render the whole
   //game state
