@@ -52,8 +52,10 @@ public class Observer extends JPanel implements ObserverInterface {
     super.paintComponent(g);
     g.clearRect(0, 0, getWidth(), getHeight());
 
-    gm.gameState.levels.get(gm.gameState.curLevel).drawRooms(g);
-    gm.gameState.levels.get(gm.gameState.curLevel).drawHallways(g);
+    List<Room> rooms = gm.gameState.levels.get(gm.gameState.curLevel).getRooms();
+    Level.drawRooms(rooms, g);
+    List<Hallway> hws = gm.gameState.levels.get(gm.gameState.curLevel).getHallways();
+    Level.drawHallways(hws, g);
   }
   public void refreshScreen() {
     timer = new Timer(0, new ActionListener() {

@@ -294,9 +294,7 @@ public class Server3 {
                 System.out.println("next Player");
             }
 
-            for (int ii = 0; ii < adversarySockets.size(); ++ii) {
-
-            }
+            sendUpdateToADs();
 
         }
         sendEndgame();
