@@ -21,7 +21,6 @@ public class AdversaryUser extends JPanel implements KeyListener {
     public JSONObject playerUpdateMessage;
     public static int moveAmount = 0;
     public int[] playerDst;
-    public int[] position;
 
     public static BufferedImage PlayerImage;
     public static BufferedImage ADImage;
@@ -49,8 +48,6 @@ public class AdversaryUser extends JPanel implements KeyListener {
     public AdversaryUser(JSONObject msg) {
         playerUpdateMessage = msg;
         playerDst = null;
-        JSONArray pos = playerUpdateMessage.getJSONArray("position");
-        position = new int[]{pos.getInt(0), pos.getInt(1)};
         setBackground(Color.BLACK);
         setForeground(Color.WHITE);
         refreshScreen();
@@ -96,31 +93,31 @@ public class AdversaryUser extends JPanel implements KeyListener {
 
     // deal with arrow movement of user
     public void keyPressed(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-//    Player p = gm.players.get(gm.curPlayer);
-        switch( keyCode ) {
-            case KeyEvent.VK_UP:
-                // handle up
-                position[0]--;
-                break;
-            case KeyEvent.VK_DOWN:
-                // handle down
-                position[0] ++;
-                break;
-            case KeyEvent.VK_LEFT:
-                // handle left
-                position[1] --;
-                break;
-            case KeyEvent.VK_RIGHT :
-                // handle right
-                position[1] ++;
-                break;
-        }
-//    if (keyCode == KeyEvent.VK_ENTER) {
-//      gm.nextPlayer();
-//      moveAmount = 0;
-//    }
-        playerDst = position;
+//        int keyCode = e.getKeyCode();
+////    Player p = gm.players.get(gm.curPlayer);
+//        switch( keyCode ) {
+//            case KeyEvent.VK_UP:
+//                // handle up
+//                position[0]--;
+//                break;
+//            case KeyEvent.VK_DOWN:
+//                // handle down
+//                position[0] ++;
+//                break;
+//            case KeyEvent.VK_LEFT:
+//                // handle left
+//                position[1] --;
+//                break;
+//            case KeyEvent.VK_RIGHT :
+//                // handle right
+//                position[1] ++;
+//                break;
+//        }
+////    if (keyCode == KeyEvent.VK_ENTER) {
+////      gm.nextPlayer();
+////      moveAmount = 0;
+////    }
+//        playerDst = position;
     }
 
     public int getMoveAmount() {
@@ -183,7 +180,7 @@ public class AdversaryUser extends JPanel implements KeyListener {
             char[][] tiles = new char[rows][cols];
             for (int rr = 0; rr < rows; ++rr) {
                 for (int cc = 0; cc < cols; ++cc) {
-                    tiles[rr][cc] = (char)layout.getJSONArray(rr).get(cc);
+                    tiles[rr][cc] = ((String)(layout.getJSONArray(rr)).get(cc)).charAt(0);
                 }
             }
             Room room = new Room(tiles, position);
@@ -193,7 +190,9 @@ public class AdversaryUser extends JPanel implements KeyListener {
 
         JSONArray objects = this.playerUpdateMessage.getJSONArray("objects");
         for (Object jo: objects) {
-            int[] keyPos = (int[])((JSONObject)jo).get("position");
+            int[] keyPos = new int[]{
+                    ((JSONObject)jo).getJSONArray("position").getInt(0),
+                    ((JSONObject)jo).getJSONArray("position").getInt(1)};
             for (Room room: rooms) {
                 int rows = room.layout.length;
                 int cols = room.layout[0].length;
@@ -225,7 +224,10 @@ public class AdversaryUser extends JPanel implements KeyListener {
             JSONArray layout = hwObj.getJSONArray("layout");
             List<int[]> tiles = new ArrayList<>();
             for (int yy = 0; yy < layout.length(); ++yy) {
-                tiles.add((int[])layout.get(yy));
+                int[] pos = new int[] {
+                        layout.getJSONArray(yy).getInt(0)
+                        ,layout.getJSONArray(yy).getInt(1)};
+                tiles.add(pos);
             }
             Hallway hw = new Hallway(tiles);
             hws.add(hw);

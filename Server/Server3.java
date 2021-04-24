@@ -63,7 +63,7 @@ public class Server3 {
 
         try {
             System.out.println("Time to add Adversary");
-            server.setSoTimeout(20 * 1000);
+            server.setSoTimeout(10 * 1000);
             waitForAdversary(maxPlayers - minPlayers);
         } catch (SocketTimeoutException s) {
             System.out.println("timeout for more Adversary");
@@ -105,11 +105,9 @@ public class Server3 {
             e.printStackTrace();
         }
 
-
-
         gm = new GameManager(levels, names, adNames);
         gm.init();
-//        sendInitialUpdate();
+        sendInitialUpdate();
         sendInitialAdversaryUpdate();
         startGame();
 
@@ -148,7 +146,7 @@ public class Server3 {
 
         JSONArray objects = makeObjects(level);
 
-        msg.put("room", rooms);
+        msg.put("rooms", rooms);
         msg.put("hallways", hws);
         msg.put("objects", objects);
         return msg;
