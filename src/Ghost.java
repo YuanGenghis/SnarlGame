@@ -1,7 +1,12 @@
 
 public class Ghost implements Adversary {
   String type = "Ghost";
+  String name;
   int[] position;
+
+  public Ghost(String name) {
+    this.name = name;
+  }
 
   // init the Adversary with type, name, and position
   public Ghost(int[] position) {
