@@ -3,7 +3,7 @@ import org.json.*;
 import java.io.*;
 import java.net.*;
 
-public class ZombieClient {
+public class AdversaryClient {
     private static String address = "127.0.0.1";
     private static int port = 45678;
 
