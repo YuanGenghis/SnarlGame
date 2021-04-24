@@ -1,6 +1,8 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import sun.security.jgss.spnego.SpNegoContext;
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -107,11 +109,10 @@ public class Server3 {
 
         gm = new GameManager(levels, names, adNames);
         gm.init();
-        sendInitialUpdate();
+//        sendInitialUpdate();
+        sendInitialAdversaryUpdate();
         startGame();
 
-//    socket.close();
-//    in.close();
     }
 
     private static void sendInitialUpdate() throws IOException {
@@ -120,8 +121,70 @@ public class Server3 {
             JSONObject playerUpdate = makePlayerUpdateMessage(gm.players.get(ii));
             sendJSONMessage(playerUpdate);
         }
-
     }
+
+
+
+    private static void sendInitialAdversaryUpdate() throws IOException {
+        for (int ii = 0; ii < adversarySockets.size(); ++ii) {
+            out = new PrintWriter(adversarySockets.get(ii).getOutputStream(), true);
+            sendJSONMessage(makeAdversaryUpdateMessage(gm));
+        }
+    }
+
+    private static JSONObject makeAdversaryUpdateMessage(GameManager gm) {
+        JSONObject msg = new JSONObject();
+        msg.put("type", "ad-update");
+        JSONArray rooms = new JSONArray();
+        JSONArray hws = new JSONArray();
+        Level level = gm.gameState.levels.get(gm.gameState.curLevel);
+        for (Room r: level.getRooms()) {
+            rooms.put(makeRoomObject(r));
+        }
+
+        for (Hallway hw: level.getHallways()) {
+            hws.put(makeHwObject(hw));
+        }
+
+        JSONArray objects = makeObjects(level);
+
+        msg.put("room", rooms);
+        msg.put("hallways", hws);
+        msg.put("objects", objects);
+        return msg;
+    }
+
+    private static JSONObject makeRoomObject(Room r) {
+        JSONObject roomObject = new JSONObject();
+        roomObject.put("type", "room");
+        roomObject.put("origin", r.position);
+        roomObject.put("layout", r.layout);
+        return roomObject;
+    }
+
+    private static JSONObject makeHwObject(Hallway hw) {
+        JSONObject hwObject = new JSONObject();
+        hwObject.put("type", "hallway");
+        hwObject.put("layout", hw.layout);
+        hwObject.put("isPlayerInside", hw.ifPlayerInside);
+        hwObject.put("playerPos", hw.playerPosition);
+        return hwObject;
+    }
+
+    private static JSONArray makeObjects(Level level) {
+        JSONArray objects = new JSONArray();
+        JSONObject keyObject = new JSONObject();
+        JSONObject exitObject = new JSONObject();
+        keyObject.put("type", "key");
+        keyObject.put("position", level.keyPosition);
+        exitObject.put("type", "exit");
+        exitObject.put("position", level.exitPosition);
+        objects.put(keyObject);
+        objects.put(exitObject);
+        return objects;
+    }
+
+
 
     private static JSONObject makePlayerUpdateMessage(Player p) {
         JSONObject msg = new JSONObject();
@@ -183,6 +246,9 @@ public class Server3 {
         return msg;
     }
 
+
+
+
     private static void startGame() throws IOException, InterruptedException {
         int index = -1;
         while (!gm.isGameEnd()) {
@@ -227,6 +293,11 @@ public class Server3 {
                 gm.nextPlayer();
                 System.out.println("next Player");
             }
+
+            for (int ii = 0; ii < adversarySockets.size(); ++ii) {
+
+            }
+
         }
         sendEndgame();
     }
@@ -236,6 +307,16 @@ public class Server3 {
             Socket s = playerSockets.get(ii);
             Player player = gm.players.get(ii);
             JSONObject updateMsg = makePlayerUpdateMessage(player);
+            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out = new PrintWriter(s.getOutputStream(), true);
+            sendJSONMessage(updateMsg);
+        }
+    }
+
+    private static void sendUpdateToADs() throws IOException {
+        for (int ii = 0; ii < adversarySockets.size(); ++ii) {
+            Socket s = adversarySockets.get(ii);
+            JSONObject updateMsg = makeAdversaryUpdateMessage(gm);
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(s.getOutputStream(), true);
             sendJSONMessage(updateMsg);
@@ -406,38 +487,3 @@ public class Server3 {
 
 
 }
-
-//  private static void runGame(List<String> names) {
-
-//    User user1 = new User(naturalNum, levels, names);
-//    user1.render();
-//  }
-//}
-
-
-//Registration of players
-//    private static void registration(int port, int playerAmount) throws IOException {
-//        for (int ii = 0; ii < playerAmount; ++ii) {
-//            socket = server.accept();
-//            out = new PrintWriter(socket.getOutputStream(), true);
-//            in = new DataInputStream(new InputStreamReader(socket.getInputStream()));
-//
-//            JSONObject welcomeMsg = new JSONObject();
-//            welcomeMsg.put("type", "welcome");
-//            welcomeMsg.put("info", "Snarl Game");
-//            //send server-welcome json
-//            sendJSONMessage(welcomeMsg);
-//            //send "name"
-//            sendStringMessage("name");
-//            String playerName = receiveStringMessage();
-//            System.out.println(playerName);
-//            names.add(playerName);
-//            playerSockets.add(socket);
-//        }
-//    }
-
-// get the output stream from the socket.
-//      OutputStream outputStream = s.getOutputStream();
-//      // create an object output stream from the output stream so we can send an object through it
-//      ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-//      objectOutputStream.writeObject(gm);
