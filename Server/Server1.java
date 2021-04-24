@@ -360,6 +360,8 @@ public class Server1 {
 
     Scanner sc = new Scanner(System.in);
     while(true) {
+      names = new ArrayList<>();
+      playerSockets = new ArrayList<>();
       run();
       System.out.println("enter exit to exit, enter others to continue");
       String call = sc.next();
