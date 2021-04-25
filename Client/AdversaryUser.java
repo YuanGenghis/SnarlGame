@@ -94,32 +94,7 @@ public class AdversaryUser extends JPanel implements KeyListener {
     // deal with arrow movement of user
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-//    Player p = gm.players.get(gm.curPlayer);
-        switch( keyCode ) {
-            case KeyEvent.VK_UP:
-                // handle up
-//                position[0]--;
-                break;
-//            case KeyEvent.VK_DOWN:
-//                // handle down
-//                position[0] ++;
-//                break;
-//            case KeyEvent.VK_LEFT:
-//                // handle left
-//                position[1] --;
-//                break;
-//            case KeyEvent.VK_RIGHT :
-//                // handle right
-//                position[1] ++;
-//                break;
-        }
-////    if (keyCode == KeyEvent.VK_ENTER) {
-////      gm.nextPlayer();
-////      moveAmount = 0;
-////    }
-//        playerDst = position;
     }
-
     public int getMoveAmount() {
         return moveAmount;
     }

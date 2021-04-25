@@ -12,7 +12,6 @@ public class Client {
   private static BufferedReader in;
 
 
-
   //send a string to server
   public static void sendStringMessage(String msg) throws IOException {
     out.println(msg);
@@ -112,12 +111,10 @@ public class Client {
           Thread.sleep(100);
         }
         user.setMoveAmount();
-      }
-      else if (msg instanceof String) {
+      } else if (msg instanceof String) {
         System.out.println("unknownMsg:" + msg);
-      }
-      else {
-        if (((JSONObject)msg).get("type").equals("player-update")) {
+      } else {
+        if (((JSONObject) msg).get("type").equals("player-update")) {
           System.out.println("update message");
           user.setPlayerUpdateMessage((JSONObject) msg);
         } else {
@@ -126,8 +123,5 @@ public class Client {
       }
       Thread.sleep(100);
     }
-
-
   }
-
 }

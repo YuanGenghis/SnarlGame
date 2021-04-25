@@ -134,7 +134,5 @@ public class Client1 {
       }
       Thread.sleep(100);
     }
-
   }
-
 }
