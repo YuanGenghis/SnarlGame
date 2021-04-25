@@ -293,18 +293,25 @@ public class Server3 {
                         int[] dst = new int[]{playerMove.getJSONArray("to").getInt(0),
                                 playerMove.getJSONArray("to").getInt(1)};
                         String result = gm.checkMoveResult(player, dst);
-                        sendStringMessage(result);
+
                         if (result.equals("key")) {
                             whoFindTheFuckingKey = player.getName();
                         } else if (result.equals("exit")) {
                             whoFindTheExit = player.getName();
                         }
+                        sendStringMessage(result);
 
-                        gm.movePlayer(player, dst);
-                        sendUpdateToAllUsers();
-//                        in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-//                        out = new PrintWriter(s.getOutputStream(), true);
-                        ++move;
+                        if (!result.equals("Invalid")) {
+                            gm.movePlayer(player, dst);
+                            sendUpdateToAllUsers();
+                            ++move;
+                            System.out.println("move: " + move);
+                        } else {
+                            System.out.println("invalid move");
+                            sendUpdateToAllUsers();
+                        }
+                        in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                        out = new PrintWriter(s.getOutputStream(), true);
                     }
                 }
                 gm.nextPlayer();

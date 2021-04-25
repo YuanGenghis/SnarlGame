@@ -128,54 +128,6 @@ public class Client {
     }
 
 
-
-
-
-
-//
-//    // get the input stream from the connected socket
-//    InputStream inputStream = clientSocket.getInputStream();
-//    // create a DataInputStream so we can read data from it.
-//    ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-//
-//    GameManager gm = (GameManager) objectInputStream.readObject();
-//    user = new User(gm);
-//    user.render();
-
-
-
-
-    ////Starting a level
-    //get level-start msg
-
-    //get init updates
-
-
-
-
-    ////Playing a round
-    //get "move" msg
-
-    //send player move to server
-
-    //get result
-
-    //get update msg
-
-
-
-
-    ////Ending a level
-
-
-
-
-
-    ////Ending a Snarl game
-
-
-
-
   }
 
 }
