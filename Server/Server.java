@@ -209,16 +209,14 @@ public class Server {
                         if (!result.equals("Invalid")) {
                             gm.movePlayer(player, dst);
                             sendUpdateToAllUsers();
-//                            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-//                            out = new PrintWriter(s.getOutputStream(), true);
                             ++move;
                             System.out.println("move: " + move);
                         } else {
                             System.out.println("invalid move");
                             sendUpdateToAllUsers();
-//                            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-//                            out = new PrintWriter(s.getOutputStream(), true);
                         }
+                        in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                        out = new PrintWriter(s.getOutputStream(), true);
                     }
                 }
                 gm.nextPlayer();
