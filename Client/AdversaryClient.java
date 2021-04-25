@@ -90,7 +90,6 @@ public class AdversaryClient {
         while ((msg = in.readLine()) != null) {
             msg = new JSONTokener(msg.toString()).nextValue();
             System.out.println("msg:" + msg);
-            // TODO: solve the update logic
             if (msg instanceof String && msg.equals("move")) {
                 System.out.println(msg);
                 msg = receiveJSONResponse();
