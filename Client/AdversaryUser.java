@@ -87,8 +87,13 @@ public class AdversaryUser extends JPanel implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {}
 
-
-    public void keyPressed(KeyEvent e) {}
+    // deal with arrow movement of user
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+    }
+    public int getMoveAmount() {
+        return moveAmount;
+    }
 
 
     public void setMoveAmount() {

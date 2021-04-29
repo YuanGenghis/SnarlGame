@@ -21,7 +21,7 @@ public class Server1 {
   private static PrintWriter out = null;
 
 
-  private static String fileName = "1-in.levels";
+  private static String fileName = "snarl.levels";
   private static int timeOfWaiting = 6;
   private static boolean isObserverMode = false;
   private static int port = 45678;
