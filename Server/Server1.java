@@ -97,11 +97,15 @@ public class Server1 {
     }
 
 
-
-    gm = new GameManager(levels, names);
-    gm.init();
-    sendInitialUpdate();
-    startGame();
+    if (!isObserverMode) {
+      gm = new GameManager(levels, names);
+      gm.init();
+      sendInitialUpdate();
+      startGame();
+    } else {
+      Observer observer = new Observer(naturalNum, levels, names);
+      observer.render();
+    }
 
   }
 
