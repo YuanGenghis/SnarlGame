@@ -23,8 +23,7 @@ public class RuleChecker {
         return false;
     }
 
-
-
+    //return all waypoints
     public static List<int[]> findHallwayPoints(List<Hallway> hws) {
         List<int[]> hwps = new ArrayList<>();
         for (Hallway hw: hws) {
@@ -70,8 +69,7 @@ public class RuleChecker {
         Room room = inWhichRoom(position, level);
         List<int[]> hallwayPoints = findHallwayPoints(level.hallways);
         if (room == null) {
-//            System.out.println("in hallway");
-            return searchTraversablePointsInHallway(position, level.hallways, level);
+            return searchTraversablePointsInHallway(position, level);
         } else {
             return searchTraversablePoints(position, room, hallwayPoints, level.rooms);
         }
@@ -94,23 +92,31 @@ public class RuleChecker {
     }
 
 
-    //Check adversary type, make unique move
+    //Check adversary type, make one unique move, return the dst point
     public static int[] getAdNextMove(Adversary ad, Level curLevel, List<Player> players) {
-        int[] dst = new int[2];
+        int[] dst;
         List<int[]> playerPos = new ArrayList<>();
-        for (int ii = 0; ii < players.size(); ++ii) {
+        for (Player player : players) {
             int[] pos = new int[2];
-            pos[0] = players.get(ii).position[0];
-            pos[1] = players.get(ii).position[1];
+            pos[0] = player.position[0];
+            pos[1] = player.position[1];
             playerPos.add(pos);
         }
         int[] adPos = new int[2];
         adPos[0] = ad.getPosition()[0];
         adPos[1] = ad.getPosition()[1];
 
+        //take one ad pos and a list of points and return which one of the points is the closest one
+        //this step find which player is the most close to this ad
         int[] closestPlayerPos = closestPoint(playerPos, adPos);
 
+        //get all surrounding points around one point
         List<int[]> surroundings = surroundings(adPos);
+
+        //this step check which surrounding points around this ad is the most close to that player
+        //depend on ad type
+        //for ghost, it can go through walls, so no limit
+        //for zombie, it can only stay in one room
         if (ad.getType().equals("Ghost")) {
             dst = closestPoint(surroundings, closestPlayerPos);
             return ghostMove(dst, curLevel);
@@ -133,6 +139,7 @@ public class RuleChecker {
         }
     }
 
+    //check if this pos is a valid dst point
     public static boolean checkIfAdMoveValid(int[] pos, Level level) {
         Room r = inWhichRoom(pos, level);
         if (r == null) {
@@ -140,14 +147,11 @@ public class RuleChecker {
         }
         else {
             char tile = r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]];
-            if (tile == 'x' || tile == '|' || tile == '-') {
-                return false;
-            } else {
-                return true;
-            }
+            return tile != 'x' && tile != '|' && tile != '-';
         }
     }
 
+    //run a ghost move
     public static int[] ghostMove(int[] pos, Level level) {
         Room r = inWhichRoom(pos, level);
         char tile = r.layout[pos[0] - r.position[0]][pos[1] - r.position[1]];
@@ -175,6 +179,7 @@ public class RuleChecker {
         }
     }
 
+    //find which one in the point list is the closest one to the pos
     public static int[] closestPoint(List<int[]> points, int[] pos) {
         if (points == null) return null;
         int[] first = points.get(0);
@@ -192,6 +197,7 @@ public class RuleChecker {
         return points.get(index);
     }
 
+    //get surrounding points
     public static List<int[]> surroundings(int[] pos) {
         List<int[]> output = new ArrayList<>();
         int[] up = new int[2];
@@ -218,8 +224,8 @@ public class RuleChecker {
     }
 
 
-    public static List<int[]> searchTraversablePointsInHallway(int[] pos, List<Hallway> hws, Level level) {
-
+    //find all available dst points in hallways
+    public static List<int[]> searchTraversablePointsInHallway(int[] pos, Level level) {
         List<int[]> output = new ArrayList<>();
         List<int[]> hallwaysPoints = findHallwayPoints(level.hallways);
         int [][] view = getPlayerView(pos, null, hallwaysPoints, level.rooms);
@@ -245,9 +251,6 @@ public class RuleChecker {
         List<int[]> output = new ArrayList<>();
         int[][] viewOfPlayer = getPlayerView(point, room, hallwayPoints, rooms);
 
-//        for (int[] ii : viewOfPlayer) {
-//            System.out.println(Arrays.toString(ii));
-//        }
 
         for (int ii = 0; ii < viewOfPlayer.length; ++ii) {
             for (int yy = 0; yy < viewOfPlayer[ii].length; ++yy) {
@@ -260,13 +263,10 @@ public class RuleChecker {
             }
         }
 
-//        for (int ii = 0; ii < output.size(); ++ii) {
-//            System.out.println(Arrays.toString(output.get(ii)));
-//        }
-
         return output;
     }
 
+    //get the player's view when they in hallway
     public static boolean getPlayerViewInHallway(int[] pos, List<int[]> hallwayPoints) {
         for (int[] haps: hallwayPoints) {
             if (pos[0] == haps[0] && pos[1] == haps[1]) return true;
@@ -274,12 +274,11 @@ public class RuleChecker {
         return false;
     }
 
+
     public static int checkRoomTailInsideHW(int[] pos, List<Room> rooms) {
         for (Room r: rooms) {
             int x = pos[0] - r.position[0];
             int y = pos[1] - r.position[1];
-//            System.out.println("X:" + x);
-//            System.out.println("y:" + x);
             if (x >= 0 && x < r.layout.length
                     && y >= 0 && y < r.layout[0].length) {
                 if (r.layout[x][y] == '-' || r.layout[x][y] == '|') {
@@ -293,6 +292,7 @@ public class RuleChecker {
         return 0;
     }
 
+    //get player's view, which returns is a 5 x 5 array
     public static int[][] getPlayerView(int[] pos, Room r, List<int[]> hallwayPoints, List<Room> rooms) {
         int[][] view = new int[5][5];
 

@@ -13,7 +13,6 @@ import java.util.Scanner;
 public class Server3 {
     private static ServerSocket server = null;
     private static Socket socket = null;
-    //    private static DataInputStream in = null;
     private static BufferedReader in;
     private static PrintWriter out = null;
 
@@ -23,7 +22,7 @@ public class Server3 {
     private static boolean isObserverMode = false;
     private static int port = 45678;
 
-    private static int minPlayers = 1;
+    private static final int minPlayers = 1;
     private static int maxPlayers = 4;
 
     private static int maxAdversary = 2;
@@ -36,7 +35,6 @@ public class Server3 {
     private static GameManager gm = null;
     private static String whoFindTheFuckingKey = "";
     private static String whoFindTheExit = "";
-//  private static User user;
 
     public Server3(int port) {
         try {
@@ -254,8 +252,6 @@ public class Server3 {
         }
         msg.put("actors", actorList);
 
-
-        // TODO: add described information
         // message: maybe-string
         String message = "Player " + p.getName() + " ";
         msg.put("message", message);

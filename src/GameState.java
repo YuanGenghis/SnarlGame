@@ -58,12 +58,8 @@ public class GameState implements Serializable {
     initGame(2, level, 1);
     int[] newPos = new int[2]; newPos[0] = 3; newPos[1] = 3;
     this.levels.get(curLevel).movePlayer(this.players.get(0), newPos);
-//    this.render(this.levels.get(levelStatus));
   }
 
-  public List<Level> getLevels() {
-    return this.levels;
-  }
 
   public void initGame(int playerAmount, Level level, int ads) {
     for (int ii = 0; ii < playerAmount; ++ii) {
@@ -72,7 +68,6 @@ public class GameState implements Serializable {
       this.players.add(player);
     }
     this.levels.add(level);
-//    this.levels.get(curLevel).setZombiesInLevel(ads);
   }
 
 
@@ -204,33 +199,12 @@ public class GameState implements Serializable {
   }
 
   public boolean playerInGame(String name) {
-    for (int ii = 0; ii < players.size(); ++ii) {
-      if (players.get(ii).name.equals(name)) {
+    for (Player player : players) {
+      if (player.name.equals(name)) {
         return true;
       }
     }
     return false;
   }
 
-
-
-
-
-  public static void main(String[] args) {
-    Level level = new Level();
-
-    int[] pos = new int[2];
-    pos[0] = 1; pos[1] = 8;
-    int [][] view = RuleChecker.getPlayerView(pos, level.rooms.get(1),
-            RuleChecker.findHallwayPoints(level.hallways), level.rooms);
-//    System.out.println(level.rooms.get(1).position);
-
-    for (int ii = 0; ii < 5; ++ii) {
-      System.out.println(Arrays.toString(view[ii]));
-    }
-
-
-    GameState game = new GameState(2, level, 2);
-//    level.renderLevel(level);
-  }
 }
