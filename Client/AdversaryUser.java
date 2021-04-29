@@ -24,13 +24,9 @@ public class AdversaryUser extends JPanel implements KeyListener {
 
     public static BufferedImage PlayerImage;
     public static BufferedImage ADImage;
-    private static String ADUrl =
-//          "https://avatars.githubusercontent.com/u/60799921?s=400&u=4d68d8d6c5acd9a4b48ef35dc7d3a0b9a8164d04&v=4";
+    private static final String ADUrl =
             "https://images-na.ssl-images-amazon.com/images/I/71vj4KrX%2BvL._AC_SL1500_.jpg";
-    private static String PlayerUrl =
-//          "https://avatars.githubusercontent.com/u/46980128?s=400&u=abab5bff473ece8159ceb6f29ebf7cf3fc132e2b&v=4";
-//          "https://avatars.githubusercontent.com/u/60799921?s=400&u=4d68d8d6c5acd9a4b48ef35dc7d3a0b9a8164d04&v=4";
-//  "https://media-exp1.licdn.com/dms/image/C4E03AQFk3SizfWyASg/profile-displayphoto-shrink_800_800/0/1581017250813?e=1622678400&v=beta&t=Lw93auRr4x3oh9HvykxpqGsGVTjnrf547ApLp9NB3TA";
+    private static final String PlayerUrl =
             "https://avatars.githubusercontent.com/u/46980128?s=400&u=abab5bff473ece8159ceb6f29ebf7cf3fc132e2b&v=4";
 
     private static String Ghost =
@@ -99,7 +95,6 @@ public class AdversaryUser extends JPanel implements KeyListener {
         return moveAmount;
     }
 
-    public void addMoveAmount() {moveAmount++;}
 
     public void setMoveAmount() {
         moveAmount = 0;
@@ -109,9 +104,6 @@ public class AdversaryUser extends JPanel implements KeyListener {
         return playerDst;
     }
 
-    public void setMoveToNull() {
-        playerDst = null;
-    }
 
     /**
      * Invoked when a key has been released. See the class description for {@link KeyEvent} for a

@@ -42,10 +42,12 @@ public class Player implements Serializable {
     return this.position;
   }
 
+  //getter name
   public String getName() {
     return name;
   }
 
+  //update position
   public void update(int[] position, Level level) {
     this.position = position;
   }

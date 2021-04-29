@@ -11,7 +11,6 @@ import java.util.Scanner;
 public class Server {
     private static ServerSocket server = null;
     private static Socket socket = null;
-    //    private static DataInputStream in = null;
     private static BufferedReader in;
     private static PrintWriter out = null;
 
@@ -21,7 +20,7 @@ public class Server {
     private static boolean isObserverMode = false;
     private static int port = 45678;
 
-    private static int minPlayers = 1;
+    private static final int minPlayers = 1;
     private static int maxPlayers = 4;
 
     private static List<String> names = new ArrayList<>();
@@ -29,7 +28,6 @@ public class Server {
     private static GameManager gm = null;
     private static String whoFindTheFuckingKey = "";
     private static String whoFindTheExit = "";
-//  private static User user;
 
     public Server(int port) {
         try {
@@ -96,8 +94,6 @@ public class Server {
         sendInitialUpdate();
         startGame();
 
-//    socket.close();
-//    in.close();
     }
 
     private static void sendInitialUpdate() throws IOException {
@@ -163,8 +159,6 @@ public class Server {
         }
         msg.put("actors", actorList);
 
-
-        // TODO: add described information
         // message: maybe-string
         String message = "Player " + p.getName() + " ";
         msg.put("message", message);
@@ -226,6 +220,7 @@ public class Server {
         sendEndgame();
     }
 
+    //send all update to all users by Json file
     private static void sendUpdateToAllUsers() throws IOException {
         for (int ii = 0; ii < playerSockets.size(); ++ii) {
             Socket s = playerSockets.get(ii);
@@ -263,6 +258,7 @@ public class Server {
         }
     }
 
+    //send start level json file to all users
     public static void sendStartLevel() throws IOException {
         JSONObject startLevel = new JSONObject();
         startLevel.put("type", "start-level");
@@ -277,6 +273,7 @@ public class Server {
         sendJsonToAllUsers(startLevel);
     }
 
+    //send end level json file to all users
     public static void sendEndLevel() throws IOException {
         JSONObject endLevel = new JSONObject();
         endLevel.put("type", "end-level");
@@ -292,6 +289,7 @@ public class Server {
         sendJsonToAllUsers(endLevel);
     }
 
+    //send end game json file to all users
     public static void sendEndgame() throws IOException {
         JSONObject endGame = new JSONObject();
         endGame.put("type", "end-game");
@@ -309,9 +307,9 @@ public class Server {
         sendJsonToAllUsers(endGame);
     }
 
+    //send json file to all users
     public static void sendJsonToAllUsers(JSONObject jo) throws IOException {
-        for (int ii = 0; ii < playerSockets.size(); ++ii) {
-            Socket s = playerSockets.get(ii);
+        for (Socket s : playerSockets) {
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(s.getOutputStream(), true);
             sendJSONMessage(jo);
@@ -365,9 +363,7 @@ public class Server {
         out.println(jo);
     }
     public static void sendStringMessage (String msg){ out.println(msg);}
-    public static String receiveStringMessage () throws IOException {
-        return in.readLine();
-    }
+    public static String receiveStringMessage () throws IOException { return in.readLine(); }
     public static JSONObject receiveJSONMessage () throws IOException {
         return new JSONObject(in.readLine());
     }

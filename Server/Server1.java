@@ -17,7 +17,6 @@ import java.util.Scanner;
 public class Server1 {
   private static ServerSocket server = null;
   private static Socket socket = null;
-  //    private static DataInputStream in = null;
   private static BufferedReader in;
   private static PrintWriter out = null;
 
@@ -38,7 +37,6 @@ public class Server1 {
 
   private static String whoFindTheFuckingKey = "";
   private static String whoFindTheExit = "";
-//  private static User user;
 
   public Server1(int port) {
     try {
@@ -170,8 +168,6 @@ public class Server1 {
     }
     msg.put("actors", actorList);
 
-
-    // TODO: add described information
     // message: maybe-string
     String message = "Player " + p.getName() + " ";
     msg.put("message", message);
@@ -206,25 +202,25 @@ public class Server1 {
             int[] dst = new int[]{playerMove.getJSONArray("to").getInt(0),
                     playerMove.getJSONArray("to").getInt(1)};
             String result = gm.checkMoveResult(player, dst);
-            sendStringMessage(result);
+
             if (result.equals("key")) {
               whoFindTheFuckingKey = player.getName();
             } else if (result.equals("exit")) {
               whoFindTheExit = player.getName();
             }
+            sendStringMessage(result);
 
             if (!result.equals("Invalid")) {
               gm.movePlayer(player, dst);
               sendUpdateToAllUsers();
+              ++move;
               System.out.println("move: " + move);
             } else {
               System.out.println("invalid move");
               sendUpdateToAllUsers();
-              --move;
             }
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(s.getOutputStream(), true);
-            ++move;
           }
         }
         gm.nextPlayer();
